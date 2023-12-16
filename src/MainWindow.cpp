@@ -42,6 +42,7 @@ MainWindow::MainWindow(QApplication *app, QWidget *parent): QMainWindow(parent)
 //    setMinimumSize(1500, 1000);
     QObject::connect(departmentDelegate_, SIGNAL(oComboText(const QString)), teamDelegate_, SLOT(getDepartment(const QString)));
     QObject::connect(teamDelegate_, SIGNAL(oComboText(const QString)), componentDelegate_, SLOT(getTeam(const QString)));
+    QObject::connect(departmentDelegate_, SIGNAL(oComboChanged(const QModelIndex &, const QString)), colorModel_, SLOT(setComboBox(const QModelIndex&, const QString)));
 
     QString message = tr("Detailed plan of Hacon's 1st floor");
     statusBar()->showMessage(message);

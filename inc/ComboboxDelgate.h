@@ -23,6 +23,7 @@ public:
 
 signals:
     void oComboText(const QString) const;
+    void oComboChanged(const QModelIndex &index, const QString) const;
 public slots:
     void getDepartment(const QString);
     void getTeam(const QString);

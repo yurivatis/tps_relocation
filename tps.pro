@@ -7,7 +7,7 @@ QT += widgets
 QT += multimedia
 QT += core
 QT += sql
-TARGET = umzug 
+TARGET = tps 
 INCLUDEPATH += . inc
 
 OBJECTS_DIR=obj/

@@ -1,4 +1,5 @@
 #include "ComboboxDelgate.h"
+#include "CComboBox.h"
 #include "constants.h"
 #include "SQLite.h"
 #include <QDebug>
@@ -12,9 +13,10 @@ ComboBoxDelegate::ComboBoxDelegate(QObject *parent)
 
  QWidget *ComboBoxDelegate::createEditor(QWidget *parent,
                                         const QStyleOptionViewItem &/* option */,
-                                        const QModelIndex &/* index */) const
+                                        const QModelIndex & index ) const
 {
-    QComboBox *comboBox = new QComboBox(parent);
+    CComboBox *comboBox = new CComboBox(parent);
+    comboBox->index(index);
     comboBox->setFrame(true);
 
     return comboBox;
@@ -24,7 +26,7 @@ ComboBoxDelegate::ComboBoxDelegate(QObject *parent)
 void ComboBoxDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &index) const
 {
-    QComboBox *comboBox = static_cast<QComboBox*>(editor);
+    CComboBox *comboBox = static_cast<CComboBox*>(editor);
     SqlInterface *sqlInteface = SqlInterface::getInstance();
     switch(index.column()) {
         case (int)Column::DEPARTMENT:
@@ -58,10 +60,11 @@ void ComboBoxDelegate::setEditorData(QWidget *editor,
 void ComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
 {
-    QComboBox *comboBox = static_cast<QComboBox*>(editor);
+    CComboBox *comboBox = static_cast<CComboBox*>(editor);
     QString value = comboBox->currentText();
-    model->setData(index, value, Qt::DisplayRole);
-    emit oComboText(comboBox->currentText());
+    model->setData(comboBox->index(), value, Qt::DisplayRole);
+    emit oComboText(value);
+    emit oComboChanged(comboBox->index(), value);
 }
 
 
@@ -83,5 +86,3 @@ void ComboBoxDelegate::getTeam(const QString team)
 {
     team_ = team;
 }
-
-
