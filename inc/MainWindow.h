@@ -34,17 +34,15 @@ private:
     ComboBoxDelegate * componentDelegate_;
     ColorButtonDelegate * colorDelegate_;
     RemoveButtonDelegate * removeDelegate_;
-    QMenu *customizeMenu_;
-    QMenu *dbMenu_;
-    QAction *importDb_;
-    QAction *colors_;
     Person *movingPerson_;
 protected:
-    void mousePressEvent(QMouseEvent *mouseEvent);
-    void mouseMoveEvent(QMouseEvent *mouseEvent);
-    void mouseReleaseEvent(QMouseEvent *mouseEvent);
+    virtual void mousePressEvent(QMouseEvent *mouseEvent);
+    virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
+    virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
+    virtual bool event(QEvent *event);
 private slots:
     void importDatabase();
+    void exportDatabase();
     void setupColors();
     void assignPeopleToRooms();
 signals:

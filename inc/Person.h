@@ -35,6 +35,7 @@ public:
     int offset_y(){return y_;}
     void moveTo(int x, int y);
     QString displayName();
+    bool isLead();
 private:
     QString name_;
     QString surname_;

@@ -8,8 +8,8 @@
 
 class Room {
 public:
-    Room(int nr, int capacity, QList<int>list, RoomOrientation ro = Orientation::DOWN, bool dummy=false);
-    Room(int nr, int capacity, QPolygonF coordinates, RoomOrientation ro = Orientation::DOWN, bool dummy=false);
+    Room(int nr, int capacity, QList<int>list, RoomNrOrientation ro = Orientation::DOWN, int rotation = -90, bool dummy=false);
+    Room(int nr, int capacity, QPolygonF coordinates, RoomNrOrientation ro = Orientation::DOWN, int rotation = -90, bool dummy=false);
     int capacity(){return capacity_;}
     void capacity(int capacity) {capacity_ = capacity;}
     int nr(){return nr_;}
@@ -21,11 +21,14 @@ public:
     bool removePerson(Person *);
     bool dummy() {return dummy_;}
     QList<Person*>people_;
-    RoomOrientation orientation() {return ro_;}
+    RoomNrOrientation orientation() {return ro_;}
+    int rotation() {return rotation_;}
+    void rotation(int r) {rotation_ = r;}
 private:
     int capacity_;
     int nr_;
     QPolygonF coordinates_;
     bool dummy_;
-    RoomOrientation ro_;
+    RoomNrOrientation ro_;
+    int rotation_;
 };

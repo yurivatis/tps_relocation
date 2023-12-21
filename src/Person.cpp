@@ -38,3 +38,11 @@ void Person::clear()
     tmpCoordinates_ = coordinates_;
     y_ = x_ = 0;
 }
+
+bool Person::isLead()
+{
+    if(role().contains("Team Lead")) {
+        return true;
+    }
+    return false;
+}

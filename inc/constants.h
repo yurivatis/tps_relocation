@@ -15,4 +15,4 @@ typedef enum class Orientation {
     UP,
     RIGHT,
     CENTER
-} RoomOrientation;
+} RoomNrOrientation;

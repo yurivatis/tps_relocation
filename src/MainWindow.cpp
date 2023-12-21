@@ -19,9 +19,11 @@
 #include <QGraphicsView>
 #include <QGraphicsProxyWidget>
 #include <QScrollArea>
+#include <QToolTip>
+#include <QLabel>
 #include "SQLite.h"
 
-MainWindow::MainWindow(QApplication *app, QWidget *parent): QMainWindow(parent)
+MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 {
     QWidget *mainWidget = new QWidget;
 //     QScrollArea *scrollArea = new QScrollArea(this);
@@ -29,6 +31,10 @@ MainWindow::MainWindow(QApplication *app, QWidget *parent): QMainWindow(parent)
 //     scrollArea->setWidgetResizable(true);
 //    setCentralWidget(scrollArea);
     setCentralWidget(mainWidget);
+    QPixmap pixmap("./hacon.png");
+    QLabel *icon = new QLabel("", this);
+    icon->setPixmap(QString::fromUtf8(":/images/hacon.png"));
+    icon->setGeometry(900, 50, 200, 200);
     createMenus();
     colorModel_ = new ColorModel(SqlInterface::getInstance()->colorEntries() , (int)Column::TOTAL_COLUMNS);
     colorModel_->restore();
@@ -77,17 +83,23 @@ MainWindow::MainWindow(QApplication *app, QWidget *parent): QMainWindow(parent)
 
 void MainWindow::createMenus()
 {
-    dbMenu_ = menuBar()->addMenu(tr("&Database"));
-    customizeMenu_ = menuBar()->addMenu(tr("&Customize"));
+    QMenu *dbMenu = menuBar()->addMenu(tr("&Database"));
+    QMenu *customizeMenu = menuBar()->addMenu(tr("&Customize"));
 
-    importDb_ = new QAction(tr("&Import db"), this);
-    importDb_->setShortcut(tr("Ctrl+i"));
-    dbMenu_->addAction(importDb_);
-    QObject::connect(importDb_, SIGNAL(triggered()), this, SLOT(importDatabase()));
+    QAction *importDb = new QAction(tr("&Import from db"), this);
+    importDb->setShortcut(tr("Ctrl+i"));
+    dbMenu->addAction(importDb);
+    QObject::connect(importDb, SIGNAL(triggered()), this, SLOT(importDatabase()));
 
-    colors_ = new QAction(tr("&Colors"), this);
-    customizeMenu_->addAction(colors_);
-    QObject::connect(colors_, SIGNAL(triggered()), this, SLOT(setupColors()));
+    QAction *exportDb = new QAction(tr("&Export to db"), this);
+    exportDb->setShortcut(tr("Ctrl+e"));
+    dbMenu->addAction(exportDb);
+    QObject::connect(exportDb, SIGNAL(triggered()), this, SLOT(exportDatabase()));
+
+    
+    QAction * colors = new QAction(tr("&Colors"), this);
+    customizeMenu->addAction(colors);
+    QObject::connect(colors, SIGNAL(triggered()), this, SLOT(setupColors()));
 }
 
 
@@ -108,34 +120,75 @@ void MainWindow::addRooms()
     rooms_.append(new Room(161, 3, { 710, 900,  710, 800, 760, 800, 760, 900}));
     rooms_.append(new Room(162, 3, { 760, 900,  760, 800, 810, 800, 810, 900}));
     rooms_.append(new Room(163, 3, { 810, 900,  810, 800, 840, 800, 900, 860, 900, 900}));
-    rooms_.append(new Room(  0, 0, { 900, 900,  900, 960, 960, 960}, Orientation::CENTER, true));
+    rooms_.append(new Room(  0, 0, { 900, 900,  900, 960, 960, 960}, Orientation::CENTER, -90, true));
     rooms_.append(new Room(176, 4, { 960, 960,  960, 860, 1060, 860, 1060, 960}));
     rooms_.append(new Room(175, 2, {1060, 960, 1060, 900, 1120, 900, 1120, 960}));
     rooms_.append(new Room(173, 2, {1120, 960, 1120, 900, 1180, 900, 1180, 960}));
     rooms_.append(new Room(174, 0, {1070, 900, 1070, 860, 1170, 860, 1170, 900}));
     rooms_.append(new Room(172, 8, {1180, 960, 1180, 860, 1300, 860, 1300, 960}));
     rooms_.append(new Room(171, 8, {1300, 960, 1300, 860, 1400, 860, 1400, 960}));
-    rooms_.append(new Room(  0, 0, {1350, 860, 1350, 780, 1180, 780}, Orientation::CENTER, true));
-    rooms_.append(new Room(169, 2, {1120, 840, 1120, 780, 1180, 780, 1180, 840}, Orientation::UP));
-    rooms_.append(new Room(168, 3, {1060, 840, 1060, 780, 1120, 780, 1120, 840}, Orientation::UP));
-    rooms_.append(new Room(166, 4, { 980, 840,  980, 780, 1060, 780, 1060, 840}, Orientation::UP));
-    rooms_.append(new Room(166, 4, { 980, 840,  980, 780, 1060, 780, 1060, 840}, Orientation::UP));
-    rooms_.append(new Room(  0, 0, { 980, 840,  930, 840,  930, 710,  980, 710, 980, 780}, Orientation::CENTER, true));
-    rooms_.append(new Room(164, 0, { 860, 770,  860, 710,  930, 710,  930, 840}, Orientation::CENTER));
-    rooms_.append(new Room(158, 4, { 880, 710,  880, 610,  980, 610,  980, 710}, Orientation::UP));
+    rooms_.append(new Room(  0, 0, {1350, 860, 1350, 760, 1310, 760}, Orientation::CENTER, -90, true));
+    rooms_.append(new Room(  0, 0, {1190, 840, 1190, 760, 1310, 760, 1310, 840}, Orientation::CENTER));
+    rooms_.append(new Room(169, 2, {1130, 840, 1130, 760, 1190, 760, 1190, 840}, Orientation::UP));
+    rooms_.append(new Room(168, 3, {1060, 840, 1060, 760, 1130, 760, 1130, 840}, Orientation::UP));
+    rooms_.append(new Room(166, 4, { 980, 840,  980, 760, 1060, 760, 1060, 840}, Orientation::UP));
+    rooms_.append(new Room(  0, 0, { 930, 840,  930, 700,  980, 700,  980, 840}, Orientation::CENTER, -90));
+    rooms_.append(new Room(164, 0, { 860, 770,  860, 700,  930, 700,  930, 840}, Orientation::CENTER));
+    rooms_.append(new Room(158, 4, { 880, 700,  880, 610,  980, 610,  980, 700}, Orientation::UP));
     rooms_.append(new Room(157, 2, { 810, 680,  810, 610,  880, 610,  880, 680}, Orientation::UP));
     rooms_.append(new Room(156, 2, { 740, 680,  740, 610,  810, 610,  810, 680}, Orientation::UP));
     rooms_.append(new Room(155, 4, { 670, 680,  670, 610,  740, 610,  740, 680}, Orientation::UP));
     rooms_.append(new Room(154, 4, { 610, 740,  610, 610,  670, 610,  670, 740}, Orientation::UP));
-    rooms_.append(new Room(153, 0, { 610, 770,  610, 740,  670, 740,  670, 770}, Orientation::CENTER));
-    rooms_.append(new Room(165, 0, { 700, 770,  700, 710,  830, 710,  830, 770}, Orientation::CENTER));
+    rooms_.append(new Room(153, 0, { 610, 780,  610, 740,  670, 740,  670, 780}, Orientation::CENTER));
+    rooms_.append(new Room(165, 0, { 695, 780,  695, 700,  835, 700,  835, 780}, Orientation::CENTER));
+    rooms_.append(new Room(117, 0, { 505, 780,  505, 710,  610, 710,  610, 780}, Orientation::CENTER));
+    rooms_.append(new Room(118, 0, { 505, 710,  505, 620,  610, 620,  610, 710}, Orientation::CENTER));
+    rooms_.append(new Room(0,   0, {  50, 800,   50, 780}, Orientation::CENTER, -90, true));
+    rooms_.append(new Room(0,   0, {  50, 780,   50, 700,  130, 700,  130, 780}));
+    rooms_.append(new Room(0,   0, { 130, 780,  130, 740,  150, 740,  150, 780, 130, 780}, Orientation::CENTER, -90, true));
+    rooms_.append(new Room(0,   0, { 130, 740,  130, 700,  150, 700,  150, 740, 130, 740}, Orientation::CENTER, -90, true));
+    rooms_.append(new Room(104, 5, {  50, 700,   50, 590,  130, 590,  130, 700}, Orientation::UP));
+    rooms_.append(new Room(103, 6, { 130, 680,  130, 590,  210, 590,  210, 680}, Orientation::UP));
+    rooms_.append(new Room(101, 4, { 210, 680,  210, 610,  310, 610,  310, 680}, Orientation::UP));
+    rooms_.append(new Room(107, 0, { 170, 780,  170, 700,  240, 700,  240, 780}, Orientation::CENTER));
+    rooms_.append(new Room(102, 0, { 240, 780,  240, 700,  310, 700,  310, 780}, Orientation::CENTER));
+    rooms_.append(new Room(  0, 0, { 310, 780,  310, 700,  350, 700,  350, 780}, Orientation::CENTER));
+    rooms_.append(new Room(112, 0, { 350, 780,  350, 700,  430, 700,  430, 780}, Orientation::CENTER));
+    rooms_.append(new Room(  0, 0, { 430, 780,  430, 700,  470, 700,  470, 780, 430, 780}, Orientation::CENTER, -90, true));
 
+    rooms_.append(new Room(119, 4, { 490, 565,  587, 530,  610, 610,  610, 620, 505, 620}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(120, 4, { 475, 510,  572, 475,  587, 530,  490, 565}, Orientation::RIGHT, -18));
+
+    rooms_.append(new Room(121, 4, { 355, 550,  444, 520,  462, 595,  345, 595}, Orientation::CENTER, 0));
+
+    rooms_.append(new Room(149, 2, { 448, 435,  551, 400,  572, 475,  470, 511}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(148, 2, { 426, 359,  529, 324,  551, 400,  448, 435}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(147, 3, { 415, 321,  518, 286,  529, 324,  426, 359}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(146, 3, { 404, 283,  507, 248,  518, 286,  415, 321}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(145, 3, { 393, 245,  496, 210,  507, 248,  404, 283}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(144, 3, { 382, 207,  485, 172,  496, 210,  393, 245}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(143, 3, { 349,  93,  452,  58,  485, 172,  382, 207}, Orientation::RIGHT, -18));
+//    rooms_.append(new Room(121, 0, { 430, 780,  430, 700,  470, 700,  470, 780, 430, 780}, Orientation::CENTER, -90, true));
+    
+    rooms_.append(new Room(  0, 0, { 181, 590,  181, 486}, Orientation::CENTER, -90, true));
+    rooms_.append(new Room(131, 2, { 170, 448,  273, 413,  284, 451,  181, 486}, Orientation::LEFT, -18));
+    rooms_.append(new Room(132, 2, { 159, 410,  262, 375,  273, 413,  170, 448}, Orientation::LEFT, -18));
+    rooms_.append(new Room(133, 3, { 148, 372,  251, 337,  262, 375,  159, 410}, Orientation::LEFT, -18));
+    rooms_.append(new Room(134, 3, { 137, 334,  240, 299,  251, 337,  148, 372}, Orientation::LEFT, -18));
+    rooms_.append(new Room(135, 3, { 126, 296,  229, 261,  240, 299,  137, 334}, Orientation::LEFT, -18));
+    rooms_.append(new Room(136, 3, { 115, 258,  218, 223,  229, 261,  126, 296}, Orientation::LEFT, -18));
+    rooms_.append(new Room(137, 3, { 104, 220,  207, 185,  218, 223,  115, 258}, Orientation::LEFT, -18));
+    rooms_.append(new Room(138, 4, {  88, 163,  191, 128,  207, 185,  104, 220}, Orientation::LEFT, -18));
+    rooms_.append(new Room(139, 4, {  72, 106,  175,  71,  191, 128,   88, 163}, Orientation::LEFT, -18));
+    
+    rooms_.append(new Room(151, 0, {  270, 302,  368, 268,  408, 406,  308, 438}, Orientation::CENTER, -18));
+    rooms_.append(new Room(140, 0, {  202,  61,  301,  28,  333, 136,  232, 168}, Orientation::CENTER, -18));
 }
 
 
 void MainWindow::addPeople()
 {
-    SqlInterface::getInstance()->people(people_, this);
+    SqlInterface::getInstance()->people(people_);
 }
 
 
@@ -247,6 +300,21 @@ void MainWindow::printRooms()
 }
 
 
+void MainWindow::exportDatabase()
+{
+    SqlInterface *sqlInteface = SqlInterface::getInstance();
+    QMessageBox msgBox;
+    if(sqlInteface->exportTo(people_) == true) {
+        msgBox.setText(QString("Successfully exported"));
+        msgBox.setIcon(QMessageBox::Information);
+    } else {
+        msgBox.setText(QString("Export failed"));
+        msgBox.setIcon(QMessageBox::Warning);
+    }
+    msgBox.exec();
+}
+
+
 void MainWindow::importDatabase()
 {
     bool res = false;
@@ -258,6 +326,12 @@ void MainWindow::importDatabase()
         if(res) {
             msgBox.setText(QString("Successfully imported from %1").arg(fileName));
             msgBox.setIcon(QMessageBox::Information);
+            rooms_.clear();
+            people_.clear();
+            addRooms();
+            addPeople();
+            assignPeopleToRooms();
+
         } else {
             msgBox.setText(QString("Import from %1 failed").arg(fileName));
             msgBox.setIcon(QMessageBox::Warning);
@@ -298,7 +372,7 @@ void MainWindow::paintEvent(QPaintEvent *)
                 path.addPolygon(p->coordinates());
             }
             brush.setColor(color);
-            if(p->role() == "Team Lead") {
+            if(p->isLead()) {
                 brush.setStyle(Qt::Dense2Pattern);
             } else {
                 brush.setStyle(Qt::SolidPattern);
@@ -308,12 +382,12 @@ void MainWindow::paintEvent(QPaintEvent *)
             if(room_nr != 0 && !rooms_.at(i)->dummy() && p) {
                 painter.save();
                 painter.translate(p->coordinates().at(0).x(), p->coordinates().at(0).y());
-                painter.rotate(-90);
+                painter.rotate(rooms_.at(i)->rotation());
                 painter.drawText(6, 12, p->displayName());
                 painter.restore();
             }
         }
-        pen.setWidthF(2);
+        pen.setWidthF(2.5);
         painter.setPen(pen);
         if(!rooms_.at(i)->dummy()) {
             painter.drawPolygon(rooms_.at(i)->coordinates());
@@ -351,7 +425,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* mouseEvent)
     }
     QPointF f(mouseEvent->x(), mouseEvent->y());
     foreach(Room *r, rooms_) {
-        if(r->coordinates().containsPoint(f, Qt::WindingFill)) {
+        if(r->coordinates().containsPoint(f, Qt::WindingFill) && r->nr() != 0 && r->capacity() > 0) {
             newRoom = r->nr();
             oldRoom = movingPerson_->room();
             if(oldRoom == r->nr()) {
@@ -363,7 +437,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* mouseEvent)
             break;
         }
     }
-    if(oldRoom != 0 && oldRoom != newRoom) {
+    if(newRoom != 0 && oldRoom != newRoom) {
         foreach(Room *r, rooms_) {
             if(r->nr() == oldRoom) {
                 r->removePerson(movingPerson_);
@@ -381,9 +455,35 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* mouseEvent)
 void MainWindow::mouseMoveEvent(QMouseEvent* mouseEvent)
 {
     if(movingPerson_ == nullptr) {
+//         QString message = "x=" + QString::number(mouseEvent->x()) + "; y=" + QString::number(mouseEvent->y());
+//         statusBar()->showMessage(message);
         return;
     }
     movingPerson_->moveTo(mouseEvent->x(), mouseEvent->y());
     update();
 }
 
+
+bool MainWindow::event(QEvent* event)
+{
+    if(event->type() == QEvent::ToolTip) {
+        QString tooltip;
+        QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
+        foreach(Person*p, people_) {
+            if(p->coordinates().containsPoint(helpEvent->pos(), Qt::WindingFill)) {
+                tooltip = p->surname() + " " + p->name() + "\r\n";
+                tooltip += "Department: " + p->department() + "\r\n";
+                tooltip += "Team: " + p->team() + "\r\n";
+                if(p->component().size() > 1){
+                    tooltip += "Component: " + p->component() + "\r\n";
+                }
+                if(p->isLead()) {
+                    tooltip += "Team Lead\r\n";
+                }
+                tooltip += "Room: " + QString::number(p->room());
+            }
+        }
+        QToolTip::showText(helpEvent->globalPos(), tooltip);
+    }
+    return QWidget::event(event);
+}

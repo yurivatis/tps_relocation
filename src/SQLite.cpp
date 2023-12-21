@@ -145,7 +145,7 @@ int SqlInterface::colorEntries()
 }
 
 
-void SqlInterface::people(QList<Person*>&list, QWidget *parent)
+void SqlInterface::people(QList<Person*>&list)
 {
     QString tmp;
     Person *p;
@@ -155,8 +155,7 @@ void SqlInterface::people(QList<Person*>&list, QWidget *parent)
     QSqlQuery query;
     query.prepare(QString("SELECT surname, name, department, team, component, role, room from people inner join departments on departments.id = people.department_id "
                                                                                 " inner join teams on teams.id = people.team_id "
-                                                                                " left join components on components.id = people.component_id "
-                                                                                " where location_id = (select id from locations where location = 'Hannover')"));
+                                                                                " left join components on components.id = people.component_id "));
     query.exec();
     while (query.next()) {
         p = new Person();
@@ -174,6 +173,24 @@ void SqlInterface::people(QList<Person*>&list, QWidget *parent)
         list.append(p);
     }
     query.clear();
+}
+
+
+bool SqlInterface::exportTo(QList<Person *> people)
+{
+    bool ret;
+    QSqlQuery query;
+    foreach(Person *p, people) {
+        if(p->room() != 0) {
+            query.prepare(QString("UPDATE people SET room = :room WHERE name = '%1' and surname = '%2';").arg(p->name()).arg(p->surname()));
+            query.bindValue(":room", p->room());
+            ret = query.exec();
+            if(ret == false) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 
@@ -310,7 +327,6 @@ bool SqlInterface::importTable(QString tableName, QString columnName, QStringLis
     QString req;
     QSqlQuery query;
     bool ret = true;
-    qDebug() << tableName << ":"  << values; 
     for(int i = 0; i < values.length(); i++) {
         req = QString("INSERT INTO %1 (%2) VALUES (").arg(tableName, columnName);
         req.append('\'');
