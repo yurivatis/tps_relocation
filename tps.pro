@@ -19,6 +19,7 @@ HEADERS += inc/*.h
 SOURCES += src/*.cpp 
 LIBS += -L./lib/.
 LIBS += -L./usr/lib/x86_64-linux-gnu/
+RESOURCES=tps.qrc
 
 TRANSLATIONS += \
     umzug_en_US.ts
