@@ -3,7 +3,8 @@
 #include "constants.h"
 #include "SQLite.h"
 #include <QDebug>
-
+#include "ColorView.h"
+#include "ColorModel.h"
 
 ComboBoxDelegate::ComboBoxDelegate(QObject *parent)
      : QStyledItemDelegate(parent)
@@ -28,6 +29,8 @@ void ComboBoxDelegate::setEditorData(QWidget *editor,
 {
     CComboBox *comboBox = static_cast<CComboBox*>(editor);
     SqlInterface *sqlInteface = SqlInterface::getInstance();
+    ColorView *cv = (ColorView *)parent();
+    ColorModel *cm = (ColorModel *)cv->model();
     switch(index.column()) {
         case (int)Column::DEPARTMENT:
         {
@@ -39,7 +42,9 @@ void ComboBoxDelegate::setEditorData(QWidget *editor,
         }
         case (int)Column::TEAM:
         {
-            QStringList list = sqlInteface->teams(department_);
+            QModelIndex idx = cm->index(index.row(), (int)Column::DEPARTMENT);
+            QVariant dep = cm->data(idx, Qt::DisplayRole);
+            QStringList list = sqlInteface->teams(dep.toString());
             for(int i = 0; i < list.size(); i++) {
                 comboBox->addItem(list.at(i));
             }
@@ -47,7 +52,11 @@ void ComboBoxDelegate::setEditorData(QWidget *editor,
         }
         case (int)Column::COMPONENT:
         {
-            QStringList list = sqlInteface->components(team_);
+            QModelIndex idx = cm->index(index.row(), (int)Column::DEPARTMENT);
+            QVariant dep = cm->data(idx, Qt::DisplayRole);
+            idx = cm->index(index.row(), (int)Column::TEAM);
+            QVariant team = cm->data(idx, Qt::DisplayRole);
+            QStringList list = sqlInteface->components(dep.toString(), team.toString());
             for(int i = 0; i < list.size(); i++) {
                 comboBox->addItem(list.at(i));
             }

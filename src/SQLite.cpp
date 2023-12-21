@@ -53,20 +53,40 @@ QColor SqlInterface::readColor(const QString &department, const QString &team, c
         db_.open();
     }
     QColor color = defColor;
+    QColor defCompColor = defColor;
     int r, g, b, a;
     QSqlQuery query;
-    query.prepare(QString("SELECT red, green, blue, alpha FROM colors WHERE department_id = (SELECT id FROM departments WHERE departments.department = '%1') AND "
+    QString q;
+    // read defCompColor;
+    q = QString("SELECT red, green, blue, alpha FROM colors WHERE department_id = (SELECT id FROM departments WHERE departments.department = '%1') AND "
                           "team_id = (SELECT id FROM teams WHERE teams.team = '%2') AND "
-                          "component_id = (SELECT id FROM components WHERE components.component = '%3' OR components.component = '');").arg(department).arg(team).arg(component));
+                          "component_id = (SELECT id FROM components WHERE components.component = '');").arg(department).arg(team);
+    query.prepare(q);
     query.exec();
     while(query.next()) {
         r = query.value(0).toInt();
         g = query.value(1).toInt();
         b = query.value(2).toInt();
         a = query.value(3).toInt();
-        color = QColor(r, g, b, a);
+        defCompColor = QColor(r, g, b, a);
+        color = defCompColor;
     }
-
+    query.clear();
+    // read specific component color, if set
+    if(component != "") {
+        q = QString("SELECT red, green, blue, alpha FROM colors WHERE department_id = (SELECT id FROM departments WHERE departments.department = '%1') AND "
+                          "team_id = (SELECT id FROM teams WHERE teams.team = '%2') AND "
+                          "component_id = (SELECT id FROM components WHERE components.component = '%3');").arg(department).arg(team).arg(component);
+        query.prepare(q);
+        query.exec();
+        while(query.next()) {
+            r = query.value(0).toInt();
+            g = query.value(1).toInt();
+            b = query.value(2).toInt();
+            a = query.value(3).toInt();
+            color = QColor(r, g, b, a);
+        }
+    }
     return color;
 }
 
@@ -385,6 +405,25 @@ QStringList SqlInterface::components(const QString team)
     QSqlQuery query;
     QString req;
     req = QString("select distinct component from components INNER JOIN people ON people.component_id = components.id INNER JOIN teams ON people.team_id = teams.id WHERE teams.team ='%1' ORDER BY component ASC").arg(team);
+    query.exec(req);
+    while (query.next()) {
+        QString d = query.value(0).toString();
+        res.append(d);
+    }
+    return res;
+}
+
+
+QStringList SqlInterface::components(const QString department, const QString team)
+{
+    if(db_.isOpen() == false) {
+        db_.open();
+    }
+    QStringList res;
+    QSqlQuery query;
+    QString req;
+    req = QString("select distinct component from components INNER JOIN people ON people.component_id = components.id INNER JOIN teams ON people.team_id = teams.id "
+                                                           " INNER JOIN departments ON people.department_id = departments.id WHERE teams.team ='%1' and departments.department='%2' ORDER BY component ASC").arg(team).arg(department);
     query.exec(req);
     while (query.next()) {
         QString d = query.value(0).toString();

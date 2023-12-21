@@ -40,4 +40,5 @@ private:
     QStringList departments();
     QStringList teams(const QString department);
     QStringList components(const QString team);
+    QStringList components(const QString department, const QString team);
  };

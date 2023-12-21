@@ -71,5 +71,8 @@ Thumbs.db
 *.dll
 *.exe
 moc
-umzug
+tps
 
+# kdevelop files
+.kdev4
+tps_relocation.kdev4

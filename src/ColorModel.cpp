@@ -169,16 +169,14 @@ void ColorModel::save()
             break;
         }
     }
-    QMessageBox msgBox;
-    if(ret == true) {
-        msgBox.setText(QString("Successfully saved colors"));
-        msgBox.setIcon(QMessageBox::Information);
-    } else {
+    if(ret == false) {
+        QMessageBox msgBox;
         msgBox.setText(QString("Saving colors to db failed"));
         msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
+    } else {
+        emit oUpdated();
     }
-    emit oUpdated();
-    msgBox.exec();
 }
 
 

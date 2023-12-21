@@ -43,8 +43,9 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     colorFrame_->setWindowModality(Qt::ApplicationModal);
     colorFrame_->colorView_->setModel(colorModel_);
     colorFrame_->setWindowTitle(QObject::tr("Customize colors"));
+    
 
-    departmentDelegate_ = new ComboBoxDelegate();
+    departmentDelegate_ = new ComboBoxDelegate(colorFrame_->colorView_);
     colorFrame_->colorView_->setItemDelegateForColumn((int)Column::DEPARTMENT, departmentDelegate_);
 
     teamDelegate_ = new ComboBoxDelegate(colorFrame_->colorView_);
@@ -159,7 +160,7 @@ void MainWindow::addRooms()
     rooms_.append(new Room(119, 4, { 490, 565,  587, 530,  610, 610,  610, 620, 505, 620}, Orientation::RIGHT, -18));
     rooms_.append(new Room(120, 4, { 475, 510,  572, 475,  587, 530,  490, 565}, Orientation::RIGHT, -18));
 
-    rooms_.append(new Room(121, 4, { 355, 550,  444, 520,  462, 595,  345, 595}, Orientation::CENTER, 0));
+    rooms_.append(new Room(121, 0, { 355, 550,  444, 520,  462, 595,  345, 595}, Orientation::CENTER, 0));
 
     rooms_.append(new Room(149, 2, { 448, 435,  551, 400,  572, 475,  470, 511}, Orientation::RIGHT, -18));
     rooms_.append(new Room(148, 2, { 426, 359,  529, 324,  551, 400,  448, 435}, Orientation::RIGHT, -18));
@@ -167,7 +168,7 @@ void MainWindow::addRooms()
     rooms_.append(new Room(146, 3, { 404, 283,  507, 248,  518, 286,  415, 321}, Orientation::RIGHT, -18));
     rooms_.append(new Room(145, 3, { 393, 245,  496, 210,  507, 248,  404, 283}, Orientation::RIGHT, -18));
     rooms_.append(new Room(144, 3, { 382, 207,  485, 172,  496, 210,  393, 245}, Orientation::RIGHT, -18));
-    rooms_.append(new Room(143, 3, { 349,  93,  452,  58,  485, 172,  382, 207}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(143, 0, { 349,  93,  452,  58,  485, 172,  382, 207}, Orientation::RIGHT, -18));
 //    rooms_.append(new Room(121, 0, { 430, 780,  430, 700,  470, 700,  470, 780, 430, 780}, Orientation::CENTER, -90, true));
     
     rooms_.append(new Room(  0, 0, { 181, 590,  181, 486}, Orientation::CENTER, -90, true));
@@ -304,7 +305,7 @@ void MainWindow::exportDatabase()
 {
     SqlInterface *sqlInteface = SqlInterface::getInstance();
     QMessageBox msgBox;
-    if(sqlInteface->exportTo(people_) == true) {
+    if(sqlInteface->exportTo(people_) == false) {
         msgBox.setText(QString("Successfully exported"));
         msgBox.setIcon(QMessageBox::Information);
     } else {
