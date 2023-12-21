@@ -6,12 +6,11 @@
 #include <QColor>
 #include <QEvent>
 
-class PushButtonDelegate : public QStyledItemDelegate
+class ColorButtonDelegate : public QStyledItemDelegate
 {
      Q_OBJECT
-
 public:
-    PushButtonDelegate(const QString &text, QObject *parent = nullptr);
+    ColorButtonDelegate(QObject *parent = nullptr);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const override;
@@ -24,8 +23,6 @@ public:
                               const QModelIndex &index) const override;
 private slots:
     void showColorDialog();
-private:
-    QString text_;
 signals:
-    void oColor(QColor);
+    void oColorChanged(const QModelIndex, const QColor) const;
 };

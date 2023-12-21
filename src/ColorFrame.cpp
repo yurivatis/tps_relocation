@@ -20,7 +20,7 @@ ColorFrame::ColorFrame(QWidget *parent) : QTabWidget(parent)
     QObject::connect(save, SIGNAL(clicked()), this, SIGNAL(oSave()));
     QPushButton *close = new QPushButton(tr("Close"), f);
     hl->addWidget(close);
-    QObject::connect(close, SIGNAL(clicked()), this, SIGNAL(oClose()));
+    QObject::connect(close, SIGNAL(clicked()), this, SLOT(close()));
     f->setLayout(hl);
     
     setLayout(vl);

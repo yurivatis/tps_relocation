@@ -58,7 +58,7 @@ void ComboBoxDelegate::setEditorData(QWidget *editor,
 
 
 void ComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
-                                   const QModelIndex &index) const
+                                   const QModelIndex &) const
 {
     CComboBox *comboBox = static_cast<CComboBox*>(editor);
     QString value = comboBox->currentText();

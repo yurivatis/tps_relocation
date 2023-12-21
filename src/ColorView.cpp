@@ -15,18 +15,7 @@ ColorView::ColorView(QWidget *parent) : QTableView(parent)
     vHeaderView->show();
 
     this->setSelectionMode(QAbstractItemView::NoSelection);
-    QFont fnt  ( "Helvetica", 11, QFont::Normal );
+    QFont fnt("Helvetica", 11, QFont::Normal );
     this->setFont(fnt);
 }
 
-
-void ColorView::insertRow()
-{
-
-}
-
-
-void ColorView::removeRow()
-{
-
-}

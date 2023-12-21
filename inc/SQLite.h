@@ -4,6 +4,7 @@
 #include <QSqlDatabase>
 #include <QDate>
 #include <QFile>
+#include "Person.h"
 
 #define RETURN_IF_QUERY_FAILED \
      if(ret == false) { \
@@ -30,11 +31,12 @@ private:
     static SqlInterface* getInstance();
     QString lastError() {return lastError_;}
     bool import(const QString cvs);
-    void displayPeople();
-    void displayRooms();
-    void displayPeopleInRoom(int room);
-    QColor color(QString department, QString team, QString component);
-    bool color(QString department, QString team, QString component, QColor color);
+    QColor readColor(const QString &department, const QString &team, const QString &component, const QColor defColor);
+    bool writeColor(const QString &department, const QString &team, QString const &component, const QColor color);
+    bool clearColorTable();
+    int colorEntries();
+    void people(QList<Person*>&list, QWidget *);
+    QStringList getColorTable();
     QStringList departments();
     QStringList teams(const QString department);
     QStringList components(const QString team);

@@ -1,13 +1,19 @@
 #include "ColorModel.h"
 #include "CComboBox.h"
+#include "CPushButton.h"
 #include "constants.h"
+#include "SQLite.h"
 #include <QDebug>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QMessageBox>
+#include <QColor>
 
 ColorModel::ColorModel(int rows, int cols, QObject *parent)
     : QStandardItemModel(rows, cols, parent)
 {
-    rows_ = rows;
     columns_ = cols;
+    rows_ = rows;
 }
 
 
@@ -34,8 +40,6 @@ QVariant ColorModel::headerData(int section, Qt::Orientation orientation, int ro
             return QString("Component");
         } else if (section == (int)Column::COLOR) {
             return QString("Color");
-        } else if (section == (int)Column::ADD_NEW) {
-            return QString("Add row");
         } else if (section == (int)Column::REMOVE) {
             return QString("Remove row");
         }
@@ -51,24 +55,34 @@ QVariant ColorModel::data(const QModelIndex &index, int role) const
 {
     QVariant value;
     switch(role) {
-//        case Qt::BackgroundRole:
-//            if(index.column()==4 ) {
-//                QBrush Background(Qt::red);
-//                return Background;
-//            }
-//        break;
-        case Qt::DisplayRole:
+        case Qt::BackgroundRole:
         {
-            if(list_.size() > 0) {
+            if(index.column() == (int)Column::COLOR) {
                 foreach(ModelValue item, list_) {
                     if(index.column() == item.col && index.row() == item.row) {
-                        qDebug() << index.row() << " : " << index.column() << " : " << item.value;
-                        value = item.value;
+                        value = item.color;
                         break;
                     }
                 }
             }
-            
+            break;
+        }
+        case Qt::ForegroundRole:
+        {
+            if(index.column() == (int)Column::REMOVE) {
+                value = QString(tr("Remove row"));
+            }
+            break;
+        }
+        case Qt::DisplayRole:
+        {
+            foreach(ModelValue item, list_) {
+                if(index.column() == item.col && index.row() == item.row) {
+                    value = item.value;
+                    break;
+                }
+            }
+            break;
         }
     }
     return value;
@@ -77,20 +91,137 @@ QVariant ColorModel::data(const QModelIndex &index, int role) const
 
 void ColorModel::setComboBox(const QModelIndex& index, const QString value)
 {
-    qDebug () << "set combo box: " << index.column();
-    CComboBox* obj = static_cast<CComboBox*>(sender());
+    ModelValue mv = {index.row(), index.column(), value, Qt::gray};
 
-    ModelValue mv = {index.row(), index.column(), ""};
-    if(obj && obj->currentIndex() >= 0) {
-        mv.value = value;
-    }
-    qDebug () << "value read";
-    foreach(ModelValue item, list_) {
-        if(item.col == mv.col && item.row == mv.row) {
-            qDebug() << index.row() << " : " << index.column() << " : " << "";
-            return;
+    for( ModelListIterator it( list_ ); it.hasNext(); ) {
+        auto myObj( it.next() );
+        if( myObj.row == mv.row && myObj.col >= mv.col && myObj.col < (int)Column::COLOR) {
+            it.remove();  
         }
     }
     list_.append(mv);
-    qDebug() << "appending: " << list_.size();
 }
+
+
+void ColorModel::setColor(const QModelIndex index, const QColor color)
+{
+    ModelValue mv = {index.row(), index.column(), "", color};
+    for( ModelListIterator it( list_ ); it.hasNext(); ) {
+        auto myObj( it.next() );
+        if( myObj.row == mv.row && myObj.col == (int)Column::COLOR) {
+            it.remove();  
+        }
+    }
+    list_.append(mv);
+}
+
+void ColorModel::addRow()
+{
+    setRowCount(++rows_);
+}
+
+
+void ColorModel::removeRow(int row)
+{
+    removeRows(row, 1);
+    --rows_;
+    for( ModelListIterator it( list_ ); it.hasNext(); ) {
+        auto myObj( it.next() );
+        if( myObj.row == row ) {
+            it.remove();  
+        } else if(myObj.row > row) {
+            it.value().row--;
+        }
+    }
+}
+
+
+void ColorModel::save()
+{
+    bool ret = true;
+    SqlInterface *sqlInteface = SqlInterface::getInstance();
+    sqlInteface->clearColorTable();
+
+    for(int i = 0; i < rows_; i++) {
+        QString department, team, component;
+        QColor color;
+        for(ModelListIterator it( list_ ); it.hasNext(); ) {
+            auto myObj( it.next() );
+            if( myObj.row == i ) {
+                switch(myObj.col) {
+                    case (int)Column::DEPARTMENT:
+                        department = myObj.value;
+                        break;
+                    case (int)Column::TEAM:
+                        team = myObj.value;
+                        break;
+                    case (int)Column::COMPONENT:
+                        component = myObj.value;
+                        break;
+                    case (int)Column::COLOR:
+                        color = myObj.color;
+                        break;
+                }
+            }
+        }
+        if(sqlInteface->writeColor(department, team, component, color) == false) {
+            ret = false;
+            break;
+        }
+    }
+    QMessageBox msgBox;
+    if(ret == true) {
+        msgBox.setText(QString("Successfully saved colors"));
+        msgBox.setIcon(QMessageBox::Information);
+    } else {
+        msgBox.setText(QString("Saving colors to db failed"));
+        msgBox.setIcon(QMessageBox::Warning);
+    }
+    emit oUpdated();
+    msgBox.exec();
+}
+
+
+int ColorModel::restore()
+{
+    ModelValue mv;
+    const int query_size = 7;
+    SqlInterface *sqlInteface = SqlInterface::getInstance();
+    QStringList sl = sqlInteface->getColorTable();
+    int rows = sl.size() / query_size;
+    int i = 0;
+
+    while(i < sl.size()) {
+        int cur_row = i / query_size;
+        mv.row = cur_row;
+        mv.col = 0;
+        mv.value = sl.at(i);
+        list_.append(mv);
+        mv.col = 1;
+        mv.value = sl.at(i+1);
+        list_.append(mv);
+        mv.col = 2;
+        mv.value = sl.at(i+2);
+        list_.append(mv);
+        QColor color(sl.at(i+3).toInt(), sl.at(i+4).toInt(), sl.at(i+5).toInt(), sl.at(i+6).toInt());
+        mv.color = color;
+        mv.col = (int)Column::COLOR;
+        mv.value="";
+        list_.append(mv);
+        i += query_size;
+    }
+    rows_ = rows;
+    return rows;
+}
+
+
+void ColorModel::printValues(const QString& area) const
+{
+    qDebug() << "=================" << area << "(" << rows_ << ")=================";
+    foreach(ModelValue item, list_) {
+        QString tmp;
+        tmp = QString("r:%1,c:%2,v:%3").arg(item.row).arg(item.col).arg(item.value);
+        qDebug() << tmp;
+    }
+}
+

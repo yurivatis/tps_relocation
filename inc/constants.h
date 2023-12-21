@@ -5,7 +5,14 @@ typedef enum class Column {
     TEAM,
     COMPONENT,
     COLOR,
-    ADD_NEW,
     REMOVE,
     TOTAL_COLUMNS
 } Columns;
+
+typedef enum class Orientation {
+    DOWN = 0,
+    LEFT,
+    UP,
+    RIGHT,
+    CENTER
+} RoomOrientation;

@@ -1,34 +1,29 @@
-#include "ColorButtonDelegate.h"
+#include "RemoveButtonDelegate.h"
 #include "CPushButton.h"
 #include "constants.h"
 #include <QDebug>
 #include <QMouseEvent>
 
-ColorButtonDelegate::ColorButtonDelegate(QObject *parent)
+RemoveButtonDelegate::RemoveButtonDelegate(QObject *parent)
      : QStyledItemDelegate(parent)
 {
 }
 
 
-QWidget *ColorButtonDelegate::createEditor(QWidget *parent,
+QWidget *RemoveButtonDelegate::createEditor(QWidget *parent,
                                         const QStyleOptionViewItem &/* option */,
                                         const QModelIndex & index ) const
 {
-    CPushButton *pb = new CPushButton(parent);
+    CPushButton *pb = new CPushButton(tr("Remove row"), parent);
     pb->index(index);
-    if(index.column() == (int)Column::COLOR) {
-        QObject::connect(pb, SIGNAL(clicked()), this, SLOT(showColorDialog()));
-    }
-    pb->setAutoFillBackground(true);
-    qDebug() << "create pushbutton; column: " << pb->index().column() << ", ptr: " << pb;
+    QObject::connect(pb, SIGNAL(clicked()), this, SLOT(oCheckRemove()));
     return pb;
 }
 
 
-void ColorButtonDelegate::setEditorData(QWidget *editor,
-                                    const QModelIndex &index) const
+void RemoveButtonDelegate::setEditorData(QWidget *,
+                                    const QModelIndex &) const
 {
-    CPushButton *pushButton = static_cast<CPushButton*>(editor);
 //     switch(index.column()) {
 //         case (int)Column::COLOR:
 //             QObject::connect(pushButton, SIGNAL(clicked()), this, SLOT(showColorDialog()));
@@ -44,7 +39,7 @@ void ColorButtonDelegate::setEditorData(QWidget *editor,
 }
 
 
-void ColorButtonDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
+void RemoveButtonDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
 {
     CPushButton *pb = static_cast<CPushButton*>(editor);
@@ -54,7 +49,7 @@ void ColorButtonDelegate::setModelData(QWidget *editor, QAbstractItemModel *mode
 }
 
 
-void ColorButtonDelegate::updateEditorGeometry(QWidget *editor,
+void RemoveButtonDelegate::updateEditorGeometry(QWidget *editor,
                                             const QStyleOptionViewItem &option,
                                             const QModelIndex &/* index */) const
 {
@@ -62,13 +57,23 @@ void ColorButtonDelegate::updateEditorGeometry(QWidget *editor,
 }
 
 
-void ColorButtonDelegate::showColorDialog()
+void RemoveButtonDelegate::oCheckRemove()
 {
     CPushButton *pb = qobject_cast<CPushButton*>(sender());
     if(pb != NULL) {
         QModelIndex index = pb->index();
-        QColor color = QColorDialog::getColor(color);
-        emit oColorChanged(index, color);
+        emit oRemoveRow(index.row());
     }
 }
 
+
+void RemoveButtonDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QPushButton button(index.data().toString());
+    button.setGeometry(option.rect);
+    button.setText(button.text());
+    painter->save();
+    painter->translate(option.rect.topLeft());
+    button.render(painter);
+    painter->restore();
+}

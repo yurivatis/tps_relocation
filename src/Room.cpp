@@ -1,12 +1,13 @@
 #include "Room.h"
 #include <QDebug>
 
-Room::Room(int nr, int capacity, QPolygon coordinates, bool dummy): capacity_(capacity), nr_(nr) {
+Room::Room(int nr, int capacity, QPolygonF coordinates, RoomOrientation ro, bool dummy): capacity_(capacity), nr_(nr) {
     coordinates_ = coordinates;
     dummy_ = dummy;
+    ro_ = ro;
 }
 
-Room::Room(int nr, int capacity, QList<int>list, bool dummy): capacity_(capacity), nr_(nr) {
+Room::Room(int nr, int capacity, QList<int>list, RoomOrientation ro, bool dummy): capacity_(capacity), nr_(nr) {
     if(list.size() % 2 != 0) {
         qDebug() << "could not add odd number of its to room coordinates";
         return;
@@ -15,6 +16,7 @@ Room::Room(int nr, int capacity, QList<int>list, bool dummy): capacity_(capacity
         coordinates_ << QPoint(list.at(i), list.at(i+1));
     }
     dummy_ = dummy;
+    ro_ = ro;
 }
 
 
@@ -24,11 +26,42 @@ QPoint Room::getCenter()
     if(coordinates_.size() == 0) {
         return QPoint(0, 0);
     }
-    for(int i = 0; i < coordinates_.size(); ++i) {
-        x+=coordinates_.at(i).x();
-        y+=coordinates_.at(i).y();
+    if(capacity_ == 0 || ro_ == Orientation::CENTER) {
+        y = (coordinates_.at(0).y() + coordinates_.at(1).y()) / 2;
+    } else if(ro_ == Orientation::DOWN) {
+        y = coordinates_.at(0).y() + 15;
+    } else if(ro_ == Orientation::UP) {
+        y = coordinates_.at(1).y() - 5;
+    } else {
+        y = coordinates_.at(1).y();
     }
-    x /= coordinates_.size();
-    y /= coordinates_.size();
-    return QPoint(x - 10, y + 5);
+    x = (coordinates_.at(coordinates_.size()-1).x() + coordinates_.at(0).x()) / 2;
+
+    return QPoint(x - 5, y);
 }
+
+
+bool Room::addPerson(Person* person)
+{
+    foreach(Person *p, people_) {
+        if(person->name() == p->name() && person->surname() == p->surname()) {
+            return false;
+        }
+    }
+    people_.append(person);
+    return true;
+}
+
+
+bool Room::removePerson(Person* person)
+{
+    foreach(Person *p, people_) {
+        if(person->name() == p->name() && person->surname() == p->surname()) {
+            people_.removeOne(person);
+            return true;
+        }
+    }
+    qDebug() << person->surname() << " " << person->name() << " not found in Room " << nr_;
+    return true;
+}
+

@@ -6,7 +6,8 @@
 
 #include "Room.h"
 #include "ColorModel.h"
-#include "ColorView.h"
+#include "ColorFrame.h"
+#include "RemoveButtonDelegate.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
@@ -16,24 +17,36 @@ protected:
     virtual void paintEvent(QPaintEvent *);
 private:
     void createMenus();
-    void drawFirstFloor();
     void addRooms();
+    void addPeople();
+    void printPeople();
+    void printRooms();
+    void redrawMates(Room *r);
+    void placePersonInRoom(int oldRoom, int newRoom, Person *p);
+    void placePersonInRoom(Room *oldRoom, Room *newRoom, Person *p);
     QList<Room*>rooms_;
+    QList<Person*>people_;
     ColorModel *colorModel_;
     QStandardItemModel * model_;
-    ColorView *colorView_;
+    ColorFrame *colorFrame_;
     ComboBoxDelegate * departmentDelegate_;
     ComboBoxDelegate * teamDelegate_;
     ComboBoxDelegate * componentDelegate_;
-    PushButtonDelegate * colorDelegate_;
-    PushButtonDelegate *addDelegate_;
-    PushButtonDelegate * removeDelegate_;
+    ColorButtonDelegate * colorDelegate_;
+    RemoveButtonDelegate * removeDelegate_;
     QMenu *customizeMenu_;
     QMenu *dbMenu_;
     QAction *importDb_;
     QAction *colors_;
-
+    Person *movingPerson_;
+protected:
+    void mousePressEvent(QMouseEvent *mouseEvent);
+    void mouseMoveEvent(QMouseEvent *mouseEvent);
+    void mouseReleaseEvent(QMouseEvent *mouseEvent);
 private slots:
     void importDatabase();
     void setupColors();
+    void assignPeopleToRooms();
+signals:
+    void eAssignColors();
 };

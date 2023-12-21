@@ -1,8 +1,12 @@
 #pragma once
 #include <QString>
+#include <QPolygonF>
+#include <QColor>
+
 class Person {
 public:
-    Person(const QString, const QString, const QString, const QString, const QString, const QString, const QString, int=0);
+    Person(const QString&, const QString&, const QString&, const QString&, const QString&, const QString&, const QString&, int=0);
+    Person();
     const QString name() {return name_;}
     void name(const QString name) {name_ = name;}
     const QString surname() {return surname_;}
@@ -19,6 +23,18 @@ public:
     void location(const QString location) {location_ = location;}
     QString component() {return component_;}
     void component(const QString component) {component_ = component;}
+    QColor color() {return color_;}
+    void color(QColor color) {color_ = color;}
+    QPolygonF tmpcoordinates() {return tmpCoordinates_;}
+    void tmpcoordinates(QPolygonF coordinates) {tmpCoordinates_ = coordinates;}
+    QPolygonF coordinates() {return coordinates_;}
+    void coordinates(QPolygonF coordinates) {coordinates_ = coordinates; tmpCoordinates_ = coordinates;}
+    void offset(int x, int y) {x_ = x; y_ = y;}
+    void clear();
+    int offset_x(){return x_;}
+    int offset_y(){return y_;}
+    void moveTo(int x, int y);
+    QString displayName();
 private:
     QString name_;
     QString surname_;
@@ -27,5 +43,10 @@ private:
     QString team_;
     QString location_;
     QString component_;
+    QPolygonF coordinates_;
+    QPolygonF tmpCoordinates_;
+    QColor color_;
     int room_;
+    int x_;
+    int y_;
 };

@@ -2,14 +2,18 @@
 #include <QStandardItemModel>
 #include <QVariant>
 #include <QList>
-#include "PushButtonDelegate.h"
+#include "ColorButtonDelegate.h"
 #include "ComboboxDelgate.h"
 
 typedef struct modelValue {
     int row;
     int col;
     QString value;
+    QColor color;
 } ModelValue;
+
+typedef QMutableListIterator<ModelValue> ModelListIterator;
+
 
 class ColorModel : public QStandardItemModel {
 Q_OBJECT
@@ -22,8 +26,16 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
 public slots:
     void setComboBox(const QModelIndex&, const QString);
+    void setColor(const QModelIndex, const QColor);
+    void addRow();
+    void removeRow(int);
+    void save();
+    int restore();
 private:
+    void printValues(const QString &area) const;
     int rows_;
     int columns_;
     QList<ModelValue> list_;
+signals:
+    void oUpdated();
 };

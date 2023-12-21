@@ -5,12 +5,13 @@
 #include <QColorDialog>
 #include <QColor>
 #include <QEvent>
+#include <QPainter>
 
-class ColorButtonDelegate : public QStyledItemDelegate
+class RemoveButtonDelegate : public QStyledItemDelegate
 {
      Q_OBJECT
 public:
-    ColorButtonDelegate(QObject *parent = nullptr);
+    RemoveButtonDelegate(QObject *parent = nullptr);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const override;
@@ -21,8 +22,9 @@ public:
 
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
                               const QModelIndex &index) const override;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 private slots:
-    void showColorDialog();
+    void oCheckRemove();
 signals:
-    void oColorChanged(const QModelIndex, const QColor) const;
+    void oRemoveRow(int);
 };
