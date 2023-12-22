@@ -35,6 +35,7 @@ private:
     ColorButtonDelegate * colorDelegate_;
     RemoveButtonDelegate * removeDelegate_;
     Person *movingPerson_;
+    QWidget *mainWidget_;
 protected:
     virtual void mousePressEvent(QMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
@@ -45,6 +46,7 @@ private slots:
     void exportDatabase();
     void setupColors();
     void assignPeopleToRooms();
+    void printToPdf();
 signals:
     void eAssignColors();
 };

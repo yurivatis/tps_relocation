@@ -7,6 +7,7 @@ QT += widgets
 QT += multimedia
 QT += core
 QT += sql
+QT += printsupport
 TARGET = tps 
 INCLUDEPATH += . inc
 

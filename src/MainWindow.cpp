@@ -11,7 +11,6 @@
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QDebug>
-#include <math.h>
 #include <QPainterPath>
 #include <QPixmap>
 #include <QtGui>
@@ -20,16 +19,18 @@
 #include <QScrollArea>
 #include <QToolTip>
 #include <QLabel>
+#include <QPrinter>
+#include <QPageLayout>
 #include "SQLite.h"
 
 MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 {
-    QWidget *mainWidget = new QWidget;
+    mainWidget_ = new QWidget;
 //     QScrollArea *scrollArea = new QScrollArea(this);
 //     scrollArea->setWidget(mainWidget);
 //     scrollArea->setWidgetResizable(true);
 //    setCentralWidget(scrollArea);
-    setCentralWidget(mainWidget);
+    setCentralWidget(mainWidget_);
     QPixmap pixmap("./hacon.png");
     QLabel *icon = new QLabel("", this);
     icon->setPixmap(QString::fromUtf8(":/images/hacon.png"));
@@ -43,7 +44,6 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     colorFrame_->colorView_->setModel(colorModel_);
     colorFrame_->setWindowTitle(QObject::tr("Customize colors"));
     
-
     departmentDelegate_ = new ComboBoxDelegate(colorFrame_->colorView_);
     colorFrame_->colorView_->setItemDelegateForColumn((int)Column::DEPARTMENT, departmentDelegate_);
 
@@ -63,7 +63,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     addPeople();
     assignPeopleToRooms();
 
-//    setMinimumSize(1500, 1000);
+    setFixedSize(1500, 1000);
     QObject::connect(departmentDelegate_, SIGNAL(oComboText(const QString)), teamDelegate_, SLOT(getDepartment(const QString)));
     QObject::connect(teamDelegate_, SIGNAL(oComboText(const QString)), componentDelegate_, SLOT(getTeam(const QString)));
     QObject::connect(departmentDelegate_, SIGNAL(oComboChanged(const QModelIndex &, const QString)), colorModel_, SLOT(setComboBox(const QModelIndex&, const QString)));
@@ -86,6 +86,7 @@ void MainWindow::createMenus()
 {
     QMenu *dbMenu = menuBar()->addMenu(tr("&Database"));
     QMenu *customizeMenu = menuBar()->addMenu(tr("&Customize"));
+    QMenu *printMenu  = menuBar()->addMenu(tr("&Print"));
 
     QAction *importDb = new QAction(tr("&Import from db"), this);
     importDb->setShortcut(tr("Ctrl+i"));
@@ -96,11 +97,14 @@ void MainWindow::createMenus()
     exportDb->setShortcut(tr("Ctrl+e"));
     dbMenu->addAction(exportDb);
     QObject::connect(exportDb, SIGNAL(triggered()), this, SLOT(exportDatabase()));
-
     
     QAction * colors = new QAction(tr("&Colors"), this);
     customizeMenu->addAction(colors);
     QObject::connect(colors, SIGNAL(triggered()), this, SLOT(setupColors()));
+    
+    QAction *printToPdf = new QAction(tr("&Print to Pdf"), this);
+    printMenu->addAction(printToPdf);
+    QObject::connect(printToPdf, SIGNAL(triggered()), this, SLOT(printToPdf()));
 }
 
 
@@ -486,3 +490,44 @@ bool MainWindow::event(QEvent* event)
     }
     return QWidget::event(event);
 }
+
+
+void MainWindow::printToPdf()
+{
+    menuBar()->hide();
+    QString initialPath = "./hacon_first_floor"; //defaultName();
+    QString sFormat = "pdf";
+    QString sFullPath = initialPath;
+    sFullPath.append(".");
+    sFullPath.append(sFormat);
+    
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    QString sFileName = QFileDialog::getSaveFileName(this, tr("Save As"),
+                                                    sFullPath,
+                                                    tr("%1 Files (*.%2);;All Files (*)")
+                                                        .arg(sFormat.toUpper())
+                                                        .arg(sFormat));
+    printer.setOutputFileName(sFileName);
+    printer.setPageMargins(12, 16, 12, 20, QPrinter::Millimeter);
+    printer.setFullPage(false);
+
+    QPainter painter(&printer);
+
+    double xscale = printer.pageRect().width() / double(this->width());
+    double yscale = printer.pageRect().height() / double(this->height());
+    double scale = qMin(xscale, yscale);
+//     QPageLayout pl;
+//     QPageSize ps;
+//     ps=QPageSize(QSizeF(this->width(), this->height()), QPageSize::Point, QString(), QPageSize::ExactMatch);
+//     pl.setPageSize(ps);
+//     pl.setOrientation(QPageLayout::Portrait);
+//     printer.setPageSize(pl.pageSize());
+    
+    painter.translate(printer.paperRect().center());
+    painter.scale(scale, scale);
+    painter.translate(-this->width()/ 2, - this->height()/ 2);
+    this->render(&painter);
+    menuBar()->show();
+}
+
