@@ -46,7 +46,7 @@ private slots:
     void exportDatabase();
     void setupColors();
     void assignPeopleToRooms();
-    void printToPdf();
+    void makeScreenshot();
 signals:
     void eAssignColors();
 };

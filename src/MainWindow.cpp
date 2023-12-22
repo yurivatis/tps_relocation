@@ -102,9 +102,9 @@ void MainWindow::createMenus()
     customizeMenu->addAction(colors);
     QObject::connect(colors, SIGNAL(triggered()), this, SLOT(setupColors()));
     
-    QAction *printToPdf = new QAction(tr("&Print to Pdf"), this);
-    printMenu->addAction(printToPdf);
-    QObject::connect(printToPdf, SIGNAL(triggered()), this, SLOT(printToPdf()));
+    QAction *screenshot = new QAction(tr("&Screenshot"), this);
+    printMenu->addAction(screenshot);
+    QObject::connect(screenshot, SIGNAL(triggered()), this, SLOT(makeScreenshot()));
 }
 
 
@@ -492,42 +492,23 @@ bool MainWindow::event(QEvent* event)
 }
 
 
-void MainWindow::printToPdf()
+void MainWindow::makeScreenshot()
 {
     menuBar()->hide();
-    QString initialPath = "./hacon_first_floor"; //defaultName();
-    QString sFormat = "pdf";
-    QString sFullPath = initialPath;
-    sFullPath.append(".");
-    sFullPath.append(sFormat);
-    
-    QPrinter printer(QPrinter::HighResolution);
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    QString sFileName = QFileDialog::getSaveFileName(this, tr("Save As"),
-                                                    sFullPath,
-                                                    tr("%1 Files (*.%2);;All Files (*)")
-                                                        .arg(sFormat.toUpper())
-                                                        .arg(sFormat));
-    printer.setOutputFileName(sFileName);
-    printer.setPageMargins(12, 16, 12, 20, QPrinter::Millimeter);
-    printer.setFullPage(false);
-
-    QPainter painter(&printer);
-
-    double xscale = printer.pageRect().width() / double(this->width());
-    double yscale = printer.pageRect().height() / double(this->height());
-    double scale = qMin(xscale, yscale);
-//     QPageLayout pl;
-//     QPageSize ps;
-//     ps=QPageSize(QSizeF(this->width(), this->height()), QPageSize::Point, QString(), QPageSize::ExactMatch);
-//     pl.setPageSize(ps);
-//     pl.setOrientation(QPageLayout::Portrait);
-//     printer.setPageSize(pl.pageSize());
-    
-    painter.translate(printer.paperRect().center());
-    painter.scale(scale, scale);
-    painter.translate(-this->width()/ 2, - this->height()/ 2);
-    this->render(&painter);
+    auto const pm = this->grab();
     menuBar()->show();
+
+	QString initialPath = "hacon_first_floor";
+	QString sFormat = "png";
+	QString sFullPath = initialPath;
+	sFullPath.append(".");
+	sFullPath.append(sFormat);
+
+	QString sFileName = QFileDialog::getSaveFileName(this, tr("Save As"),
+						sFullPath,
+						tr("%1 Files (*.%2);;All Files (*)")
+						.arg(sFormat.toUpper())
+						.arg(sFormat));
+    pm.save(sFileName);
 }
 
