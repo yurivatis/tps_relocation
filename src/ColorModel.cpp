@@ -67,13 +67,14 @@ QVariant ColorModel::data(const QModelIndex &index, int role) const
             }
             break;
         }
-        case Qt::ForegroundRole:
-        {
-            if(index.column() == (int)Column::REMOVE) {
-                value = QString(tr("Remove row"));
-            }
-            break;
-        }
+//         case Qt::EditRole:
+//         {
+//             if(index.column() == (int)Column::REMOVE) {
+// //                 pb->setCheckable(true);
+// //                 pb->setChecked(true);
+//             }
+//             break;
+//         }
         case Qt::DisplayRole:
         {
             foreach(ModelValue item, list_) {
@@ -133,6 +134,13 @@ void ColorModel::removeRow(int row)
             it.value().row--;
         }
     }
+}
+
+
+void ColorModel::removeAll()
+{
+    while(rows_ > 0)
+        removeRow(rows_ - 1);
 }
 
 

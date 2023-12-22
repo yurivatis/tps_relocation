@@ -28,18 +28,6 @@ void ColorButtonDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &) const
 {
     CPushButton *pushButton = static_cast<CPushButton*>(editor);
-//     switch(index.column()) {
-//         case (int)Column::COLOR:
-//             QObject::connect(pushButton, SIGNAL(clicked()), this, SLOT(showColorDialog()));
-// 
-//             break;
-//         case (int)Column::ADD_NEW:
-//         case (int)Column::REMOVE:
-//         {
-//             pushButton->setText("Remove Row");
-//             break;
-//         }
-//     }
 }
 
 
@@ -49,7 +37,7 @@ void ColorButtonDelegate::setModelData(QWidget *editor, QAbstractItemModel *mode
     CPushButton *pb = static_cast<CPushButton*>(editor);
     QPalette palette = pb->palette();
     QColor color = palette.button().color();
-    model->setData(index, color, Qt::BackgroundRole);
+    model->setData(index, color, Qt::EditRole);
 }
 
 

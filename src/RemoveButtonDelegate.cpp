@@ -1,5 +1,6 @@
 #include "RemoveButtonDelegate.h"
 #include "CPushButton.h"
+#include "ColorModel.h"
 #include "constants.h"
 #include <QDebug>
 #include <QMouseEvent>
@@ -17,13 +18,31 @@ QWidget *RemoveButtonDelegate::createEditor(QWidget *parent,
     CPushButton *pb = new CPushButton(tr("Remove row"), parent);
     pb->index(index);
     QObject::connect(pb, SIGNAL(clicked()), this, SLOT(oCheckRemove()));
+    pb->setCheckable(true);
+    pb->setChecked(true);
+    pb->setEnabled(true);
     return pb;
 }
 
 
-void RemoveButtonDelegate::setEditorData(QWidget *,
-                                    const QModelIndex &) const
+void RemoveButtonDelegate::setEditorData(QWidget *editor,
+                                    const QModelIndex &index) const
 {
+    QString value = index.model()->data(index, Qt::EditRole).toString();
+    if(index.column() == (int)Column::REMOVE) {
+        const auto pb = dynamic_cast<CPushButton*>(editor);
+        pb->setChecked(true);
+        pb->setText(value);
+        pb->setCheckable(true);
+    }
+//     if (index.model()->headerData(index.column(), Qt::Horizontal, Qt::DisplayRole).toString() == constants::kUse)
+//     {
+//         const auto value = index.model()->data(index, Qt::EditRole).toString();
+//         const auto pb = dynamic_cast<QPushButton*>(editor);
+//         pb->setChecked(value == "Yes" ? true : false);
+//         pb->setText(value);
+//         pb->setCheckable(true);
+//     }
 //     switch(index.column()) {
 //         case (int)Column::COLOR:
 //             QObject::connect(pushButton, SIGNAL(clicked()), this, SLOT(showColorDialog()));
@@ -45,7 +64,11 @@ void RemoveButtonDelegate::setModelData(QWidget *editor, QAbstractItemModel *mod
     CPushButton *pb = static_cast<CPushButton*>(editor);
     QPalette palette = pb->palette();
     QColor color = palette.button().color();
-    model->setData(index, color, Qt::BackgroundRole);
+    model->setData(index, color, Qt::EditRole);
+    pb->setChecked(true);
+    pb->setCheckable(true);
+    const auto ptr = dynamic_cast<ColorModel*>(model);
+    ptr->setData(index, "", Qt::EditRole);
 }
 
 

@@ -72,6 +72,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     QObject::connect(componentDelegate_, SIGNAL(oComboChanged(const QModelIndex &, const QString)), colorModel_, SLOT(setComboBox(const QModelIndex&, const QString)));
     QObject::connect(colorDelegate_, SIGNAL(oColorChanged(const QModelIndex, const QColor)), colorModel_, SLOT(setColor(const QModelIndex, const QColor)));
     QObject::connect(colorFrame_, SIGNAL(oAddRow()), colorModel_, SLOT(addRow()));
+    QObject::connect(colorFrame_, SIGNAL(oRemoveAll()), colorModel_, SLOT(removeAll()));
     QObject::connect(removeDelegate_, SIGNAL(oRemoveRow(int)), colorModel_, SLOT(removeRow(int)));
     QObject::connect(colorFrame_, SIGNAL(oSave()), colorModel_, SLOT(save()));
     QObject::connect(colorModel_, SIGNAL(oUpdated()), this, SLOT(assignPeopleToRooms()));
@@ -456,8 +457,6 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* mouseEvent)
 void MainWindow::mouseMoveEvent(QMouseEvent* mouseEvent)
 {
     if(movingPerson_ == nullptr) {
-//         QString message = "x=" + QString::number(mouseEvent->x()) + "; y=" + QString::number(mouseEvent->y());
-//         statusBar()->showMessage(message);
         return;
     }
     movingPerson_->moveTo(mouseEvent->x(), mouseEvent->y());
