@@ -13,7 +13,6 @@
 #include <QDebug>
 #include <math.h>
 #include <QPainterPath>
-#include <QMatrix>
 #include <QPixmap>
 #include <QtGui>
 #include <QGraphicsView>
