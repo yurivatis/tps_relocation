@@ -30,7 +30,7 @@ public slots:
     void removeRow(int);
     void removeAll();
     void save();
-    int restore();
+     int restore();
 private:
     void printValues(const QString &area) const;
     int rows_;

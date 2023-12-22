@@ -15,6 +15,9 @@ ColorFrame::ColorFrame(QWidget *parent) : QTabWidget(parent)
     QPushButton *remove = new QPushButton(tr("Remove all"), f);
     hl->addWidget(remove);
     QObject::connect(remove, SIGNAL(clicked()), this, SIGNAL(oRemoveAll()));
+    QPushButton *restore = new QPushButton(tr("Restore"), f);
+    hl->addWidget(restore);
+    QObject::connect(restore, SIGNAL(clicked()), this, SIGNAL(oRestore()));
     QPushButton *add = new QPushButton(tr("Add row"), f);
     hl->addWidget(add);
     QObject::connect(add, SIGNAL(clicked()), this, SIGNAL(oAddRow()));

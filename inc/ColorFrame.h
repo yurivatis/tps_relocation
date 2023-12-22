@@ -8,6 +8,7 @@ public:
     ColorFrame(QWidget *parent = 0);
     ColorView *colorView_;
 signals:
+    void oRestore();
     void oRemoveAll();
     void oAddRow();
     void oSave();

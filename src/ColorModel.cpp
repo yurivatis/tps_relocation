@@ -116,6 +116,7 @@ void ColorModel::setColor(const QModelIndex index, const QColor color)
     list_.append(mv);
 }
 
+
 void ColorModel::addRow()
 {
     setRowCount(++rows_);
@@ -196,19 +197,28 @@ int ColorModel::restore()
     QStringList sl = sqlInteface->getColorTable();
     int rows = sl.size() / query_size;
     int i = 0;
-
+    QModelIndex nIndex;
     while(i < sl.size()) {
         int cur_row = i / query_size;
         mv.row = cur_row;
         mv.col = 0;
         mv.value = sl.at(i);
         list_.append(mv);
+        nIndex = QAbstractItemModel::createIndex(cur_row, mv.col);
+        setComboBox(nIndex, mv.value);
+        emit dataChanged(nIndex, nIndex);
         mv.col = 1;
         mv.value = sl.at(i+1);
         list_.append(mv);
+        nIndex = QAbstractItemModel::createIndex(cur_row, mv.col);
+        setComboBox(nIndex, mv.value);
+        emit dataChanged(nIndex, nIndex);
         mv.col = 2;
         mv.value = sl.at(i+2);
         list_.append(mv);
+        nIndex = QAbstractItemModel::createIndex(cur_row, mv.col);
+        setComboBox(nIndex, mv.value);
+        emit dataChanged(nIndex, nIndex);
         QColor color(sl.at(i+3).toInt(), sl.at(i+4).toInt(), sl.at(i+5).toInt(), sl.at(i+6).toInt());
         mv.color = color;
         mv.col = (int)Column::COLOR;
@@ -217,6 +227,7 @@ int ColorModel::restore()
         i += query_size;
     }
     rows_ = rows;
+    setRowCount(rows);
     return rows;
 }
 

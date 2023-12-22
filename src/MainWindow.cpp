@@ -19,7 +19,6 @@
 #include <QScrollArea>
 #include <QToolTip>
 #include <QLabel>
-#include <QPrinter>
 #include <QPageLayout>
 #include "SQLite.h"
 
@@ -71,6 +70,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     QObject::connect(componentDelegate_, SIGNAL(oComboChanged(const QModelIndex &, const QString)), colorModel_, SLOT(setComboBox(const QModelIndex&, const QString)));
     QObject::connect(colorDelegate_, SIGNAL(oColorChanged(const QModelIndex, const QColor)), colorModel_, SLOT(setColor(const QModelIndex, const QColor)));
     QObject::connect(colorFrame_, SIGNAL(oAddRow()), colorModel_, SLOT(addRow()));
+    QObject::connect(colorFrame_, SIGNAL(oRestore()), colorModel_, SLOT(restore()));
     QObject::connect(colorFrame_, SIGNAL(oRemoveAll()), colorModel_, SLOT(removeAll()));
     QObject::connect(removeDelegate_, SIGNAL(oRemoveRow(int)), colorModel_, SLOT(removeRow(int)));
     QObject::connect(colorFrame_, SIGNAL(oSave()), colorModel_, SLOT(save()));
@@ -86,7 +86,7 @@ void MainWindow::createMenus()
 {
     QMenu *dbMenu = menuBar()->addMenu(tr("&Database"));
     QMenu *customizeMenu = menuBar()->addMenu(tr("&Customize"));
-    QMenu *printMenu  = menuBar()->addMenu(tr("&Print"));
+    QMenu *printMenu  = menuBar()->addMenu(tr("&Screenshot"));
 
     QAction *importDb = new QAction(tr("&Import from db"), this);
     importDb->setShortcut(tr("Ctrl+i"));
@@ -102,7 +102,7 @@ void MainWindow::createMenus()
     customizeMenu->addAction(colors);
     QObject::connect(colors, SIGNAL(triggered()), this, SLOT(setupColors()));
     
-    QAction *screenshot = new QAction(tr("&Screenshot"), this);
+    QAction *screenshot = new QAction(tr("&Take screenshot"), this);
     printMenu->addAction(screenshot);
     QObject::connect(screenshot, SIGNAL(triggered()), this, SLOT(makeScreenshot()));
 }
