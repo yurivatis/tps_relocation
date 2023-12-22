@@ -57,10 +57,8 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 
     removeDelegate_ = new RemoveButtonDelegate(colorFrame_->colorView_);
     colorFrame_->colorView_->setItemDelegateForColumn((int)Column::REMOVE, removeDelegate_);
-
-    addRooms();
-    addPeople();
-    assignPeopleToRooms();
+    
+    toInitState();
 
     setFixedSize(1500, 1000);
     QObject::connect(departmentDelegate_, SIGNAL(oComboText(const QString)), teamDelegate_, SLOT(getDepartment(const QString)));
@@ -97,6 +95,11 @@ void MainWindow::createMenus()
     exportDb->setShortcut(tr("Ctrl+e"));
     dbMenu->addAction(exportDb);
     QObject::connect(exportDb, SIGNAL(triggered()), this, SLOT(exportDatabase()));
+    
+    QAction *undoChanges = new QAction(tr("&Undo all changes"), this);
+    undoChanges->setShortcut(tr("Ctrl+u"));
+    dbMenu->addAction(undoChanges);
+    QObject::connect(undoChanges, SIGNAL(triggered()), this, SLOT(toInitState()));
     
     QAction * colors = new QAction(tr("&Colors"), this);
     customizeMenu->addAction(colors);
@@ -512,3 +515,12 @@ void MainWindow::makeScreenshot()
     pm.save(sFileName);
 }
 
+
+void MainWindow::toInitState()
+{
+    people_.clear();
+    rooms_.clear();
+    addRooms();
+    addPeople();
+    assignPeopleToRooms();
+}
