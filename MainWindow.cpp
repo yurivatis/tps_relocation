@@ -92,7 +92,7 @@ void MainWindow::createMenus()
     QMenu *printMenu  = menuBar()->addMenu(tr("&Screenshot"));
     QMenu *helpMenu  = menuBar()->addMenu(tr("&Help"));
 
-    QAction *importDb = new QAction(tr("&Import from db"), this);
+    QAction *importDb = new QAction(tr("&Import from csv"), this);
     importDb->setShortcut(tr("Ctrl+i"));
     dbMenu->addAction(importDb);
     QObject::connect(importDb, SIGNAL(triggered()), this, SLOT(importDatabase()));

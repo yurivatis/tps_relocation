@@ -13,7 +13,7 @@ HelpWidget::HelpWidget(QWidget *parent): QWidget(parent)
 	QFrame *name = new QFrame(this);
 	l->addWidget(name);
 	QHBoxLayout *hl=new QHBoxLayout(name);
-	QString version = QString("<h2> tps_relocation 1.1");
+	QString version = QString("<h2> tps_relocation 1.2");
 	version.append(" </h2>");
 	QLabel *nameLabel = new QLabel(version, name);
 	hl->addWidget(nameLabel, Qt::AlignLeft|Qt::AlignBottom);
@@ -23,7 +23,11 @@ HelpWidget::HelpWidget(QWidget *parent): QWidget(parent)
 	tw->addTab(w, tr("About"));
 	QVBoxLayout *vl= new QVBoxLayout(w);
 	QLabel *lbl = new QLabel(w);
- 	lbl->setText(tr("tps_relocation is a small application allow visualization of all Hacon TPS members.<br><br>Copyright &copy; 2023 <br>Yuri Vatis"));
+ 	lbl->setText(tr("tps_relocation is a small application allowing visualization and movement <br>"
+					" of all Hacon TPS members located on the 1st floor.<br><br>"
+					"<b>Current limitations:</b> To add a new member or to remove an existing member <br>"
+					"you have to modify attached csv file and to import it again.<br>"
+					"<br><br>Copyright &copy; 2023 <br>Yuri Vatis"));
 	lbl->setTextFormat(Qt::RichText);
 	lbl->setOpenExternalLinks(true);
 	vl->addWidget(lbl);
