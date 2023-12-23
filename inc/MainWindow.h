@@ -8,6 +8,7 @@
 #include "ColorModel.h"
 #include "ColorFrame.h"
 #include "RemoveButtonDelegate.h"
+#include "HelpWidget.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
@@ -35,7 +36,7 @@ private:
     ColorButtonDelegate * colorDelegate_;
     RemoveButtonDelegate * removeDelegate_;
     Person *movingPerson_;
-    QWidget *mainWidget_;
+    HelpWidget *helpWidget_;
 protected:
     virtual void mousePressEvent(QMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QMouseEvent *mouseEvent);

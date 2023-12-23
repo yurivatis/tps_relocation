@@ -41,7 +41,11 @@ void Person::clear()
 
 bool Person::isLead()
 {
-    if(role().contains("Team Lead")) {
+    if(role().contains("Team Lead") || role().contains("Teamleiter")) {
+        return true;
+    }
+    // exceptions
+    if(name() == "Habib" || name() == "Gerken" || name() == "Götz") {
         return true;
     }
     return false;

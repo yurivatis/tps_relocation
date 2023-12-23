@@ -7,11 +7,11 @@ QT += widgets
 QT += multimedia
 QT += core
 QT += sql
-TARGET = tps 
+TARGET = tps_relocation 
 INCLUDEPATH += . inc
 
 OBJECTS_DIR=obj/
-CONFIG+=qt debug c++17
+CONFIG+=qt release c++17
 MOC_DIR = moc/
 
 # Input
@@ -20,7 +20,4 @@ SOURCES += src/*.cpp
 LIBS += -L./lib/.
 LIBS += -L./usr/lib/x86_64-linux-gnu/
 RESOURCES=tps.qrc
-
-TRANSLATIONS += \
-    umzug_en_US.ts
 

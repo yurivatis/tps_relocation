@@ -24,22 +24,26 @@
 
 MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 {
-    mainWidget_ = new QWidget;
+    QWidget *mainWidget = new QWidget;
 //     QScrollArea *scrollArea = new QScrollArea(this);
 //     scrollArea->setWidget(mainWidget);
 //     scrollArea->setWidgetResizable(true);
 //    setCentralWidget(scrollArea);
-    setCentralWidget(mainWidget_);
+    setCentralWidget(mainWidget);
     QPixmap pixmap("./hacon.png");
     QLabel *icon = new QLabel("", this);
     icon->setPixmap(QString::fromUtf8(":/images/hacon.png"));
     icon->setGeometry(900, 50, 200, 200);
+    
+    helpWidget_ = new HelpWidget();
+    helpWidget_->hide();
+    
     createMenus();
     colorModel_ = new ColorModel(SqlInterface::getInstance()->colorEntries() , (int)Column::TOTAL_COLUMNS);
     colorModel_->restore();
 
     colorFrame_ = new ColorFrame();
-    colorFrame_->setWindowModality(Qt::ApplicationModal);
+//     colorFrame_->setWindowModality(Qt::ApplicationModal);
     colorFrame_->colorView_->setModel(colorModel_);
     colorFrame_->setWindowTitle(QObject::tr("Customize colors"));
     
@@ -76,6 +80,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     
     QString message = tr("Detailed plan of Hacon's 1st floor");
     statusBar()->showMessage(message);
+
 //     printRooms();
 }
 
@@ -85,6 +90,7 @@ void MainWindow::createMenus()
     QMenu *dbMenu = menuBar()->addMenu(tr("&Database"));
     QMenu *customizeMenu = menuBar()->addMenu(tr("&Customize"));
     QMenu *printMenu  = menuBar()->addMenu(tr("&Screenshot"));
+    QMenu *helpMenu  = menuBar()->addMenu(tr("&Help"));
 
     QAction *importDb = new QAction(tr("&Import from db"), this);
     importDb->setShortcut(tr("Ctrl+i"));
@@ -108,6 +114,10 @@ void MainWindow::createMenus()
     QAction *screenshot = new QAction(tr("&Take screenshot"), this);
     printMenu->addAction(screenshot);
     QObject::connect(screenshot, SIGNAL(triggered()), this, SLOT(makeScreenshot()));
+    
+    QAction *about = new QAction(tr("&About"), this);
+    helpMenu->addAction(about);
+    QObject::connect(about, SIGNAL(triggered()), helpWidget_, SLOT(show()));
 }
 
 
@@ -164,7 +174,7 @@ void MainWindow::addRooms()
     rooms_.append(new Room(112, 0, { 350, 780,  350, 700,  430, 700,  430, 780}, Orientation::CENTER));
     rooms_.append(new Room(  0, 0, { 430, 780,  430, 700,  470, 700,  470, 780, 430, 780}, Orientation::CENTER, -90, true));
 
-    rooms_.append(new Room(119, 4, { 490, 565,  587, 530,  610, 610,  610, 620, 505, 620}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(119, 4, { 490, 565,  587, 530,  610, 610,  610, 620, 505, 620}, Orientation::RIGHT, -20));
     rooms_.append(new Room(120, 4, { 475, 510,  572, 475,  587, 530,  490, 565}, Orientation::RIGHT, -18));
 
     rooms_.append(new Room(121, 0, { 355, 550,  444, 520,  462, 595,  345, 595}, Orientation::CENTER, 0));
@@ -174,8 +184,8 @@ void MainWindow::addRooms()
     rooms_.append(new Room(147, 3, { 415, 321,  518, 286,  529, 324,  426, 359}, Orientation::RIGHT, -18));
     rooms_.append(new Room(146, 3, { 404, 283,  507, 248,  518, 286,  415, 321}, Orientation::RIGHT, -18));
     rooms_.append(new Room(145, 3, { 393, 245,  496, 210,  507, 248,  404, 283}, Orientation::RIGHT, -18));
-    rooms_.append(new Room(144, 3, { 382, 207,  485, 172,  496, 210,  393, 245}, Orientation::RIGHT, -18));
-    rooms_.append(new Room(143, 0, { 349,  93,  452,  58,  485, 172,  382, 207}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(144, 3, { 381, 205,  484, 170,  496, 210,  393, 245}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(143, 0, { 349,  93,  452,  58,  484, 170,  381, 205}, Orientation::RIGHT, -18));
 //    rooms_.append(new Room(121, 0, { 430, 780,  430, 700,  470, 700,  470, 780, 430, 780}, Orientation::CENTER, -90, true));
     
     rooms_.append(new Room(  0, 0, { 181, 590,  181, 486}, Orientation::CENTER, -90, true));
@@ -185,7 +195,7 @@ void MainWindow::addRooms()
     rooms_.append(new Room(134, 3, { 137, 334,  240, 299,  251, 337,  148, 372}, Orientation::LEFT, -18));
     rooms_.append(new Room(135, 3, { 126, 296,  229, 261,  240, 299,  137, 334}, Orientation::LEFT, -18));
     rooms_.append(new Room(136, 3, { 115, 258,  218, 223,  229, 261,  126, 296}, Orientation::LEFT, -18));
-    rooms_.append(new Room(137, 3, { 104, 220,  207, 185,  218, 223,  115, 258}, Orientation::LEFT, -18));
+    rooms_.append(new Room(137, 3, { 104, 220,  207, 185,  218, 223,  115, 258}, Orientation::LEFT, -19));
     rooms_.append(new Room(138, 4, {  88, 163,  191, 128,  207, 185,  104, 220}, Orientation::LEFT, -18));
     rooms_.append(new Room(139, 4, {  72, 106,  175,  71,  191, 128,   88, 163}, Orientation::LEFT, -18));
     
@@ -359,6 +369,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     QPen pen;
+    QColor color;
     pen.setColor(Qt::black);
     QPalette pal = QPalette();
     QFont fnt("Helvetica", 7, QFont::Normal);
@@ -369,28 +380,29 @@ void MainWindow::paintEvent(QPaintEvent *)
         int room_nr = rooms_.at(i)->nr();
         for(int j = 0; j < rooms_.at(i)->people_.size(); j++) {
             Person *p = rooms_.at(i)->people_.at(j);
-            QColor color = p->color();
+            color = p->color();
             pen.setWidthF(0.5);
             painter.setPen(pen);
             QPainterPath path;
             if(p == movingPerson_) {
                 path.addPolygon(p->tmpcoordinates());
                 color.setAlpha(127);
+                p->tmpcoordinates();
             } else {
                 path.addPolygon(p->coordinates());
+                color.setAlpha(255);
             }
             brush.setColor(color);
-            if(p->isLead()) {
-                brush.setStyle(Qt::Dense2Pattern);
-            } else {
-                brush.setStyle(Qt::SolidPattern);
-            }
+            brush.setStyle(Qt::SolidPattern);
             painter.fillPath(path, brush);
             painter.drawPolygon(p->coordinates());
             if(room_nr != 0 && !rooms_.at(i)->dummy() && p) {
                 painter.save();
                 painter.translate(p->coordinates().at(0).x(), p->coordinates().at(0).y());
                 painter.rotate(rooms_.at(i)->rotation());
+                if(p->isLead()) {
+                    painter.setFont(QFont("Helvetica", 9, QFont::ExtraBold));
+                }
                 painter.drawText(6, 12, p->displayName());
                 painter.restore();
             }
@@ -483,9 +495,10 @@ bool MainWindow::event(QEvent* event)
                 if(p->component().size() > 1){
                     tooltip += "Component: " + p->component() + "\r\n";
                 }
-                if(p->isLead()) {
-                    tooltip += "Team Lead\r\n";
-                }
+                tooltip += "Position: " + p->role() + "\r\n";
+//                 if(p->isLead()) {
+//                     tooltip += "Team Lead\r\n";
+//                 }
                 tooltip += "Room: " + QString::number(p->room());
             }
         }

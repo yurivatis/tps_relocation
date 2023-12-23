@@ -368,7 +368,7 @@ QStringList SqlInterface::departments()
     QStringList res;
     QSqlQuery query;
     QString req;
-    req = QString("SELECT department FROM departments ORDER BY department ASC");
+    req = QString("SELECT department FROM departments ORDER BY department DESC");
     query.exec(req);
     while (query.next()) {
         QString d = query.value(0).toString();
