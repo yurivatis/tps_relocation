@@ -15,8 +15,8 @@ CONFIG+=qt release c++17
 MOC_DIR = moc/
 
 # Input
-HEADERS += inc/*.h
-SOURCES += src/*.cpp 
+HEADERS += *.h
+SOURCES += *.cpp 
 LIBS += -L./lib/.
 LIBS += -L./usr/lib/x86_64-linux-gnu/
 RESOURCES=tps.qrc
