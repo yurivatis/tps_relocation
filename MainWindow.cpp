@@ -30,10 +30,16 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 //     scrollArea->setWidgetResizable(true);
 //    setCentralWidget(scrollArea);
     setCentralWidget(mainWidget);
-    QPixmap pixmap("./hacon.png");
-    QLabel *icon = new QLabel("", this);
-    icon->setPixmap(QString::fromUtf8(":/images/hacon.png"));
-    icon->setGeometry(900, 50, 200, 200);
+//     QPixmap pixmap("./hacon.png");
+//     QLabel *icon = new QLabel("", this);
+//     icon->setPixmap(QString::fromUtf8(":/images/hacon.png"));
+//     icon->setGeometry(900, 50, 200, 200);
+    QLabel *og1st = new QLabel(this);
+    QFont lblF("Arial", 30, QFont::Bold);
+    og1st->setFont(lblF);
+    og1st->setText("1. OG");
+    og1st->setGeometry(900, 50, 200, 200);
+    
     
     helpWidget_ = new HelpWidget();
     helpWidget_->hide();
