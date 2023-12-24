@@ -45,6 +45,7 @@ protected:
 private slots:
     void importDatabase();
     void exportDatabase();
+    void exportCsv();
     void toInitState();
     void setupColors();
     void assignPeopleToRooms();

@@ -99,17 +99,18 @@ void MainWindow::createMenus()
     QMenu *helpMenu  = menuBar()->addMenu(tr("&Help"));
 
     QAction *importDb = new QAction(tr("&Import from csv"), this);
-    importDb->setShortcut(tr("Ctrl+i"));
     dbMenu->addAction(importDb);
     QObject::connect(importDb, SIGNAL(triggered()), this, SLOT(importDatabase()));
 
     QAction *exportDb = new QAction(tr("&Export to db"), this);
-    exportDb->setShortcut(tr("Ctrl+e"));
     dbMenu->addAction(exportDb);
     QObject::connect(exportDb, SIGNAL(triggered()), this, SLOT(exportDatabase()));
     
+    QAction *exportCsv = new QAction(tr("&Export to csv"), this);
+    dbMenu->addAction(exportCsv);
+    QObject::connect(exportCsv, SIGNAL(triggered()), this, SLOT(exportCsv()));
+
     QAction *undoChanges = new QAction(tr("&Undo all changes"), this);
-    undoChanges->setShortcut(tr("Ctrl+u"));
     dbMenu->addAction(undoChanges);
     QObject::connect(undoChanges, SIGNAL(triggered()), this, SLOT(toInitState()));
     
@@ -328,13 +329,36 @@ void MainWindow::exportDatabase()
 {
     SqlInterface *sqlInteface = SqlInterface::getInstance();
     QMessageBox msgBox;
-    if(sqlInteface->exportTo(people_) == false) {
+    if(sqlInteface->exportToDb(people_) == false) {
         msgBox.setText(QString("Successfully exported"));
         msgBox.setIcon(QMessageBox::Information);
     } else {
         msgBox.setText(QString("Export failed"));
         msgBox.setIcon(QMessageBox::Warning);
     }
+    msgBox.exec();
+}
+
+
+void MainWindow::exportCsv()
+{
+    QMessageBox msgBox;
+    QString fileName = QFileDialog::getSaveFileName(NULL, "Create New File","./", "");
+    QFile f(fileName);
+    f.open(QIODevice::WriteOnly);
+    if(!f.isOpen()) {
+        msgBox.setText(QString("Could not open file: %1").arg(fileName));
+        msgBox.setIcon(QMessageBox::Warning);
+        return;
+    } else {
+        QTextStream stream( &f );
+        foreach(Person* p, people_) {
+            stream << p->surname() << "," << p->name() << "," << p->location() << "," << p->department() << "," << p->team() << "," << p->role() << "," << p->component() << "," << p->room() << Qt::endl;
+        }
+        f.close();
+    }
+    msgBox.setText(QString("Successfully stored to: %1").arg(fileName));
+    msgBox.setIcon(QMessageBox::Information);
     msgBox.exec();
 }
 

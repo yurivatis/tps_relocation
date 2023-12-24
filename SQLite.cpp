@@ -196,7 +196,7 @@ void SqlInterface::people(QList<Person*>&list)
 }
 
 
-bool SqlInterface::exportTo(QList<Person *> people)
+bool SqlInterface::exportToDb(QList<Person *> people)
 {
     bool ret;
     QSqlQuery query;

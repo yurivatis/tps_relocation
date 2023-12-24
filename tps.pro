@@ -19,5 +19,5 @@ HEADERS += *.h
 SOURCES += *.cpp 
 LIBS += -L./lib/.
 LIBS += -L./usr/lib/x86_64-linux-gnu/
-#RESOURCES=tps.qrc
+RESOURCES=tps.qrc
 

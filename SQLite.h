@@ -30,7 +30,7 @@ private:
     static SqlInterface* getInstance();
     QString lastError() {return lastError_;}
     bool import(const QString cvs);
-    bool exportTo(QList<Person*>people);
+    bool exportToDb(QList<Person*>people);
     QColor readColor(const QString &department, const QString &team, const QString &component, const QColor defColor);
     bool writeColor(const QString &department, const QString &team, QString const &component, const QColor color);
     bool clearColorTable();
