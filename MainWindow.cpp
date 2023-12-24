@@ -102,14 +102,14 @@ void MainWindow::createMenus()
     dbMenu->addAction(importDb);
     QObject::connect(importDb, SIGNAL(triggered()), this, SLOT(importDatabase()));
 
-    QAction *exportDb = new QAction(tr("&Export to db"), this);
-    dbMenu->addAction(exportDb);
-    QObject::connect(exportDb, SIGNAL(triggered()), this, SLOT(exportDatabase()));
-    
     QAction *exportCsv = new QAction(tr("&Export to csv"), this);
     dbMenu->addAction(exportCsv);
     QObject::connect(exportCsv, SIGNAL(triggered()), this, SLOT(exportCsv()));
 
+    QAction *exportDb = new QAction(tr("&Export to db"), this);
+    dbMenu->addAction(exportDb);
+    QObject::connect(exportDb, SIGNAL(triggered()), this, SLOT(exportDatabase()));
+    
     QAction *undoChanges = new QAction(tr("&Undo all changes"), this);
     dbMenu->addAction(undoChanges);
     QObject::connect(undoChanges, SIGNAL(triggered()), this, SLOT(toInitState()));
