@@ -324,7 +324,10 @@ void MainWindow::exportDatabase()
 void MainWindow::exportCsv()
 {
     QMessageBox msgBox;
-    QString fileName = QFileDialog::getSaveFileName(NULL, "Create New File","./", "");
+    QString fileName = QFileDialog::getSaveFileName(NULL, "Create New File","./", "*.csv");
+    if(fileName.isEmpty()) {
+        return;
+    }
     QFile f(fileName);
     f.open(QIODevice::WriteOnly);
     if(!f.isOpen()) {
