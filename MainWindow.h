@@ -8,12 +8,16 @@
 #include "ColorModel.h"
 #include "ColorFrame.h"
 #include "RemoveButtonDelegate.h"
+#include "LineEditDelegate.h"
+#include "MemberModel.h"
+#include "MemberFrame.h"
 #include "HelpWidget.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
 public:
     MainWindow(QApplication *app, QWidget *parent = 0);
+    QList<Person*>* people() {return &people_;}
 protected:
     virtual void paintEvent(QPaintEvent *);
 private:
@@ -23,18 +27,19 @@ private:
     void printPeople();
     void printRooms();
     void redrawMates(Room *r);
-    void placePersonInRoom(int oldRoom, int newRoom, Person *p);
-    void placePersonInRoom(Room *oldRoom, Room *newRoom, Person *p);
     QList<Room*>rooms_;
     QList<Person*>people_;
     ColorModel *colorModel_;
-    QStandardItemModel * model_;
     ColorFrame *colorFrame_;
+    MemberModel *memberModel_;
+    MemberFrame *memberFrame_;
     ComboBoxDelegate * departmentDelegate_;
     ComboBoxDelegate * teamDelegate_;
     ComboBoxDelegate * componentDelegate_;
     ColorButtonDelegate * colorDelegate_;
     RemoveButtonDelegate * removeDelegate_;
+    LineEditDelegate *memberNameDelegate_;
+    LineEditDelegate *memberRoomDelegate_;
     Person *movingPerson_;
     HelpWidget *helpWidget_;
 protected:
@@ -50,6 +55,7 @@ private slots:
     void setupColors();
     void assignPeopleToRooms();
     void makeScreenshot();
+    void updateMates();
 signals:
     void eAssignColors();
 };

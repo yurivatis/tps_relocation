@@ -3,7 +3,7 @@
 #include "constants.h"
 #include "SQLite.h"
 #include <QDebug>
-#include "ColorView.h"
+#include "TableView.h"
 #include "ColorModel.h"
 
 ComboBoxDelegate::ComboBoxDelegate(QObject *parent)
@@ -29,7 +29,7 @@ void ComboBoxDelegate::setEditorData(QWidget *editor,
 {
     CComboBox *comboBox = static_cast<CComboBox*>(editor);
     SqlInterface *sqlInteface = SqlInterface::getInstance();
-    ColorView *cv = (ColorView *)parent();
+    TableView *cv = (TableView *)parent();
     ColorModel *cm = (ColorModel *)cv->model();
     switch(index.column()) {
         case (int)Column::DEPARTMENT:

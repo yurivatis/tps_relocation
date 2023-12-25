@@ -44,7 +44,6 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     helpWidget_ = new HelpWidget();
     helpWidget_->hide();
     
-    createMenus();
     colorModel_ = new ColorModel(SqlInterface::getInstance()->colorEntries() , (int)Column::TOTAL_COLUMNS);
     colorModel_->restore();
 
@@ -67,8 +66,20 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 
     removeDelegate_ = new RemoveButtonDelegate(colorFrame_->colorView_);
     colorFrame_->colorView_->setItemDelegateForColumn((int)Column::REMOVE, removeDelegate_);
-    
+
+
+    memberModel_ = new MemberModel(0, (int)MemberColumns::TOTAL_COLUMNS);
+    memberFrame_ = new MemberFrame;
+    memberFrame_->memberView_->setModel(memberModel_);
+
+    memberNameDelegate_ = new LineEditDelegate(memberFrame_->memberView_);
+    memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::NAME, memberNameDelegate_);
+    memberRoomDelegate_ = new LineEditDelegate(memberFrame_->memberView_);
+    memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::ROOM, memberRoomDelegate_);
+
+    createMenus();
     toInitState();
+    memberModel_->restore(&people_);
 
     setFixedSize(1500, 1000);
     QObject::connect(departmentDelegate_, SIGNAL(oComboText(const QString)), teamDelegate_, SLOT(getDepartment(const QString)));
@@ -83,17 +94,17 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     QObject::connect(removeDelegate_, SIGNAL(oRemoveRow(int)), colorModel_, SLOT(removeRow(int)));
     QObject::connect(colorFrame_, SIGNAL(oSave()), colorModel_, SLOT(save()));
     QObject::connect(colorModel_, SIGNAL(oUpdated()), this, SLOT(assignPeopleToRooms()));
-    
+    QObject::connect(memberFrame_, SIGNAL(oSave()), this, SLOT(updateMates()));
+
     QString message = tr("Detailed plan of Hacon's 1st floor");
     statusBar()->showMessage(message);
-
-//     printRooms();
 }
 
 
 void MainWindow::createMenus()
 {
     QMenu *dbMenu = menuBar()->addMenu(tr("&Database"));
+    QMenu *membersMenu = menuBar()->addMenu(tr("&Members"));
     QMenu *customizeMenu = menuBar()->addMenu(tr("&Customize"));
     QMenu *printMenu  = menuBar()->addMenu(tr("&Screenshot"));
     QMenu *helpMenu  = menuBar()->addMenu(tr("&Help"));
@@ -114,6 +125,10 @@ void MainWindow::createMenus()
     dbMenu->addAction(undoChanges);
     QObject::connect(undoChanges, SIGNAL(triggered()), this, SLOT(toInitState()));
     
+    QAction *edit = new QAction(tr("&Edit"), this);
+    membersMenu->addAction(edit);
+    QObject::connect(edit, SIGNAL(triggered()), memberFrame_, SLOT(show()) );
+
     QAction * colors = new QAction(tr("&Colors"), this);
     customizeMenu->addAction(colors);
     QObject::connect(colors, SIGNAL(triggered()), this, SLOT(setupColors()));
@@ -223,9 +238,10 @@ void MainWindow::assignPeopleToRooms()
         p->color(SqlInterface::getInstance()->readColor(p->department(), p->team(), p->component(), Qt::gray)); // set colors
         int curRoom = p->room();
         foreach(Room *r, rooms_) { // assign to rooms
-            if(r->nr() == curRoom) {
+            if(r->nr() == curRoom && r->dummy() == false && r->capacity() > 0 && r->nr() != 0) {
                 r->addPerson(p);
-                placePersonInRoom(nullptr, r, p);
+                p->room(curRoom);
+                redrawMates(r);
                 break;
             }
         }
@@ -234,52 +250,16 @@ void MainWindow::assignPeopleToRooms()
 }
 
 
-void MainWindow::placePersonInRoom(int oldRoom, int newRoom, Person *p)
+void MainWindow::redrawMates(Room* r)
 {
-    Room *oldR = nullptr, *newR = nullptr;
-    bool found_old = false, found_new = false;
-    foreach(Room *r, rooms_) {
-        if(r->nr() == oldRoom) {
-            oldR = r;
-            found_old = true;
-        }
-        if(r->nr() == newRoom) {
-            newR = r;
-            found_new = true;
-        }
-        if(found_new && found_old) {
-            break;
-        }
-    }
-    placePersonInRoom(oldR, newR, p);
-}
-
-
-void MainWindow::placePersonInRoom(Room *oldRoom, Room *newRoom, Person *p)
-{
-    if(oldRoom && oldRoom->nr() != 0) {
-        oldRoom->removePerson(p);
-        p->room(0);
-        redrawMates(oldRoom);
-    }
-    if(newRoom && newRoom->nr() != 0) {
-        newRoom->addPerson(p);
-        p->room(newRoom->nr());
-        redrawMates(newRoom);
-    }
-}
-
-
-void MainWindow::redrawMates( Room* r)
-{
-    int nr = r->people_.size();
-    if(nr == 0) {
+    int sz = r->people_.size();
+    if(sz == 0) {
         return;
     }
     QPolygonF roomPlg = r->coordinates();
-    float stepX = (roomPlg.at(roomPlg.size() - 1).x() - roomPlg.at(0).x()) / nr;
-    float stepY = (roomPlg.at(roomPlg.size() - 1).y() - roomPlg.at(0).y()) / nr;
-    for(int i = 0; i < nr; i++) {
+    float stepX = (roomPlg.at(roomPlg.size() - 1).x() - roomPlg.at(0).x()) / sz;
+    float stepY = (roomPlg.at(roomPlg.size() - 1).y() - roomPlg.at(0).y()) / sz;
+    for(int i = 0; i < sz; i++) {
         QPolygonF personPlg;
         QPoint p0, p1, p2, p3;
         p0.setX(roomPlg.at(0).x() + i * stepX);
@@ -296,6 +276,7 @@ void MainWindow::redrawMates( Room* r)
         personPlg << p3;
         r->people_.at(i)->coordinates(personPlg);
     }
+    update();
 }
 
 
@@ -466,34 +447,41 @@ void MainWindow::mousePressEvent(QMouseEvent* mouseEvent)
 }
 
 
+void MainWindow::updateMates()
+{
+     foreach(Person *p, people_) {
+        if(p->modified() != p->room()) {
+            foreach(Room *r, rooms_) {
+                if(r->nr() == p->room()) {
+                    if(r->nr() != 0 && r->dummy() == false && r->capacity() > 0 && r->nr()) {
+                        r->removePerson(p);
+                    }
+                    redrawMates(r);
+                }
+                if(r->nr() == p->modified()) {
+                    if(r->nr() != 0 && r->dummy() == false && r->capacity() > 0) {
+                        r->addPerson(p);
+                        redrawMates(r);
+                    }
+                }
+            }
+            p->room(p->modified());
+        }
+    }
+}
+
+
 void MainWindow::mouseReleaseEvent(QMouseEvent* mouseEvent)
 {
-    int oldRoom = 0;
-    int newRoom = 0;
     if(mouseEvent->button() != Qt::LeftButton || movingPerson_ == nullptr) {
         return;
     }
     QPointF f(mouseEvent->x(), mouseEvent->y());
     foreach(Room *r, rooms_) {
         if(r->coordinates().containsPoint(f, Qt::WindingFill) && r->nr() != 0 && r->capacity() > 0) {
-            newRoom = r->nr();
-            oldRoom = movingPerson_->room();
-            if(oldRoom == r->nr()) {
-                break;
-            }
-            r->addPerson(movingPerson_);
-            movingPerson_->room(r->nr());
-            redrawMates(r);
+            movingPerson_->modified(r->nr());
+            updateMates();
             break;
-        }
-    }
-    if(newRoom != 0 && oldRoom != newRoom) {
-        foreach(Room *r, rooms_) {
-            if(r->nr() == oldRoom) {
-                r->removePerson(movingPerson_);
-                redrawMates(r);
-                break;
-            }
         }
     }
     movingPerson_->clear();
@@ -566,4 +554,5 @@ void MainWindow::toInitState()
     addRooms();
     addPeople();
     assignPeopleToRooms();
+    memberModel_->setRowCount(people_.size());
 }

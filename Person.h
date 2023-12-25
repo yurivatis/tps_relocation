@@ -18,7 +18,7 @@ public:
     const QString team() {return team_;}
     void team(const QString team) {team_ = team;}
     int room() {return room_;}
-    void room(const int room) {room_ = room;}
+    void room(const int room) {room_ = room; modifiedRoom_ = room;}
     QString location() {return location_;}
     void location(const QString location) {location_ = location;}
     QString component() {return component_;}
@@ -35,7 +35,10 @@ public:
     int offset_y(){return y_;}
     void moveTo(int x, int y);
     QString displayName();
+    QString displayFullName();
     bool isLead();
+    int modified() {return modifiedRoom_;}
+    void modified(int m) {modifiedRoom_ = m;}
 private:
     QString name_;
     QString surname_;
@@ -48,6 +51,7 @@ private:
     QPolygonF tmpCoordinates_;
     QColor color_;
     int room_;
+    int modifiedRoom_;
     int x_;
     int y_;
 };

@@ -21,6 +21,12 @@ QString Person::displayName()
 }
 
 
+QString Person::displayFullName()
+{
+    return QString(surname() + " " + name());
+}
+
+
 void Person::moveTo(int x, int y)
 {
     tmpCoordinates_.clear();

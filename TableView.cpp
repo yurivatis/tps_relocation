@@ -1,7 +1,7 @@
-#include "ColorView.h"
+#include "TableView.h"
 #include <QHeaderView>
 
-ColorView::ColorView(QWidget *parent) : QTableView(parent)
+TableView::TableView(QWidget *parent) : QTableView(parent)
 {
     QHeaderView *hHeaderView = horizontalHeader();
     hHeaderView->setSectionsClickable(true);

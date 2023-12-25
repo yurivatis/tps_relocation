@@ -1,12 +1,12 @@
 #pragma once
 #include <QTabWidget>
 #include <QLayout>
-#include "ColorView.h"
+#include "TableView.h"
 class ColorFrame : public QTabWidget {
 Q_OBJECT
 public:
     ColorFrame(QWidget *parent = 0);
-    ColorView *colorView_;
+    TableView *colorView_;
 signals:
     void oRestore();
     void oRemoveAll();

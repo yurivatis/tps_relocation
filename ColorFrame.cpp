@@ -6,7 +6,7 @@
 ColorFrame::ColorFrame(QWidget *parent) : QTabWidget(parent)
 {
     QVBoxLayout *vl = new QVBoxLayout;
-    colorView_ = new ColorView(this);
+    colorView_ = new TableView(this);
     vl->addWidget(colorView_);
     QFrame *f = new QFrame(this);
     vl->addWidget(f);

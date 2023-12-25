@@ -9,6 +9,13 @@ typedef enum class Column {
     TOTAL_COLUMNS
 } Columns;
 
+typedef enum class MemberColumn {
+    NAME=0,
+    ROOM,
+    TOTAL_COLUMNS
+} MemberColumns;
+
+
 typedef enum class Orientation {
     DOWN = 0,
     LEFT,
@@ -16,3 +23,4 @@ typedef enum class Orientation {
     RIGHT,
     CENTER
 } RoomNrOrientation;
+
