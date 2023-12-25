@@ -360,7 +360,7 @@ void MainWindow::importDatabase()
             addRooms();
             addPeople();
             assignPeopleToRooms();
-
+            memberModel_->restore(&people_);
         } else {
             msgBox.setText(QString("Import from %1 failed").arg(fileName));
             msgBox.setIcon(QMessageBox::Warning);
