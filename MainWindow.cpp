@@ -67,8 +67,9 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     removeDelegate_ = new RemoveButtonDelegate(colorFrame_->colorView_);
     colorFrame_->colorView_->setItemDelegateForColumn((int)Column::REMOVE, removeDelegate_);
 
+    toInitState();
 
-    memberModel_ = new MemberModel(0, (int)MemberColumns::TOTAL_COLUMNS);
+    memberModel_ = new MemberModel(people_.size(), (int)MemberColumns::TOTAL_COLUMNS);
     memberFrame_ = new MemberFrame;
     memberFrame_->memberView_->setModel(memberModel_);
 
@@ -78,7 +79,6 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::ROOM, memberRoomDelegate_);
 
     createMenus();
-    toInitState();
     memberModel_->restore(&people_);
 
     setFixedSize(1500, 1000);
@@ -554,5 +554,4 @@ void MainWindow::toInitState()
     addRooms();
     addPeople();
     assignPeopleToRooms();
-    memberModel_->setRowCount(people_.size());
 }
