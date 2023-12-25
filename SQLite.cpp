@@ -198,11 +198,15 @@ void SqlInterface::people(QList<Person*>&list)
 
 bool SqlInterface::exportToDb(QList<Person *> people)
 {
+    if(db_.isOpen() == false) {
+        db_.open();
+    }
     bool ret;
     QSqlQuery query;
     foreach(Person *p, people) {
         if(p->room() != 0) {
-            query.prepare(QString("UPDATE people SET room = :room WHERE name = '%1' and surname = '%2';").arg(p->name()).arg(p->surname()));
+            QString s = QString("UPDATE people SET room = :room WHERE name = '%1' and surname = '%2';").arg(p->name()).arg(p->surname());
+            query.prepare(s);
             query.bindValue(":room", p->room());
             ret = query.exec();
             if(ret == false) {

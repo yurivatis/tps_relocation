@@ -310,7 +310,7 @@ void MainWindow::exportDatabase()
 {
     SqlInterface *sqlInteface = SqlInterface::getInstance();
     QMessageBox msgBox;
-    if(sqlInteface->exportToDb(people_) == false) {
+    if(sqlInteface->exportToDb(people_) == true) {
         msgBox.setText(QString("Successfully exported"));
         msgBox.setIcon(QMessageBox::Information);
     } else {
