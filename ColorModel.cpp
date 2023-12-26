@@ -246,7 +246,7 @@ void ColorModel::loadDefault()
     fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan Dev2", "", "#62A0EA");
     fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan Dev3", "", "#3584E4");
     fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan QA", "", "#613583");
-    fillColorRow(row++, "HACON Management", "TPS Tech2", "", "#26A269");
+    fillColorRow(row++, "TPS", "TPS Tech2", "", "#26A269");
     fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live", "", "#26A269");
     fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live Dev1", "", "#8FF0A4");
     fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live Dev2", "", "#33D17A");
@@ -255,7 +255,7 @@ void ColorModel::loadDefault()
     fillColorRow(row++, "TPS", "TPS PLM Plan", "", "#865E3C");
     fillColorRow(row++, "TPS", "TPS PLM Live", "", "#CDAB8F");
     fillColorRow(row++, "TPS", "TPS Tech1 Production", "", "#F66151");
-    fillColorRow(row++, "TPS", "TPS Tech1 Platform", "", "#E01B24");
+    fillColorRow(row++, "TPS", "TPS Tech1 Platform", "", "#48AEB5");
     fillColorRow(row++, "TPS", "TPS Tech1 CustomerCare", "", "#6CFD0C");
     fillColorRow(row++, "TPS", "TPS Bid", "", "#A51D2D");
     fillColorRow(row++, "TPS", "TPS Bid Documentation", "", "#A51D2D");
@@ -264,11 +264,12 @@ void ColorModel::loadDefault()
     fillColorRow(row++, "TPS", "TPS PLM", "", "#C64600");
     fillColorRow(row++, "TPS", "TPS PLM Plan", "", "#E66100");
     fillColorRow(row++, "TPS", "TPS PLM Live", "", "#FFBE6F");
-    fillColorRow(row++, "TPS", "TPS PLM TRW", "", "#FF7800");
+    fillColorRow(row++, "TPS", "TPS PLM TRW", "", "#F708FB");
     fillColorRow(row++, "TPS", "TPS PLM Algorithms", "", "#FF7800");
     fillColorRow(row++, "TPS", "TPS Tech1 PM", "", "#F5C211");
     fillColorRow(row++, "TPS", "TPS Tech2 PM", "", "#F8E45C");
     fillColorRow(row++, "TPS", "TPS QM Excellence", "", "#04FCED");
+    fillColorRow(row++, "TPS", "TPS R&D Excellence", "", "#04FCED");
 }
 
 
