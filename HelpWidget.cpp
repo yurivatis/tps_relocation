@@ -1,4 +1,4 @@
-
+#include "constants.h"
 #include "HelpWidget.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -13,7 +13,7 @@ HelpWidget::HelpWidget(QWidget *parent): QWidget(parent)
 	QFrame *name = new QFrame(this);
 	l->addWidget(name);
 	QHBoxLayout *hl=new QHBoxLayout(name);
-    QString version = QString("<h2> tps_relocation 1.7 </h2>");
+    QString version = QString("<h2> tps_relocation %1</h2>").arg(TPS_RELOC_VERSION);
 	version.append(" </h2>");
 	QLabel *nameLabel = new QLabel(version, name);
 	hl->addWidget(nameLabel, Qt::AlignLeft|Qt::AlignBottom);

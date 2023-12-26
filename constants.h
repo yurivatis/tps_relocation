@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef TPS_RELOC_VERSION
+    #define TPS_RELOC_VERSION "1.8"
+#endif
+
 typedef enum class Column {
     DEPARTMENT=0,
     TEAM,
@@ -23,4 +27,3 @@ typedef enum class Orientation {
     RIGHT,
     CENTER
 } RoomNrOrientation;
-
