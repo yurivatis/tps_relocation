@@ -208,7 +208,6 @@ void MainWindow::addRooms()
     rooms_.append(new Room(145, 3, { 393, 245,  496, 210,  507, 248,  404, 283}, Orientation::RIGHT, -18));
     rooms_.append(new Room(144, 3, { 381, 205,  484, 170,  496, 210,  393, 245}, Orientation::RIGHT, -18));
     rooms_.append(new Room(143, 0, { 349,  93,  452,  58,  484, 170,  381, 205}, Orientation::RIGHT, -18));
-//    rooms_.append(new Room(121, 0, { 430, 780,  430, 700,  470, 700,  470, 780, 430, 780}, Orientation::CENTER, -90, true));
     
     rooms_.append(new Room(  0, 0, { 181, 590,  181, 486}, Orientation::CENTER, -90, true));
     rooms_.append(new Room(131, 2, { 170, 448,  273, 413,  284, 451,  181, 486}, Orientation::LEFT, -18));
@@ -310,7 +309,10 @@ void MainWindow::exportDatabase()
 {
     SqlInterface *sqlInteface = SqlInterface::getInstance();
     QMessageBox msgBox;
-    if(sqlInteface->exportToDb(people_) == true) {
+    if(people_.size() == 0) {
+        msgBox.setText(QString("Nothing to export"));
+        msgBox.setIcon(QMessageBox::Warning);
+    } else if(sqlInteface->exportToDb(people_) == true) {
         msgBox.setText(QString("Successfully exported"));
         msgBox.setIcon(QMessageBox::Information);
     } else {
@@ -324,6 +326,12 @@ void MainWindow::exportDatabase()
 void MainWindow::exportCsv()
 {
     QMessageBox msgBox;
+    if(people_.size() == 0) {
+        msgBox.setText(QString("Nothing to export"));
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
+        return;
+    }
     QString fileName = QFileDialog::getSaveFileName(NULL, "Create New File","./", "*.csv");
     if(fileName.isEmpty()) {
         return;
@@ -332,7 +340,7 @@ void MainWindow::exportCsv()
     f.open(QIODevice::WriteOnly);
     if(!f.isOpen()) {
         msgBox.setText(QString("Could not open file: %1").arg(fileName));
-        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setIcon(QMessageBox::Critical);
         return;
     } else {
         QTextStream stream( &f );
