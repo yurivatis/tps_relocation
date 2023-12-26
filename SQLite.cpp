@@ -223,17 +223,24 @@ bool SqlInterface::import(const QString cvs)
     bool ret = true;
     QFile f(cvs);
     QString req;
-    if(db_.isOpen()) {
-        db_.close();
+    if(db_.isOpen() == false) {
+        db_.open();
     }
-    QFile::remove(dbName_);
-    db_.open();
-    customizeColors();
 
     QStringList locations, teams, components, departments;
 
     //create tables
     QSqlQuery query;
+    query.prepare("DROP TABLE IF EXISTS people;");
+    ret = query.exec();
+    query.prepare("DROP TABLE IF EXISTS components;");
+    ret = query.exec();
+    query.prepare("DROP TABLE IF EXISTS teams;");
+    ret = query.exec();
+    query.prepare("DROP TABLE IF EXISTS departments;");
+    ret = query.exec();
+    query.prepare("DROP TABLE IF EXISTS locations;");
+    ret = query.exec();
     query.prepare("CREATE TABLE IF NOT EXISTS locations (id integer, location VARCHAR, PRIMARY KEY(id));");
     ret = query.exec();
     query.prepare("CREATE TABLE IF NOT EXISTS departments (id integer, department VARCHAR, PRIMARY KEY(id));");
@@ -291,8 +298,9 @@ bool SqlInterface::import(const QString cvs)
     importTable("locations", "location", locations);
     importTable("teams", "team", teams);
     importTable("components", "component", components);
-
     f.close();
+
+    customizeColors();
 
     if(f.open (QIODevice::ReadOnly| QIODevice::Text)){
         QTextStream ts (&f);

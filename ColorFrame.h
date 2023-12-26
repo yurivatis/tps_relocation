@@ -8,6 +8,7 @@ public:
     ColorFrame(QWidget *parent = 0);
     TableView *colorView_;
 signals:
+    void oLoadDefault();
     void oRestore();
     void oRemoveAll();
     void oAddRow();

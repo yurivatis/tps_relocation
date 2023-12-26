@@ -140,8 +140,9 @@ void ColorModel::removeRow(int row)
 
 void ColorModel::removeAll()
 {
-    while(rows_ > 0)
+    while(rows_ > 0) {
         removeRow(rows_ - 1);
+    }
 }
 
 
@@ -193,6 +194,7 @@ int ColorModel::restore()
 {
     ModelValue mv;
     const int query_size = 7;
+    removeAll();
     SqlInterface *sqlInteface = SqlInterface::getInstance();
     QStringList sl = sqlInteface->getColorTable();
     int rows = sl.size() / query_size;
@@ -232,6 +234,80 @@ int ColorModel::restore()
 }
 
 
+void ColorModel::loadDefault()
+{
+    removeAll();
+    list_.clear();
+    ModelValue mv;
+    int row = 0;
+    fillColorRow(row++, "TPS", "TPS Tech1", "", "#1A5FB4");
+    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan", "", "#1A5FB4");
+    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan Dev1", "", "#99C1F1");
+    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan Dev2", "", "#62A0EA");
+    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan Dev3", "", "#3584E4");
+    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan QA", "", "#613583");
+    fillColorRow(row++, "HACON Management", "TPS Tech2", "", "#26A269");
+    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live", "", "#26A269");
+    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live Dev1", "", "#8FF0A4");
+    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live Dev2", "", "#33D17A");
+    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live QA", "", "#9141AC");
+    fillColorRow(row++, "TPS", "TPS Tech2 R&D-TRW", "", "#DC8ADD");
+    fillColorRow(row++, "TPS", "TPS PLM Plan", "", "#865E3C");
+    fillColorRow(row++, "TPS", "TPS PLM Live", "", "#CDAB8F");
+    fillColorRow(row++, "TPS", "TPS Tech1 Production", "", "#F66151");
+    fillColorRow(row++, "TPS", "TPS Tech1 Platform", "", "#E01B24");
+    fillColorRow(row++, "TPS", "TPS Tech1 CustomerCare", "", "#6CFD0C");
+    fillColorRow(row++, "TPS", "TPS Bid", "", "#A51D2D");
+    fillColorRow(row++, "TPS", "TPS Bid Documentation", "", "#A51D2D");
+    fillColorRow(row++, "TPS", "TPS Tech1 SMiP", "", "#E5A50A");
+    fillColorRow(row++, "TPS", "TPS Tech2 SMiP", "", "#F9F06B");
+    fillColorRow(row++, "TPS", "TPS PLM", "", "#C64600");
+    fillColorRow(row++, "TPS", "TPS PLM Plan", "", "#E66100");
+    fillColorRow(row++, "TPS", "TPS PLM Live", "", "#FFBE6F");
+    fillColorRow(row++, "TPS", "TPS PLM TRW", "", "#FF7800");
+    fillColorRow(row++, "TPS", "TPS PLM Algorithms", "", "#FF7800");
+    fillColorRow(row++, "TPS", "TPS Tech1 PM", "", "#F5C211");
+    fillColorRow(row++, "TPS", "TPS Tech2 PM", "", "#F8E45C");
+    fillColorRow(row++, "TPS", "TPS QM Excellence", "", "#04FCED");
+}
+
+
+void ColorModel::fillColorRow(int row, QString dep, QString team, QString comp, QColor color)
+{
+    addRow();
+    ModelValue mv;
+    QModelIndex nIndex;
+    mv.row = row;
+
+    mv.col = (int)Columns::DEPARTMENT;
+    mv.value = dep;
+    nIndex = QAbstractItemModel::createIndex(mv.row, mv.col);
+    setComboBox(nIndex, mv.value);
+    list_.append(mv);
+    emit dataChanged(nIndex, nIndex);
+
+    mv.col = (int)Columns::TEAM;
+    mv.value = team;
+    nIndex = QAbstractItemModel::createIndex(mv.row, mv.col);
+    setComboBox(nIndex, mv.value);
+    list_.append(mv);
+    emit dataChanged(nIndex, nIndex);
+
+    mv.col = (int)Columns::COMPONENT;
+    mv.value = comp;
+    nIndex = QAbstractItemModel::createIndex(mv.row, mv.col);
+    setComboBox(nIndex, mv.value);
+    list_.append(mv);
+    emit dataChanged(nIndex, nIndex);
+
+    mv.col = (int)Columns::COLOR;
+    mv.color = color;
+    nIndex = QAbstractItemModel::createIndex(mv.row, mv.col);
+    list_.append(mv);
+    emit dataChanged(nIndex, nIndex);
+}
+
+
 void ColorModel::printValues(const QString& area) const
 {
     qDebug() << "=================" << area << "(" << rows_ << ")=================";
@@ -241,4 +317,3 @@ void ColorModel::printValues(const QString& area) const
         qDebug() << tmp;
     }
 }
-

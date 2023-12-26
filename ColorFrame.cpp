@@ -12,6 +12,9 @@ ColorFrame::ColorFrame(QWidget *parent) : QTabWidget(parent)
     vl->addWidget(f);
     QHBoxLayout *hl = new QHBoxLayout;
     hl->addStretch();
+    QPushButton *loadDefault = new QPushButton(tr("Load default"), f);
+    hl->addWidget(loadDefault);
+    QObject::connect(loadDefault, SIGNAL(clicked()), this, SIGNAL(oLoadDefault()));
     QPushButton *remove = new QPushButton(tr("Remove all"), f);
     hl->addWidget(remove);
     QObject::connect(remove, SIGNAL(clicked()), this, SIGNAL(oRemoveAll()));
@@ -31,5 +34,3 @@ ColorFrame::ColorFrame(QWidget *parent) : QTabWidget(parent)
     
     setLayout(vl);
 }
-
-

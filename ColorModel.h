@@ -27,11 +27,13 @@ public slots:
     void setComboBox(const QModelIndex&, const QString);
     void setColor(const QModelIndex, const QColor);
     void addRow();
+    void loadDefault();
     void removeRow(int);
     void removeAll();
     void save();
     int restore();
 private:
+    void fillColorRow(int, QString, QString, QString, QColor);
     void printValues(const QString &area) const;
     int rows_;
     int columns_;
