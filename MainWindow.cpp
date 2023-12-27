@@ -40,7 +40,6 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     og1st->setText("1. OG");
     og1st->setGeometry(900, 50, 200, 200);
     
-    
     helpWidget_ = new HelpWidget();
     helpWidget_->hide();
     
@@ -99,6 +98,15 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 
     QString message = tr("Detailed plan of Hacon's 1st floor");
     statusBar()->showMessage(message);
+    setAttribute( Qt::WA_QuitOnClose, true);
+}
+
+
+MainWindow::~MainWindow()
+{
+    delete helpWidget_;
+    delete colorFrame_;
+    delete memberFrame_;
 }
 
 
@@ -546,4 +554,13 @@ void MainWindow::toInitState()
     addRooms();
     addPeople();
     assignPeopleToRooms();
+}
+
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    helpWidget_->close();
+    colorFrame_->close();
+    memberFrame_->close();
+    event->accept();
 }

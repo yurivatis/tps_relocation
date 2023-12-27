@@ -17,6 +17,7 @@ class MainWindow : public QMainWindow {
 Q_OBJECT
 public:
     MainWindow(QApplication *app, QWidget *parent = 0);
+    virtual ~MainWindow();
     QList<Person*>* people() {return &people_;}
 protected:
     virtual void paintEvent(QPaintEvent *);
@@ -46,6 +47,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
     virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
+    virtual void closeEvent(QCloseEvent *event);
     virtual bool event(QEvent *event);
 private slots:
     void importDatabase();
