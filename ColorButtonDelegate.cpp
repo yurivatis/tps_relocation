@@ -24,10 +24,10 @@ QWidget *ColorButtonDelegate::createEditor(QWidget *parent,
 }
 
 
-void ColorButtonDelegate::setEditorData(QWidget *editor,
+void ColorButtonDelegate::setEditorData(QWidget */*editor*/,
                                     const QModelIndex &) const
 {
-    CPushButton *pushButton = static_cast<CPushButton*>(editor);
+//    CPushButton *pushButton = static_cast<CPushButton*>(editor);
 }
 
 

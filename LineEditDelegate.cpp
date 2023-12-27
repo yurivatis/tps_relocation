@@ -38,7 +38,7 @@ void LineEditDelegate::setEditorData(QWidget *editor,
 
 QWidget *LineEditDelegate::createEditor(QWidget *parent,
                                         const QStyleOptionViewItem &/* option*/,
-                                        const QModelIndex & index ) const
+                                        const QModelIndex & /*index*/ ) const
 {
     QLineEdit *lineEdit = new QLineEdit(parent);
     lineEdit->setFrame(true);

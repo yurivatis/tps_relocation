@@ -252,6 +252,7 @@ void MainWindow::assignPeopleToRooms()
 
 void MainWindow::redrawMates(Room* r)
 {
+    float offsetY = 0;
     int sz = r->people_.size();
     if(sz == 0) {
         return;
@@ -259,6 +260,13 @@ void MainWindow::redrawMates(Room* r)
     QPolygonF roomPlg = r->coordinates();
     float stepX = (roomPlg.at(roomPlg.size() - 1).x() - roomPlg.at(0).x()) / sz;
     float stepY = (roomPlg.at(roomPlg.size() - 1).y() - roomPlg.at(0).y()) / sz;
+    if(r->nr() == 163) {
+        if(sz == 1) {
+            offsetY = (roomPlg.at(2).y() - roomPlg.at(3).y());
+        } else {
+            offsetY = (roomPlg.at(2).y() - roomPlg.at(3).y()) / (sz - 1);
+        }
+    }
     for(int i = 0; i < sz; i++) {
         QPolygonF personPlg;
         QPoint p0, p1, p2, p3;
@@ -266,10 +274,32 @@ void MainWindow::redrawMates(Room* r)
         p0.setY(roomPlg.at(0).y() + i * stepY);
         personPlg << p0;
         p1.setX(roomPlg.at(1).x() + i * stepX);
-        p1.setY(roomPlg.at(1).y() + i * stepY);
+        if(r->nr() == 163 && i > 0) {
+            p1.setY(roomPlg.at(1).y() + (i - 1) * (stepY - offsetY));
+        } else {
+            p1.setY(roomPlg.at(1).y() + i * (stepY - offsetY));
+        }
         personPlg << p1;
-        p2.setX(roomPlg.at(1).x() + (i+1) * stepX);
-        p2.setY(roomPlg.at(1).y() + (i+1) * stepY);
+        if(r->nr() == 119 && i == sz - 1) {
+            p2.setX(roomPlg.at(3).x());
+            p2.setY(roomPlg.at(3).y());
+        } else if(r->nr() == 163) {
+            p2.setX(roomPlg.at(1).x() + (i+1) * stepX);
+            if(i == 0 && sz != 1) {
+                p2.setY(roomPlg.at(1).y() + (stepY));
+            } if(i == 0 && sz == 1) {
+                p2.setY(roomPlg.at(1).y() + (stepY - offsetY));
+            } else {
+                p2.setY(roomPlg.at(1).y() + (i) * (stepY - offsetY));
+            }
+        } else {
+            p2.setX(roomPlg.at(1).x() + (i+1) * stepX);
+            if(i == 0) {
+                p2.setY(roomPlg.at(1).y() + (i+1) * (stepY));
+            } else {
+                p2.setY(roomPlg.at(1).y() + (i+1) * (stepY - offsetY));
+            }
+        }
         personPlg << p2;
         p3.setX(roomPlg.at(0).x() + (i+1) * stepX);
         p3.setY(roomPlg.at(0).y() + (i+1) * stepY);

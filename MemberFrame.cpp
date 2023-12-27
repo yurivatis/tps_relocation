@@ -3,6 +3,7 @@
 #include <QHeaderView>
 #include <QButtonGroup>
 #include <QPushButton>
+#include <QLineEdit>
 
 MemberFrame::MemberFrame(QWidget *parent) : QTabWidget(parent)
 {
