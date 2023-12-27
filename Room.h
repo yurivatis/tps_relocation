@@ -21,9 +21,11 @@ public:
     bool removePerson(Person *);
     bool dummy() {return dummy_;}
     QList<Person*>people_;
+    void orientation(RoomNrOrientation ro) {ro_ = ro;}
     RoomNrOrientation orientation() {return ro_;}
     int rotation() {return rotation_;}
     void rotation(int r) {rotation_ = r;}
+    virtual void redrawMates();
 private:
     int capacity_;
     int nr_;
@@ -31,4 +33,20 @@ private:
     bool dummy_;
     RoomNrOrientation ro_;
     int rotation_;
+};
+
+
+class Room163: public Room {
+public:
+    Room163(int nr, int capacity, QList<int>list);
+    Room163(int nr, int capacity, QPolygonF coordinates);
+    virtual void redrawMates();
+};
+
+
+class Room119: public Room {
+public:
+    Room119(int nr, int capacity, QList<int>list);
+    Room119(int nr, int capacity, QPolygonF coordinates);
+    virtual void redrawMates();
 };

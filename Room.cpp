@@ -105,3 +105,146 @@ bool Room::removePerson(Person* person)
     return true;
 }
 
+
+void Room::redrawMates()
+{
+    int sz = people_.size();
+    if(sz == 0) {
+        return;
+    }
+    QPolygonF roomPlg = coordinates();
+    float stepX = (roomPlg.at(roomPlg.size() - 1).x() - roomPlg.at(0).x()) / sz;
+    float stepY = (roomPlg.at(roomPlg.size() - 1).y() - roomPlg.at(0).y()) / sz;
+
+    for(int i = 0; i < sz; i++) {
+        QPolygonF personPlg;
+        QPoint p0, p1, p2, p3;
+        p0.setX(roomPlg.at(0).x() + i * stepX);
+        p0.setY(roomPlg.at(0).y() + i * stepY);
+        personPlg << p0;
+        p1.setX(roomPlg.at(1).x() + i * stepX);
+        p1.setY(roomPlg.at(1).y() + i * stepY);
+        personPlg << p1;
+        p2.setX(roomPlg.at(1).x() + (i+1) * stepX);
+        p2.setY(roomPlg.at(1).y() + (i+1) * stepY);
+        personPlg << p2;
+        p3.setX(roomPlg.at(0).x() + (i+1) * stepX);
+        p3.setY(roomPlg.at(0).y() + (i+1) * stepY);
+        personPlg << p3;
+        people_.at(i)->coordinates(personPlg);
+    }
+}
+
+
+Room163::Room163(int nr, int capacity, QList<int>list) : Room(nr, capacity, list)
+{
+    this->nr((int)163);
+    orientation(Orientation::DOWN);
+}
+
+
+Room163::Room163(int nr, int capacity, QPolygonF coordinates) : Room (nr, capacity, coordinates)
+{
+    this->nr((int)163);
+    orientation(Orientation::DOWN);
+}
+
+
+void Room163::redrawMates()
+{
+    float offsetY = 0;
+    int sz = people_.size();
+    if(sz == 0) {
+        return;
+    }
+    QPolygonF roomPlg = coordinates();
+    float stepX = (roomPlg.at(roomPlg.size() - 1).x() - roomPlg.at(0).x()) / sz;
+    float stepY = (roomPlg.at(roomPlg.size() - 1).y() - roomPlg.at(0).y()) / sz;
+    if(sz == 1) {
+        offsetY = (roomPlg.at(2).y() - roomPlg.at(3).y());
+    } else {
+        offsetY = (roomPlg.at(2).y() - roomPlg.at(3).y()) / (sz - 1);
+    }
+    for(int i = 0; i < sz; i++) {
+        QPolygonF personPlg;
+        QPoint p0, p1, p2, p3;
+        p0.setX(roomPlg.at(0).x() + i * stepX);
+        p0.setY(roomPlg.at(0).y() + i * stepY);
+        personPlg << p0;
+        p1.setX(roomPlg.at(1).x() + i * stepX);
+        if(i > 0) {
+            p1.setY(roomPlg.at(1).y() + (i - 1) * (stepY - offsetY));
+        } else {
+            p1.setY(roomPlg.at(1).y() + i * (stepY - offsetY));
+        }
+        personPlg << p1;
+        p2.setX(roomPlg.at(3).x());
+        p2.setY(roomPlg.at(3).y());
+        p2.setX(roomPlg.at(1).x() + (i+1) * stepX);
+        if(i == 0 && sz != 1) {
+            p2.setY(roomPlg.at(1).y() + (stepY));
+        } if(i == 0 && sz == 1) {
+            p2.setY(roomPlg.at(1).y() + (stepY - offsetY));
+        } else {
+            p2.setY(roomPlg.at(1).y() + (i) * (stepY - offsetY));
+        }
+        personPlg << p2;
+        p3.setX(roomPlg.at(0).x() + (i+1) * stepX);
+        p3.setY(roomPlg.at(0).y() + (i+1) * stepY);
+        personPlg << p3;
+        people_.at(i)->coordinates(personPlg);
+    }
+}
+
+
+Room119::Room119(int nr, int capacity, QPolygonF coordinates) : Room(nr, capacity, coordinates)
+{
+    orientation(Orientation::RIGHT);
+    rotation(-20);
+}
+
+
+Room119::Room119(int nr, int capacity, QList<int>list): Room(nr, capacity, list)
+{
+    orientation(Orientation::RIGHT);
+    rotation(-20);
+}
+
+
+void Room119::redrawMates()
+{
+    int sz = people_.size();
+    if(sz == 0) {
+        return;
+    }
+    QPolygonF roomPlg = coordinates();
+    float stepX = (roomPlg.at(roomPlg.size() - 1).x() - roomPlg.at(0).x()) / sz;
+    float stepY = (roomPlg.at(roomPlg.size() - 1).y() - roomPlg.at(0).y()) / sz;
+    for(int i = 0; i < sz; i++) {
+        QPolygonF personPlg;
+        QPoint p0, p1, p2, p3;
+        p0.setX(roomPlg.at(0).x() + i * stepX);
+        p0.setY(roomPlg.at(0).y() + i * stepY);
+        personPlg << p0;
+        p1.setX(roomPlg.at(1).x() + i * stepX);
+        p1.setY(roomPlg.at(1).y() + i * stepY);
+        personPlg << p1;
+        if(i == sz - 1) {
+            p2.setX(roomPlg.at(3).x());
+            p2.setY(roomPlg.at(3).y());
+        } else {
+            p2.setX(roomPlg.at(1).x() + (i+1) * stepX);
+            if(i == 0) {
+                p2.setY(roomPlg.at(1).y() + (i+1) * (stepY));
+            } else {
+                p2.setY(roomPlg.at(1).y() + (i+1) * (stepY));
+            }
+        }
+        personPlg << p2;
+        p3.setX(roomPlg.at(0).x() + (i+1) * stepX);
+        p3.setY(roomPlg.at(0).y() + (i+1) * stepY);
+        personPlg << p3;
+        people_.at(i)->coordinates(personPlg);
+    }
+}
+

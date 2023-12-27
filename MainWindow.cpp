@@ -160,7 +160,7 @@ void MainWindow::addRooms()
     rooms_.append(new Room(160, 3, { 660, 900,  660, 800, 710, 800, 710, 900}));
     rooms_.append(new Room(161, 3, { 710, 900,  710, 800, 760, 800, 760, 900}));
     rooms_.append(new Room(162, 3, { 760, 900,  760, 800, 810, 800, 810, 900}));
-    rooms_.append(new Room(163, 3, { 810, 900,  810, 800, 840, 800, 900, 860, 900, 900}));
+    rooms_.append(new Room163(163, 3, {810, 900,  810, 800, 840, 800, 900, 860, 900, 900}));
     rooms_.append(new Room(  0, 0, { 900, 900,  900, 960, 960, 960}, Orientation::CENTER, -90, true));
     rooms_.append(new Room(176, 4, { 960, 960,  960, 860, 1060, 860, 1060, 960}));
     rooms_.append(new Room(175, 2, {1060, 960, 1060, 900, 1120, 900, 1120, 960}));
@@ -197,7 +197,7 @@ void MainWindow::addRooms()
     rooms_.append(new Room(112, 0, { 350, 780,  350, 700,  430, 700,  430, 780}, Orientation::CENTER));
     rooms_.append(new Room(  0, 0, { 430, 780,  430, 700,  470, 700,  470, 780, 430, 780}, Orientation::CENTER, -90, true));
 
-    rooms_.append(new Room(119, 4, { 490, 565,  587, 530,  610, 610,  610, 620, 505, 620}, Orientation::RIGHT, -20));
+    rooms_.append(new Room119(119, 4, { 490, 565,  587, 530,  610, 610,  610, 620, 505, 620}));
     rooms_.append(new Room(120, 4, { 475, 510,  572, 475,  587, 530,  490, 565}, Orientation::RIGHT, -18));
 
     rooms_.append(new Room(121, 0, { 355, 550,  444, 520,  462, 595,  345, 595}, Orientation::CENTER, 0));
@@ -252,60 +252,10 @@ void MainWindow::assignPeopleToRooms()
 
 void MainWindow::redrawMates(Room* r)
 {
-    float offsetY = 0;
-    int sz = r->people_.size();
-    if(sz == 0) {
+    if(r->people_.size() == 0) {
         return;
     }
-    QPolygonF roomPlg = r->coordinates();
-    float stepX = (roomPlg.at(roomPlg.size() - 1).x() - roomPlg.at(0).x()) / sz;
-    float stepY = (roomPlg.at(roomPlg.size() - 1).y() - roomPlg.at(0).y()) / sz;
-    if(r->nr() == 163) {
-        if(sz == 1) {
-            offsetY = (roomPlg.at(2).y() - roomPlg.at(3).y());
-        } else {
-            offsetY = (roomPlg.at(2).y() - roomPlg.at(3).y()) / (sz - 1);
-        }
-    }
-    for(int i = 0; i < sz; i++) {
-        QPolygonF personPlg;
-        QPoint p0, p1, p2, p3;
-        p0.setX(roomPlg.at(0).x() + i * stepX);
-        p0.setY(roomPlg.at(0).y() + i * stepY);
-        personPlg << p0;
-        p1.setX(roomPlg.at(1).x() + i * stepX);
-        if(r->nr() == 163 && i > 0) {
-            p1.setY(roomPlg.at(1).y() + (i - 1) * (stepY - offsetY));
-        } else {
-            p1.setY(roomPlg.at(1).y() + i * (stepY - offsetY));
-        }
-        personPlg << p1;
-        if(r->nr() == 119 && i == sz - 1) {
-            p2.setX(roomPlg.at(3).x());
-            p2.setY(roomPlg.at(3).y());
-        } else if(r->nr() == 163) {
-            p2.setX(roomPlg.at(1).x() + (i+1) * stepX);
-            if(i == 0 && sz != 1) {
-                p2.setY(roomPlg.at(1).y() + (stepY));
-            } if(i == 0 && sz == 1) {
-                p2.setY(roomPlg.at(1).y() + (stepY - offsetY));
-            } else {
-                p2.setY(roomPlg.at(1).y() + (i) * (stepY - offsetY));
-            }
-        } else {
-            p2.setX(roomPlg.at(1).x() + (i+1) * stepX);
-            if(i == 0) {
-                p2.setY(roomPlg.at(1).y() + (i+1) * (stepY));
-            } else {
-                p2.setY(roomPlg.at(1).y() + (i+1) * (stepY - offsetY));
-            }
-        }
-        personPlg << p2;
-        p3.setX(roomPlg.at(0).x() + (i+1) * stepX);
-        p3.setY(roomPlg.at(0).y() + (i+1) * stepY);
-        personPlg << p3;
-        r->people_.at(i)->coordinates(personPlg);
-    }
+    r->redrawMates();
     update();
 }
 
