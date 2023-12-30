@@ -138,7 +138,9 @@ QStringList SqlInterface::getColorTable()
     QStringList sl;
     QString val;
     QSqlQuery query;
-    query.prepare(QString("select department, team, component, red, green, blue, alpha from departments inner join colors on departments.id = colors.department_id inner join teams on colors.team_id = teams.id inner join components on colors.component_id = components.id;"));
+    query.prepare(QString("select department, team, component, red, green, blue, alpha "
+                          "from departments inner join colors on departments.id = colors.department_id "
+                          "inner join teams on colors.team_id = teams.id inner join components on colors.component_id = components.id;"));
     query.exec();
     while (query.next()) {
         for(int i = 0; i < 7; i++) {

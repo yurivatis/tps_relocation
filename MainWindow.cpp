@@ -99,6 +99,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     QString message = tr("Detailed plan of Hacon's 1st floor");
     statusBar()->showMessage(message);
     setAttribute( Qt::WA_QuitOnClose, true);
+    unstored_ = false;
 }
 
 
@@ -304,6 +305,7 @@ void MainWindow::exportDatabase()
     } else if(sqlInteface->exportToDb(people_) == true) {
         msgBox.setText(QString("Successfully exported"));
         msgBox.setIcon(QMessageBox::Information);
+        unstored_ = false;
     } else {
         msgBox.setText(QString("Export failed"));
         msgBox.setIcon(QMessageBox::Warning);
@@ -361,6 +363,7 @@ void MainWindow::importDatabase()
             addPeople();
             assignPeopleToRooms();
             memberModel_->restore(&people_);
+            unstored_ = false;
         } else {
             msgBox.setText(QString("Import from %1 failed").arg(fileName));
             msgBox.setIcon(QMessageBox::Warning);
@@ -449,7 +452,7 @@ void MainWindow::mousePressEvent(QMouseEvent* mouseEvent)
 
 void MainWindow::updateMates()
 {
-     foreach(Person *p, people_) {
+    foreach(Person *p, people_) {
         if(p->modified() != p->room()) {
             foreach(Room *r, rooms_) {
                 if(r->nr() == p->room()) {
@@ -468,6 +471,7 @@ void MainWindow::updateMates()
             p->room(p->modified());
         }
     }
+    unstored_ = true;
 }
 
 
@@ -496,12 +500,14 @@ void MainWindow::mouseMoveEvent(QMouseEvent* mouseEvent)
         return;
     }
     movingPerson_->moveTo(mouseEvent->x(), mouseEvent->y());
+    unstored_ = true;
     update();
 }
 
 
 bool MainWindow::event(QEvent* event)
 {
+    bool accepted = true;
     if(event->type() == QEvent::ToolTip) {
         QString tooltip;
         QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
@@ -521,8 +527,34 @@ bool MainWindow::event(QEvent* event)
             }
         }
         QToolTip::showText(helpEvent->globalPos(), tooltip);
+    } else if (event->type() == QEvent::Close) {
+        if(unstored_ == true) {
+            QMessageBox messageBox;
+            messageBox.setWindowTitle("Close the application?");
+            messageBox.setIcon(QMessageBox::Warning);
+            messageBox.setInformativeText(tr("You have unstored changes. Close?"));
+            messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            messageBox.setDefaultButton(QMessageBox::No);
+            const int ret = messageBox.exec();
+            switch (ret) {
+                case QMessageBox::Yes:
+                    helpWidget_->close();
+                    colorFrame_->close();
+                    memberFrame_->close();
+                break;
+                case QMessageBox::No:
+                    accepted = false;
+                    event->ignore();
+                break;
+            }
+        }
     }
-    return QWidget::event(event);
+    if(accepted) {
+        return QWidget::event(event);
+    } else {
+        event->ignore();
+        return false;
+    }
 }
 
 
@@ -554,13 +586,4 @@ void MainWindow::toInitState()
     addRooms();
     addPeople();
     assignPeopleToRooms();
-}
-
-
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-    helpWidget_->close();
-    colorFrame_->close();
-    memberFrame_->close();
-    event->accept();
 }

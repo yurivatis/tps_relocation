@@ -43,11 +43,11 @@ private:
     LineEditDelegate *memberRoomDelegate_;
     Person *movingPerson_;
     HelpWidget *helpWidget_;
+    bool unstored_;
 protected:
     virtual void mousePressEvent(QMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
     virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
-    virtual void closeEvent(QCloseEvent *event);
     virtual bool event(QEvent *event);
 private slots:
     void importDatabase();
