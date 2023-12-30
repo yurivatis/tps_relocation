@@ -94,7 +94,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     QObject::connect(removeDelegate_, SIGNAL(oRemoveRow(int)), colorModel_, SLOT(removeRow(int)));
     QObject::connect(colorFrame_, SIGNAL(oSave()), colorModel_, SLOT(save()));
     QObject::connect(colorModel_, SIGNAL(oUpdated()), this, SLOT(assignPeopleToRooms()));
-    QObject::connect(memberFrame_, SIGNAL(oSave()), this, SLOT(updateMates()));
+    QObject::connect(memberFrame_, SIGNAL(oApply()), this, SLOT(updateMates()));
 
     QString message = tr("Detailed plan of Hacon's 1st floor");
     statusBar()->showMessage(message);

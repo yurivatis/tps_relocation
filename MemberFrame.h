@@ -10,5 +10,5 @@ public:
     MemberFrame(QWidget *parent = 0);
     TableView *memberView_;
 signals:
-    void oSave();
+    void oApply();
 };

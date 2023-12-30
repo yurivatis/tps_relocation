@@ -206,7 +206,7 @@ bool SqlInterface::exportToDb(QList<Person *> people)
     bool ret;
     QSqlQuery query;
     foreach(Person *p, people) {
-        if(p->room() != 0) {
+//        if(p->room() != 0) {
             QString s = QString("UPDATE people SET room = :room WHERE name = '%1' and surname = '%2';").arg(p->name()).arg(p->surname());
             query.prepare(s);
             query.bindValue(":room", p->room());
@@ -214,7 +214,7 @@ bool SqlInterface::exportToDb(QList<Person *> people)
             if(ret == false) {
                 return false;
             }
-        }
+//        }
     }
     return true;
 }

@@ -14,9 +14,9 @@ MemberFrame::MemberFrame(QWidget *parent) : QTabWidget(parent)
     vl->addWidget(f);
     QHBoxLayout *hl = new QHBoxLayout;
     hl->addStretch();
-    QPushButton *save = new QPushButton(tr("Save"), f);
-    hl->addWidget(save);
-    QObject::connect(save, SIGNAL(clicked()), this, SIGNAL(oSave()));
+    QPushButton *apply = new QPushButton(tr("Apply"), f);
+    hl->addWidget(apply);
+    QObject::connect(apply, SIGNAL(clicked()), this, SIGNAL(oApply()));
     QPushButton *close = new QPushButton(tr("Close"), f);
     hl->addWidget(close);
     QObject::connect(close, SIGNAL(clicked()), this, SLOT(close()));
