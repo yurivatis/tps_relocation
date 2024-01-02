@@ -1,4 +1,5 @@
 #include "SQLite.h"
+#include "constants.h"
 #include <QSqlQuery>
 #include <QDebug>
 #include <QColor>
@@ -271,22 +272,22 @@ bool SqlInterface::import(const QString cvs)
                 for(int j = 0; j < values.length() - 1; ++j) {
                     tmp = values.at(j);
                     switch (j) {
-                        case 2: // locations
+                        case (int)SQLitePeopleColumns::LOCATION: // locations
                         if(!locations.contains(tmp)) {
                             locations.append(tmp);
                         }
                         break;
-                        case 3: // departments
+                        case (int)SQLitePeopleColumns::DEPARTMENT: // departments
                         if(!departments.contains(tmp)) {
                             departments.append(tmp);
                         }
                         break;
-                        case 4: // teams
+                        case (int)SQLitePeopleColumns::TEAM: // teams
                         if(!teams.contains(tmp)) {
                             teams.append(tmp);
                         }
                         break;
-                        case 6: // components
+                        case (int)SQLitePeopleColumns::COMPONENT: // components
                         if(!components.contains(tmp)) {
                             components.append(tmp);
                         }
@@ -319,29 +320,29 @@ bool SqlInterface::import(const QString cvs)
                 QStringList values = line.at(i).split(',');
                 for(int j = 0; j < values.length(); ++j) {
                     switch(j) {
-                        case 0: // surname
-                        case 1: // name
-                        case 5: // role
+                        case (int)SQLitePeopleColumns::SURNAME: // surname
+                        case (int)SQLitePeopleColumns::NAME: // name
+                        case (int)SQLitePeopleColumns::ROLE: // role
                             req.append('\'');
                             req.append(values.at(j));
                             req.append('\'');
                             req.append(",");
                             break;
-                        case 7: // room
+                        case (int)SQLitePeopleColumns::ROOM: // room
 //                            req.append('\'');
                             req.append(values.at(j));
 //                            req.append('\'');
                             break;
-                        case 2: // location
+                        case (int)SQLitePeopleColumns::LOCATION: // location
                             req.append(QString("(select id from locations where locations.location = '%1'),").arg(values.at(j)));
                             break;
-                        case 3: // department
+                        case (int)SQLitePeopleColumns::DEPARTMENT: // department
                             req.append(QString("(select id from departments where departments.department = '%1'),").arg(values.at(j)));
                             break;
-                        case 4: // teams
+                        case (int)SQLitePeopleColumns::TEAM: // teams
                             req.append(QString("(select id from teams where teams.team = '%1'),").arg(values.at(j)));
                             break;
-                        case 6: // component
+                        case (int)SQLitePeopleColumns::COMPONENT: // component
                             req.append(QString("(select id from components where components.component = '%1'),").arg(values.at(j)));
                             break;
                     }

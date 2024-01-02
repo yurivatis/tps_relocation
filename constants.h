@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef TPS_RELOC_VERSION
-    #define TPS_RELOC_VERSION "1.10"
+    #define TPS_RELOC_VERSION "1.11"
 #endif
 
 typedef enum class Column {
@@ -19,7 +19,6 @@ typedef enum class MemberColumn {
     TOTAL_COLUMNS
 } MemberColumns;
 
-
 typedef enum class Orientation {
     DOWN = 0,
     LEFT,
@@ -27,3 +26,15 @@ typedef enum class Orientation {
     RIGHT,
     CENTER
 } RoomNrOrientation;
+
+typedef enum class SQLiteOrder {
+    SURNAME = 0,
+    NAME,
+    LOCATION,
+    DEPARTMENT,
+    TEAM,
+    ROLE,
+    COMPONENT,
+    ROOM
+} SQLitePeopleColumns;
+
