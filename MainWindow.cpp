@@ -436,7 +436,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 void MainWindow::mousePressEvent(QMouseEvent* mouseEvent)
 {
     movingPerson_ = nullptr;
-    QPointF f(mouseEvent->x(), mouseEvent->y());
+    QPointF f(mouseEvent->position().x(), mouseEvent->position().y());
     if(mouseEvent->button() != Qt::LeftButton) {
         return;
     }
@@ -480,7 +480,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* mouseEvent)
     if(mouseEvent->button() != Qt::LeftButton || movingPerson_ == nullptr) {
         return;
     }
-    QPointF f(mouseEvent->x(), mouseEvent->y());
+    QPointF f(mouseEvent->position().x(), mouseEvent->position().y());
     foreach(Room *r, rooms_) {
         if(r->coordinates().containsPoint(f, Qt::WindingFill) && r->nr() != 0 && r->capacity() > 0) {
             movingPerson_->modified(r->nr());
@@ -499,7 +499,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent* mouseEvent)
     if(movingPerson_ == nullptr) {
         return;
     }
-    movingPerson_->moveTo(mouseEvent->x(), mouseEvent->y());
+    movingPerson_->moveTo(mouseEvent->position().x(), mouseEvent->position().y());
     unstored_ = true;
     update();
 }
@@ -520,9 +520,6 @@ bool MainWindow::event(QEvent* event)
                     tooltip += "Component: " + p->component() + "\r\n";
                 }
                 tooltip += "Position: " + p->role() + "\r\n";
-//                 if(p->isLead()) {
-//                     tooltip += "Team Lead\r\n";
-//                 }
                 tooltip += "Room: " + QString::number(p->room());
             }
         }
