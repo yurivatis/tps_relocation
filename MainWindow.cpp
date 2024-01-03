@@ -28,12 +28,15 @@
 
 MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 {
-    QWidget *mainWidget = new QWidget;
-//     QScrollArea *scrollArea = new QScrollArea(this);
-//     scrollArea->setWidget(mainWidget);
-//     scrollArea->setWidgetResizable(true);
-//    setCentralWidget(scrollArea);
-    setCentralWidget(mainWidget);
+    paintWidget_ = new PaintWidget(this);
+    QScrollArea *scrollArea = new QScrollArea(this);
+    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scrollArea->setWidget(paintWidget_);
+    paintWidget_->setFixedSize(1500, 1000);
+//    scrollArea->setWidgetResizable(true);
+    setCentralWidget(scrollArea);
+//    setCentralWidget(mainWidget);
     QLabel *og1st = new QLabel(this);
     QFont lblF("Arial", 30, QFont::Bold);
     og1st->setFont(lblF);
@@ -90,7 +93,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     createMenus();
     memberModel_->restore(&people_);
 
-    setFixedSize(1500, 1000);
+//    setFixedSize(1500, 1000);
     QObject::connect(depd, SIGNAL(oComboText(QString)), teamd, SLOT(getDepartment(QString)));
     QObject::connect(teamd, SIGNAL(oComboText(QString)), compd, SLOT(getTeam(QString)));
     QObject::connect(depd, SIGNAL(oComboChanged(QModelIndex,QString)), colorModel_, SLOT(setComboBox(QModelIndex,QString)));
@@ -110,6 +113,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     statusBar()->showMessage(message);
     setAttribute( Qt::WA_QuitOnClose, true);
     unstored_ = false;
+    movingPerson_ = nullptr;
 }
 
 
@@ -278,7 +282,7 @@ void MainWindow::redrawMates(Room* r)
         return;
     }
     r->redrawMates();
-    update();
+    paintWidget_->update();
 }
 
 
@@ -385,14 +389,12 @@ void MainWindow::importDatabase()
     }
 }
 
-
+/*
 void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     QPen pen;
     QColor color;
-    QPalette pal = QPalette();
-    QFont fnt("Helvetica", 7, QFont::Normal);
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
 
@@ -441,7 +443,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
     }
 }
-
+*/
 
 void MainWindow::mousePressEvent(QMouseEvent* mouseEvent)
 {
@@ -500,7 +502,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* mouseEvent)
     }
     movingPerson_->clear();
     movingPerson_ = nullptr;
-    update();
+    paintWidget_->update();
 }
 
 
@@ -511,7 +513,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent* mouseEvent)
     }
     movingPerson_->moveTo(mouseEvent->position().x(), mouseEvent->position().y());
     unstored_ = true;
-    update();
+    paintWidget_->update();
 }
 
 
@@ -593,4 +595,5 @@ void MainWindow::toInitState()
     addRooms();
     addPeople();
     assignPeopleToRooms();
+    unstored_ = false;
 }

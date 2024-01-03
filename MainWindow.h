@@ -11,6 +11,9 @@
 #include "MemberModel.h"
 #include "MemberFrame.h"
 #include "HelpWidget.h"
+#include "PaintWidget.h"
+
+class PaintWidget;
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
@@ -18,8 +21,14 @@ public:
     MainWindow(QApplication *app, QWidget *parent = 0);
     virtual ~MainWindow();
     QList<Person*>* people() {return &people_;}
+    QList<Room*>* rooms() {return &rooms_;}
+    Person *moving() {return movingPerson_;}
 protected:
-    virtual void paintEvent(QPaintEvent *);
+    virtual void mousePressEvent(QMouseEvent *mouseEvent);
+    virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
+    virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
+    virtual bool event(QEvent *event);
+//    virtual void paintEvent(QPaintEvent *);
 private:
     void createMenus();
     void addRooms();
@@ -36,12 +45,8 @@ private:
     MemberFrame *memberFrame_;
     Person *movingPerson_;
     HelpWidget *helpWidget_;
+    PaintWidget *paintWidget_;
     bool unstored_;
-protected:
-    virtual void mousePressEvent(QMouseEvent *mouseEvent);
-    virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
-    virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
-    virtual bool event(QEvent *event);
 private slots:
     void importDatabase();
     void exportDatabase();
