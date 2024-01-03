@@ -2,7 +2,6 @@
 #include "CComboBox.h"
 #include "constants.h"
 #include "SQLite.h"
-#include <QDebug>
 #include "TableView.h"
 #include "ColorModel.h"
 

@@ -2,7 +2,6 @@
 #include "CPushButton.h"
 #include "ColorModel.h"
 #include "constants.h"
-#include <QDebug>
 #include <QMouseEvent>
 
 RemoveButtonDelegate::RemoveButtonDelegate(QObject *parent)

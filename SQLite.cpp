@@ -1,7 +1,6 @@
 #include "SQLite.h"
 #include "constants.h"
 #include <QSqlQuery>
-#include <QDebug>
 #include <QColor>
 #include <QSqlError>
 

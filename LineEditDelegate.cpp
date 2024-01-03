@@ -1,7 +1,6 @@
 #include "LineEditDelegate.h"
 #include "MemberModel.h"
 #include "constants.h"
-#include <QDebug>
 #include <QSortFilterProxyModel>
 #include "TableView.h"
 
