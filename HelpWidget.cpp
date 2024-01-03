@@ -41,4 +41,20 @@ HelpWidget::HelpWidget(QWidget *parent): QWidget(parent)
 	QPushButton *closeButton = new QPushButton(tr("Close"), this);
 	l->addWidget(closeButton, 0, Qt::AlignRight);
 	connect(closeButton, SIGNAL(released()), this, SLOT(close()));
+    setWindowTitle(QObject::tr("Help"));
+    pos_ = QRect(50, 150, 400, 200);
+}
+
+
+void HelpWidget::closeEvent(QCloseEvent *event)
+{
+    pos_ = this->geometry();
+    event->accept();
+}
+
+
+void HelpWidget::showEvent(QShowEvent *event)
+{
+    this->setGeometry(pos_);
+    event->accept();
 }

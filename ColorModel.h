@@ -2,8 +2,6 @@
 #include <QStandardItemModel>
 #include <QVariant>
 #include <QList>
-#include "ColorButtonDelegate.h"
-#include "ComboboxDelgate.h"
 
 typedef struct modelValue {
     int row;
@@ -24,8 +22,8 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QVariant headerData(int section, Qt::Orientation, int role = Qt::DisplayRole) const override;
 public slots:
-    void setComboBox(const QModelIndex&, const QString);
-    void setColor(const QModelIndex, const QColor);
+    void setComboBox(QModelIndex, QString);
+    void setColor(QModelIndex&, QColor);
     void addRow();
     void loadDefault();
     void removeRow(int);

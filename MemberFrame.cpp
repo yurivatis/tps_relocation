@@ -23,6 +23,21 @@ MemberFrame::MemberFrame(QWidget *parent) : QTabWidget(parent)
     f->setLayout(hl);
     
     setLayout(vl);
+    setWindowTitle(QObject::tr("Hacon members"));
+    pos_ = QRect(50, 150, 700, 300);
 }
 
+
+void MemberFrame::closeEvent(QCloseEvent *event)
+{
+    pos_ = this->geometry();
+    event->accept();
+}
+
+
+void MemberFrame::showEvent(QShowEvent *event)
+{
+    this->setGeometry(pos_);
+    event->accept();
+}
 

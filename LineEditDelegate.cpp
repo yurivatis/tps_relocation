@@ -1,11 +1,9 @@
 #include "LineEditDelegate.h"
-#include "CComboBox.h"
+#include "MemberModel.h"
 #include "constants.h"
-#include "MainWindow.h"
-#include "SQLite.h"
 #include <QDebug>
+#include <QSortFilterProxyModel>
 #include "TableView.h"
-#include "ColorModel.h"
 
 LineEditDelegate::LineEditDelegate(QObject *parent)
      : QStyledItemDelegate(parent)
@@ -18,17 +16,56 @@ void LineEditDelegate::setEditorData(QWidget *editor,
 {
     QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
     TableView *mv = (TableView *)parent();
-    MemberModel *mm = (MemberModel *)mv->model();
+    SortFilterProxyModel *mm = (SortFilterProxyModel *)mv->model();
+    if(mm->columnCount() <= 0 || mm->people()->size() <= 0) {
+        return;
+    }
+    QString fullName = mm->data(mm->index(index.row(), (int)MemberColumns::FULL_NAME)).toString();
+    Person *person = nullptr;
+    foreach(Person *p, *(mm->people())) {
+        if(p->displayFullName() == fullName) {
+            person = p;
+            break;
+        }
+    }
+    if(person == nullptr) {
+        return;
+    }
+
     switch(index.column()) {
-        case (int)MemberColumn::NAME:
+        case (int)MemberColumn::FULL_NAME:
         {
-            lineEdit->setText(mm->people()->at(index.row())->displayFullName());
+            lineEdit->setText(person->displayFullName());
+            lineEdit->setEnabled(false);
+            break;
+        }
+        case (int)MemberColumn::DEPARTMENT:
+        {
+            lineEdit->setText(person->department());
+            lineEdit->setEnabled(false);
+            break;
+        }
+        case (int)MemberColumn::TEAM:
+        {
+            lineEdit->setText(person->team());
+            lineEdit->setEnabled(false);
+            break;
+        }
+        case (int)MemberColumn::ROLE:
+        {
+            lineEdit->setText(person->role());
+            lineEdit->setEnabled(false);
+            break;
+        }
+        case (int)MemberColumn::COMPONENT:
+        {
+            lineEdit->setText(person->component());
             lineEdit->setEnabled(false);
             break;
         }
         case (int)MemberColumn::ROOM:
         {
-            lineEdit->setText(QString::number(mm->people()->at(index.row())->room()));
+            lineEdit->setText(QString::number(person->room()));
             lineEdit->setEnabled(true);
             break;
         }
@@ -51,10 +88,19 @@ void LineEditDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
 {
     QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
-    TableView *mv = (TableView *)parent();
-    MemberModel *mm = (MemberModel *)mv->model();
+    SortFilterProxyModel *mm = (SortFilterProxyModel*)model;
+//    SortFilterProxyModel *mm = (SortFilterProxyModel *)mv->model();
     QString value = lineEdit->text();
-    mm->people()->at(index.row())->modified(value.toInt());
+    if(!mm || !mm->people() || mm->people()->size() <= 0) {
+        return;
+    }
+    QString fullName = model->data(model->index(index.row(), (int)MemberColumns::FULL_NAME)).toString();
+    foreach(Person *p, *(mm->people())) {
+        if(p->displayFullName() == fullName) {
+            p->modified(value.toInt());
+            break;
+        }
+    }
     model->setData(index, value, Qt::DisplayRole);
 }
 

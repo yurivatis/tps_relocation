@@ -1,4 +1,4 @@
-#include "ComboboxDelgate.h"
+#include "ComboboxDelegate.h"
 #include "CComboBox.h"
 #include "constants.h"
 #include "SQLite.h"

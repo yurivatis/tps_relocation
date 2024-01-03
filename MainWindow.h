@@ -3,12 +3,11 @@
 #include <QMainWindow>
 #include <QPaintEvent>
 #include <QList>
+#include <QSortFilterProxyModel>
 
 #include "Room.h"
 #include "ColorModel.h"
 #include "ColorFrame.h"
-#include "RemoveButtonDelegate.h"
-#include "LineEditDelegate.h"
 #include "MemberModel.h"
 #include "MemberFrame.h"
 #include "HelpWidget.h"
@@ -33,14 +32,8 @@ private:
     ColorModel *colorModel_;
     ColorFrame *colorFrame_;
     MemberModel *memberModel_;
+    SortFilterProxyModel *proxyMemberModel_;
     MemberFrame *memberFrame_;
-    ComboBoxDelegate * departmentDelegate_;
-    ComboBoxDelegate * teamDelegate_;
-    ComboBoxDelegate * componentDelegate_;
-    ColorButtonDelegate * colorDelegate_;
-    RemoveButtonDelegate * removeDelegate_;
-    LineEditDelegate *memberNameDelegate_;
-    LineEditDelegate *memberRoomDelegate_;
     Person *movingPerson_;
     HelpWidget *helpWidget_;
     bool unstored_;
@@ -54,7 +47,6 @@ private slots:
     void exportDatabase();
     void exportCsv();
     void toInitState();
-    void setupColors();
     void assignPeopleToRooms();
     void makeScreenshot();
     void updateMates();

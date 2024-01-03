@@ -1,5 +1,3 @@
-#include "MainWindow.h"
-#include "constants.h"
 #include <QMenu>
 #include <QMenuBar>
 #include <QFile>
@@ -20,7 +18,13 @@
 #include <QToolTip>
 #include <QLabel>
 #include <QPageLayout>
+#include "MainWindow.h"
 #include "SQLite.h"
+#include "LineEditDelegate.h"
+#include "ComboboxDelegate.h"
+#include "ColorButtonDelegate.h"
+#include "RemoveButtonDelegate.h"
+#include "constants.h"
 
 MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 {
@@ -30,10 +34,6 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 //     scrollArea->setWidgetResizable(true);
 //    setCentralWidget(scrollArea);
     setCentralWidget(mainWidget);
-//     QPixmap pixmap("./hacon.png");
-//     QLabel *icon = new QLabel("", this);
-//     icon->setPixmap(QString::fromUtf8(":/images/hacon.png"));
-//     icon->setGeometry(900, 50, 200, 200);
     QLabel *og1st = new QLabel(this);
     QFont lblF("Arial", 30, QFont::Bold);
     og1st->setFont(lblF);
@@ -47,51 +47,61 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     colorModel_->restore();
 
     colorFrame_ = new ColorFrame();
-//     colorFrame_->setWindowModality(Qt::ApplicationModal);
     colorFrame_->colorView_->setModel(colorModel_);
-    colorFrame_->setWindowTitle(QObject::tr("Customize colors"));
     
-    departmentDelegate_ = new ComboBoxDelegate(colorFrame_->colorView_);
-    colorFrame_->colorView_->setItemDelegateForColumn((int)Column::DEPARTMENT, departmentDelegate_);
+    ComboBoxDelegate *depd = new ComboBoxDelegate(colorFrame_->colorView_);
+    colorFrame_->colorView_->setItemDelegateForColumn((int)Column::DEPARTMENT, depd);
 
-    teamDelegate_ = new ComboBoxDelegate(colorFrame_->colorView_);
-    colorFrame_->colorView_->setItemDelegateForColumn((int)Column::TEAM, teamDelegate_);
+    ComboBoxDelegate *teamd = new ComboBoxDelegate(colorFrame_->colorView_);
+    colorFrame_->colorView_->setItemDelegateForColumn((int)Column::TEAM, teamd);
 
-    componentDelegate_ = new ComboBoxDelegate(colorFrame_->colorView_);
-    colorFrame_->colorView_->setItemDelegateForColumn((int)Column::COMPONENT, componentDelegate_);
+    ComboBoxDelegate *compd = new ComboBoxDelegate(colorFrame_->colorView_);
+    colorFrame_->colorView_->setItemDelegateForColumn((int)Column::COMPONENT, compd);
 
-    colorDelegate_ = new ColorButtonDelegate(colorFrame_->colorView_);
-    colorFrame_->colorView_->setItemDelegateForColumn((int)Column::COLOR, colorDelegate_);
+    ColorButtonDelegate *cold = new ColorButtonDelegate(colorFrame_->colorView_);
+    colorFrame_->colorView_->setItemDelegateForColumn((int)Column::COLOR, cold);
 
-    removeDelegate_ = new RemoveButtonDelegate(colorFrame_->colorView_);
-    colorFrame_->colorView_->setItemDelegateForColumn((int)Column::REMOVE, removeDelegate_);
+    RemoveButtonDelegate *remd = new RemoveButtonDelegate(colorFrame_->colorView_);
+    colorFrame_->colorView_->setItemDelegateForColumn((int)Column::REMOVE, remd);
 
     toInitState();
 
-    memberModel_ = new MemberModel(people_.size(), (int)MemberColumns::TOTAL_COLUMNS);
     memberFrame_ = new MemberFrame;
-    memberFrame_->memberView_->setModel(memberModel_);
+    memberModel_ = new MemberModel(people_.size(), (int)MemberColumns::TOTAL_COLUMNS, this);
+    proxyMemberModel_ = new SortFilterProxyModel(this);
+    proxyMemberModel_->people(&people_);
+    proxyMemberModel_->setSourceModel(memberModel_);
+    memberFrame_->memberView_->setModel(proxyMemberModel_);
 
-    memberNameDelegate_ = new LineEditDelegate(memberFrame_->memberView_);
-    memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::NAME, memberNameDelegate_);
-    memberRoomDelegate_ = new LineEditDelegate(memberFrame_->memberView_);
-    memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::ROOM, memberRoomDelegate_);
-
+    LineEditDelegate *mdn = new LineEditDelegate(memberFrame_->memberView_);
+    memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::FULL_NAME, mdn);
+    LineEditDelegate *mdd = new LineEditDelegate(memberFrame_->memberView_);
+    memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::DEPARTMENT, mdd);
+    LineEditDelegate *mdt = new LineEditDelegate(memberFrame_->memberView_);
+    memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::TEAM, mdt);
+    LineEditDelegate *mdc = new LineEditDelegate(memberFrame_->memberView_);
+    memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::COMPONENT, mdc);
+    LineEditDelegate *mdr = new LineEditDelegate(memberFrame_->memberView_);
+    memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::ROLE, mdr);
+    LineEditDelegate *mdroom = new LineEditDelegate(memberFrame_->memberView_);
+    memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::ROOM, mdroom);
+    memberFrame_->memberView_->setSortingEnabled(true);
+    memberFrame_->memberView_->sortByColumn((int)MemberColumns::FULL_NAME, Qt::AscendingOrder);
     createMenus();
     memberModel_->restore(&people_);
 
     setFixedSize(1500, 1000);
-    QObject::connect(departmentDelegate_, SIGNAL(oComboText(const QString)), teamDelegate_, SLOT(getDepartment(const QString)));
-    QObject::connect(teamDelegate_, SIGNAL(oComboText(const QString)), componentDelegate_, SLOT(getTeam(const QString)));
-    QObject::connect(departmentDelegate_, SIGNAL(oComboChanged(const QModelIndex &, const QString)), colorModel_, SLOT(setComboBox(const QModelIndex&, const QString)));
-    QObject::connect(teamDelegate_, SIGNAL(oComboChanged(const QModelIndex &, const QString)), colorModel_, SLOT(setComboBox(const QModelIndex&, const QString)));
-    QObject::connect(componentDelegate_, SIGNAL(oComboChanged(const QModelIndex &, const QString)), colorModel_, SLOT(setComboBox(const QModelIndex&, const QString)));
-    QObject::connect(colorDelegate_, SIGNAL(oColorChanged(const QModelIndex, const QColor)), colorModel_, SLOT(setColor(const QModelIndex, const QColor)));
+    QObject::connect(depd, SIGNAL(oComboText(QString)), teamd, SLOT(getDepartment(QString)));
+    QObject::connect(teamd, SIGNAL(oComboText(QString)), compd, SLOT(getTeam(QString)));
+    QObject::connect(depd, SIGNAL(oComboChanged(QModelIndex,QString)), colorModel_, SLOT(setComboBox(QModelIndex,QString)));
+    QObject::connect(teamd, SIGNAL(oComboChanged(QModelIndex,QString)), colorModel_, SLOT(setComboBox(QModelIndex,QString)));
+    QObject::connect(compd, SIGNAL(oComboChanged(QModelIndex,QString)), colorModel_, SLOT(setComboBox(QModelIndex,QString)));
+    QObject::connect(cold, SIGNAL(oColorChanged(QModelIndex&,QColor)), colorModel_, SLOT(setColor(QModelIndex&,QColor)));
     QObject::connect(colorFrame_, SIGNAL(oLoadDefault()), colorModel_, SLOT(loadDefault()));
     QObject::connect(colorFrame_, SIGNAL(oAddRow()), colorModel_, SLOT(addRow()));
     QObject::connect(colorFrame_, SIGNAL(oRestore()), colorModel_, SLOT(restore()));
     QObject::connect(colorFrame_, SIGNAL(oRemoveAll()), colorModel_, SLOT(removeAll()));
-    QObject::connect(removeDelegate_, SIGNAL(oRemoveRow(int)), colorModel_, SLOT(removeRow(int)));
+    QObject::connect(remd, SIGNAL(oRemoveRow(int)), colorModel_, SLOT(removeRow(int)));
     QObject::connect(colorFrame_, SIGNAL(oSave()), colorModel_, SLOT(save()));
     QObject::connect(colorModel_, SIGNAL(oUpdated()), this, SLOT(assignPeopleToRooms()));
     QObject::connect(memberFrame_, SIGNAL(oApply()), this, SLOT(updateMates()));
@@ -138,17 +148,20 @@ void MainWindow::createMenus()
     QAction *edit = new QAction(tr("&Edit"), this);
     membersMenu->addAction(edit);
     QObject::connect(edit, SIGNAL(triggered()), memberFrame_, SLOT(show()) );
+    QObject::connect(edit, SIGNAL(triggered()), memberFrame_, SLOT(raise()) );
 
     QAction * colors = new QAction(tr("&Colors"), this);
     customizeMenu->addAction(colors);
-    QObject::connect(colors, SIGNAL(triggered()), this, SLOT(setupColors()));
-    
+    QObject::connect(colors, SIGNAL(triggered()), colorFrame_, SLOT(show()));
+    QObject::connect(colors, SIGNAL(triggered()), colorFrame_, SLOT(raise()));
+
     QAction *screenshot = new QAction(tr("&Take screenshot"), this);
     printMenu->addAction(screenshot);
     QObject::connect(screenshot, SIGNAL(triggered()), this, SLOT(makeScreenshot()));
     
     QAction *about = new QAction(tr("&About"), this);
     helpMenu->addAction(about);
+    QObject::connect(about, SIGNAL(triggered()), helpWidget_, SLOT(raise()));
     QObject::connect(about, SIGNAL(triggered()), helpWidget_, SLOT(show()));
 }
 
@@ -373,18 +386,11 @@ void MainWindow::importDatabase()
 }
 
 
-void MainWindow::setupColors()
-{
-    colorFrame_->show();
-}
-
-
 void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     QPen pen;
     QColor color;
-    pen.setColor(Qt::black);
     QPalette pal = QPalette();
     QFont fnt("Helvetica", 7, QFont::Normal);
     QBrush brush;
@@ -396,6 +402,7 @@ void MainWindow::paintEvent(QPaintEvent *)
             Person *p = rooms_.at(i)->people_.at(j);
             color = p->color();
             pen.setWidthF(0.5);
+            pen.setColor(Qt::white);
             painter.setPen(pen);
             QPainterPath path;
             if(p == movingPerson_) {
@@ -412,6 +419,8 @@ void MainWindow::paintEvent(QPaintEvent *)
             painter.drawPolygon(p->coordinates());
             if(room_nr != 0 && !rooms_.at(i)->dummy() && p) {
                 painter.save();
+                pen.setColor(Qt::black);
+                painter.setPen(pen);
                 painter.translate(p->coordinates().at(0).x(), p->coordinates().at(0).y());
                 painter.rotate(rooms_.at(i)->rotation());
                 if(p->isLead()) {
@@ -422,6 +431,7 @@ void MainWindow::paintEvent(QPaintEvent *)
             }
         }
         pen.setWidthF(2.5);
+        pen.setColor(Qt::black);
         painter.setPen(pen);
         if(!rooms_.at(i)->dummy()) {
             painter.drawPolygon(rooms_.at(i)->coordinates());

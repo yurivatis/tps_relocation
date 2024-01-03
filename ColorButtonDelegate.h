@@ -15,7 +15,7 @@ public:
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const override;
 
-void setEditorData(QWidget *editor, const QModelIndex &) const;
+void setEditorData(QWidget *editor, const QModelIndex &) const override;
 void setModelData(QWidget *editor, QAbstractItemModel *model,
 const QModelIndex &index) const override;
 
@@ -24,5 +24,5 @@ void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
 private slots:
     void showColorDialog();
 signals:
-    void oColorChanged(const QModelIndex, const QColor) const;
+    void oColorChanged(QModelIndex&, QColor);
 };

@@ -1,6 +1,5 @@
 #pragma once
 #include <QTableView>
-#include "ComboboxDelgate.h"
 
 class TableView : public QTableView {
 Q_OBJECT

@@ -1,11 +1,12 @@
 #pragma once
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QVariant>
 #include <QList>
 #include "Person.h"
 
 class MemberModel : public QStandardItemModel {
-Q_OBJECT
+    Q_OBJECT
 public:
     MemberModel(int rows, int cols, QObject *parent = nullptr);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -22,4 +23,14 @@ private:
     int columns_;
 signals:
     void oUpdated(int, int, Person*);
+};
+
+class SortFilterProxyModel : public QSortFilterProxyModel {
+    Q_OBJECT
+public:
+    SortFilterProxyModel(QObject *parent = nullptr);
+    QList<Person*>* people() {return people_;}
+    void people(QList<Person*>* p) {people_ = p;}
+private:
+    QList<Person*> *people_;
 };

@@ -31,6 +31,21 @@ ColorFrame::ColorFrame(QWidget *parent) : QTabWidget(parent)
     hl->addWidget(close);
     QObject::connect(close, SIGNAL(clicked()), this, SLOT(close()));
     f->setLayout(hl);
-    
     setLayout(vl);
+    setWindowTitle(QObject::tr("Customize colors"));
+    pos_ = QRect(50, 50, 600, 300);
+}
+
+
+void ColorFrame::closeEvent(QCloseEvent *event)
+{
+    pos_ = this->geometry();
+    event->accept();
+}
+
+
+void ColorFrame::showEvent(QShowEvent *event)
+{
+    this->setGeometry(pos_);
+    event->accept();
 }

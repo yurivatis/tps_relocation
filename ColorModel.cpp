@@ -1,6 +1,4 @@
 #include "ColorModel.h"
-#include "CComboBox.h"
-#include "CPushButton.h"
 #include "constants.h"
 #include "SQLite.h"
 #include <QDebug>
@@ -67,14 +65,14 @@ QVariant ColorModel::data(const QModelIndex &index, int role) const
             }
             break;
         }
-//         case Qt::EditRole:
-//         {
-//             if(index.column() == (int)Column::REMOVE) {
-// //                 pb->setCheckable(true);
-// //                 pb->setChecked(true);
-//             }
-//             break;
-//         }
+        // case Qt::EditRole:
+        // {
+        //     if(index.column() == (int)Column::REMOVE) {
+        //         pb->setCheckable(true);
+        //         pb->setChecked(true);
+        //     }
+        //     break;
+        // }
         case Qt::DisplayRole:
         {
             foreach(ModelValue item, list_) {
@@ -90,7 +88,7 @@ QVariant ColorModel::data(const QModelIndex &index, int role) const
 }
 
 
-void ColorModel::setComboBox(const QModelIndex& index, const QString value)
+void ColorModel::setComboBox(QModelIndex index, QString value)
 {
     ModelValue mv = {index.row(), index.column(), value, Qt::gray};
 
@@ -104,7 +102,7 @@ void ColorModel::setComboBox(const QModelIndex& index, const QString value)
 }
 
 
-void ColorModel::setColor(const QModelIndex index, const QColor color)
+void ColorModel::setColor(QModelIndex &index, QColor color)
 {
     ModelValue mv = {index.row(), index.column(), "", color};
     for( ModelListIterator it( list_ ); it.hasNext(); ) {
