@@ -1,5 +1,7 @@
 #include "ColorButtonDelegate.h"
 #include "CPushButton.h"
+#include "ColorModel.h"
+#include "TableView.h"
 #include "constants.h"
 #include <QDebug>
 #include <QMouseEvent>
@@ -17,6 +19,14 @@ QWidget *ColorButtonDelegate::createEditor(QWidget *parent,
     CPushButton *pb = new CPushButton(parent);
     pb->index(index);
     if(index.column() == (int)Column::COLOR) {
+        ColorModel *cm = (ColorModel*)(((TableView*)this->parent())->model());
+        for( ModelListIterator it( *(cm->modelValues()) ); it.hasNext(); ) {
+            auto myObj( it.next() );
+            if( myObj.row == index.row() && myObj.col == (int)Column::COLOR) {
+                pb->color(myObj.color);
+                break;
+            }
+        }
         QObject::connect(pb, SIGNAL(clicked()), this, SLOT(showColorDialog()));
     }
     pb->setAutoFillBackground(true);
@@ -54,8 +64,9 @@ void ColorButtonDelegate::showColorDialog()
     CPushButton *pb = qobject_cast<CPushButton*>(sender());
     if(pb != NULL) {
         QModelIndex index = pb->index();
-        QColor color = QColorDialog::getColor(color);
-        emit oColorChanged(index, color);
+        QColor color = QColorDialog::getColor(pb->color());
+        if(color.isValid()) {
+            emit oColorChanged(index, color);
+        }
     }
 }
-

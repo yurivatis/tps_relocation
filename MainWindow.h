@@ -28,11 +28,7 @@ public:
 public slots:
     void updateMates();
 protected:
-//    virtual void mousePressEvent(QMouseEvent *mouseEvent);
-//    virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
-//    virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
     virtual void closeEvent(QCloseEvent *event);
-//    virtual void paintEvent(QPaintEvent *);
 private:
     void createMenus();
     void addRooms();
@@ -57,6 +53,9 @@ private slots:
     void exportCsv();
     void toInitState();
     void assignPeopleToRooms();
+    void showHelpWidget();
+    void showColorFrame();
+    void showMemberFrame();
 signals:
     void eAssignColors();
 };

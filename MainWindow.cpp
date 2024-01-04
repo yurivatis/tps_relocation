@@ -152,13 +152,11 @@ void MainWindow::createMenus()
     
     QAction *edit = new QAction(tr("&Edit"), this);
     membersMenu->addAction(edit);
-    QObject::connect(edit, SIGNAL(triggered()), memberFrame_, SLOT(show()) );
-    QObject::connect(edit, SIGNAL(triggered()), memberFrame_, SLOT(raise()) );
+    QObject::connect(edit, SIGNAL(triggered()), this, SLOT(showMemberFrame()) );
 
     QAction * colors = new QAction(tr("&Colors"), this);
     customizeMenu->addAction(colors);
-    QObject::connect(colors, SIGNAL(triggered()), colorFrame_, SLOT(show()));
-    QObject::connect(colors, SIGNAL(triggered()), colorFrame_, SLOT(raise()));
+    QObject::connect(colors, SIGNAL(triggered()), this, SLOT(showColorFrame()));
 
     QAction *screenshot = new QAction(tr("&Take screenshot"), this);
     printMenu->addAction(screenshot);
@@ -166,8 +164,7 @@ void MainWindow::createMenus()
     
     QAction *about = new QAction(tr("&About"), this);
     helpMenu->addAction(about);
-    QObject::connect(about, SIGNAL(triggered()), helpWidget_, SLOT(raise()));
-    QObject::connect(about, SIGNAL(triggered()), helpWidget_, SLOT(show()));
+    QObject::connect(about, SIGNAL(triggered()), this, SLOT(showHelpWidget()));
 }
 
 
@@ -391,23 +388,6 @@ void MainWindow::importDatabase()
 }
 
 
-// void MainWindow::mousePressEvent(QMouseEvent* mouseEvent)
-// {
-//     movingPerson_ = nullptr;
-//     QPointF f(mouseEvent->position().x(), mouseEvent->position().y());
-//     if(mouseEvent->button() != Qt::LeftButton) {
-//         return;
-//     }
-//     foreach(Person*p, people_) {
-//         if(p->coordinates().containsPoint(f, Qt::WindingFill)) {
-//             movingPerson_ = p;
-//             p->offset(f.x(), f.y());
-//             break;
-//         }
-//     }
-// }
-
-
 void MainWindow::updateMates()
 {
     foreach(Person *p, people_) {
@@ -433,36 +413,6 @@ void MainWindow::updateMates()
 }
 
 
-// void MainWindow::mouseReleaseEvent(QMouseEvent* mouseEvent)
-// {
-//     if(mouseEvent->button() != Qt::LeftButton || movingPerson_ == nullptr) {
-//         return;
-//     }
-//     QPointF f(mouseEvent->position().x(), mouseEvent->position().y());
-//     foreach(Room *r, rooms_) {
-//         if(r->coordinates().containsPoint(f, Qt::WindingFill) && r->nr() != 0 && r->capacity() > 0) {
-//             movingPerson_->modified(r->nr());
-//             updateMates();
-//             break;
-//         }
-//     }
-//     movingPerson_->clear();
-//     movingPerson_ = nullptr;
-//     paintWidget_->update();
-// }
-
-
-// void MainWindow::mouseMoveEvent(QMouseEvent* mouseEvent)
-// {
-//     if(movingPerson_ == nullptr) {
-//         return;
-//     }
-//     movingPerson_->moveTo(mouseEvent->position().x(), mouseEvent->position().y());
-//     unstored_ = true;
-//     paintWidget_->update();
-// }
-
-
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     bool accepted = true;
@@ -470,15 +420,12 @@ void MainWindow::closeEvent(QCloseEvent* event)
         QMessageBox messageBox;
         messageBox.setWindowTitle("Close the application?");
         messageBox.setIcon(QMessageBox::Warning);
-        messageBox.setInformativeText(tr("You have unstored changes. Close?"));
+        messageBox.setInformativeText(tr("You have unsaved changes. Close?"));
         messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         messageBox.setDefaultButton(QMessageBox::No);
         const int ret = messageBox.exec();
         switch (ret) {
             case QMessageBox::Yes:
-                helpWidget_->close();
-                colorFrame_->close();
-                memberFrame_->close();
             break;
             case QMessageBox::No:
                 accepted = false;
@@ -487,32 +434,14 @@ void MainWindow::closeEvent(QCloseEvent* event)
         }
     }
     if(accepted) {
+        helpWidget_->close();
+        colorFrame_->close();
+        memberFrame_->close();
         event->accept();
     } else {
         event->ignore();
     }
 }
-
-
-// void MainWindow::makeScreenshot()
-// {
-//     menuBar()->hide();
-//     auto const pm = this->grab();
-//     menuBar()->show();
-
-// 	QString initialPath = "hacon_first_floor";
-// 	QString sFormat = "png";
-// 	QString sFullPath = initialPath;
-// 	sFullPath.append(".");
-// 	sFullPath.append(sFormat);
-
-// 	QString sFileName = QFileDialog::getSaveFileName(this, tr("Save As"),
-// 						sFullPath,
-// 						tr("%1 Files (*.%2);;All Files (*)")
-// 						.arg(sFormat.toUpper())
-// 						.arg(sFormat));
-//     pm.save(sFileName);
-// }
 
 
 void MainWindow::toInitState()
@@ -524,3 +453,34 @@ void MainWindow::toInitState()
     assignPeopleToRooms();
     unstored_ = false;
 }
+
+
+void MainWindow::showHelpWidget()
+{
+    if(helpWidget_->isVisible()) {
+        helpWidget_->close();
+    }
+    helpWidget_->show();
+    helpWidget_->raise();
+}
+
+
+void MainWindow::showColorFrame()
+{
+    if(colorFrame_->isVisible()) {
+        colorFrame_->close();
+    }
+    colorFrame_->show();
+    colorFrame_->raise();
+}
+
+
+void MainWindow:: showMemberFrame()
+{
+    if(memberFrame_->isVisible()) {
+        memberFrame_->close();
+    }
+    memberFrame_->show();
+    memberFrame_->raise();
+}
+

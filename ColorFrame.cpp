@@ -33,7 +33,7 @@ ColorFrame::ColorFrame(QWidget *parent) : QTabWidget(parent)
     f->setLayout(hl);
     setLayout(vl);
     setWindowTitle(QObject::tr("Customize colors"));
-    pos_ = QRect(50, 50, 600, 300);
+    pos_ = QRect(150, 150, 600, 300);
 }
 
 

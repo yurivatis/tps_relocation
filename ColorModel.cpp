@@ -95,7 +95,8 @@ void ColorModel::setComboBox(QModelIndex index, QString value)
     for( ModelListIterator it( list_ ); it.hasNext(); ) {
         auto myObj( it.next() );
         if( myObj.row == mv.row && myObj.col >= mv.col && myObj.col < (int)Column::COLOR) {
-            it.remove();  
+            it.remove();
+            break;
         }
     }
     list_.append(mv);
@@ -108,7 +109,8 @@ void ColorModel::setColor(QModelIndex &index, QColor color)
     for( ModelListIterator it( list_ ); it.hasNext(); ) {
         auto myObj( it.next() );
         if( myObj.row == mv.row && myObj.col == (int)Column::COLOR) {
-            it.remove();  
+            it.remove();
+            break;
         }
     }
     list_.append(mv);
