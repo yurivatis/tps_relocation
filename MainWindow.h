@@ -23,10 +23,14 @@ public:
     QList<Person*>* people() {return &people_;}
     QList<Room*>* rooms() {return &rooms_;}
     Person *moving() {return movingPerson_;}
+    void moving(Person *p) {movingPerson_ = p;}
+    void unstored(bool u) {unstored_ = u;}
+public slots:
+    void updateMates();
 protected:
-    virtual void mousePressEvent(QMouseEvent *mouseEvent);
-    virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
-    virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
+//    virtual void mousePressEvent(QMouseEvent *mouseEvent);
+//    virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
+//    virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
     virtual void closeEvent(QCloseEvent *event);
 //    virtual void paintEvent(QPaintEvent *);
 private:
@@ -53,7 +57,6 @@ private slots:
     void exportCsv();
     void toInitState();
     void assignPeopleToRooms();
-    void updateMates();
 signals:
     void eAssignColors();
 };

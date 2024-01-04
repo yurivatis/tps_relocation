@@ -391,21 +391,21 @@ void MainWindow::importDatabase()
 }
 
 
-void MainWindow::mousePressEvent(QMouseEvent* mouseEvent)
-{
-    movingPerson_ = nullptr;
-    QPointF f(mouseEvent->position().x(), mouseEvent->position().y());
-    if(mouseEvent->button() != Qt::LeftButton) {
-        return;
-    }
-    foreach(Person*p, people_) {
-        if(p->coordinates().containsPoint(f, Qt::WindingFill)) {
-            movingPerson_ = p;
-            p->offset(f.x(), f.y());
-            break;
-        }
-    }
-}
+// void MainWindow::mousePressEvent(QMouseEvent* mouseEvent)
+// {
+//     movingPerson_ = nullptr;
+//     QPointF f(mouseEvent->position().x(), mouseEvent->position().y());
+//     if(mouseEvent->button() != Qt::LeftButton) {
+//         return;
+//     }
+//     foreach(Person*p, people_) {
+//         if(p->coordinates().containsPoint(f, Qt::WindingFill)) {
+//             movingPerson_ = p;
+//             p->offset(f.x(), f.y());
+//             break;
+//         }
+//     }
+// }
 
 
 void MainWindow::updateMates()
@@ -433,34 +433,34 @@ void MainWindow::updateMates()
 }
 
 
-void MainWindow::mouseReleaseEvent(QMouseEvent* mouseEvent)
-{
-    if(mouseEvent->button() != Qt::LeftButton || movingPerson_ == nullptr) {
-        return;
-    }
-    QPointF f(mouseEvent->position().x(), mouseEvent->position().y());
-    foreach(Room *r, rooms_) {
-        if(r->coordinates().containsPoint(f, Qt::WindingFill) && r->nr() != 0 && r->capacity() > 0) {
-            movingPerson_->modified(r->nr());
-            updateMates();
-            break;
-        }
-    }
-    movingPerson_->clear();
-    movingPerson_ = nullptr;
-    paintWidget_->update();
-}
+// void MainWindow::mouseReleaseEvent(QMouseEvent* mouseEvent)
+// {
+//     if(mouseEvent->button() != Qt::LeftButton || movingPerson_ == nullptr) {
+//         return;
+//     }
+//     QPointF f(mouseEvent->position().x(), mouseEvent->position().y());
+//     foreach(Room *r, rooms_) {
+//         if(r->coordinates().containsPoint(f, Qt::WindingFill) && r->nr() != 0 && r->capacity() > 0) {
+//             movingPerson_->modified(r->nr());
+//             updateMates();
+//             break;
+//         }
+//     }
+//     movingPerson_->clear();
+//     movingPerson_ = nullptr;
+//     paintWidget_->update();
+// }
 
 
-void MainWindow::mouseMoveEvent(QMouseEvent* mouseEvent)
-{
-    if(movingPerson_ == nullptr) {
-        return;
-    }
-    movingPerson_->moveTo(mouseEvent->position().x(), mouseEvent->position().y());
-    unstored_ = true;
-    paintWidget_->update();
-}
+// void MainWindow::mouseMoveEvent(QMouseEvent* mouseEvent)
+// {
+//     if(movingPerson_ == nullptr) {
+//         return;
+//     }
+//     movingPerson_->moveTo(mouseEvent->position().x(), mouseEvent->position().y());
+//     unstored_ = true;
+//     paintWidget_->update();
+// }
 
 
 void MainWindow::closeEvent(QCloseEvent* event)

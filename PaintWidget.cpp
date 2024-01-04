@@ -102,6 +102,54 @@ bool PaintWidget::event(QEvent* event)
 }
 
 
+void PaintWidget::mouseReleaseEvent(QMouseEvent* mouseEvent)
+{
+    if(mouseEvent->button() != Qt::LeftButton || parent_->moving() == nullptr) {
+        return;
+    }
+    QPointF f(mouseEvent->position().x(), mouseEvent->position().y());
+    foreach(Room *r, *(parent_->rooms())) {
+        if(r->coordinates().containsPoint(f, Qt::WindingFill) && r->nr() != 0 && r->capacity() > 0) {
+            parent_->moving()->modified(r->nr());
+            parent_->updateMates();
+            break;
+        }
+    }
+    parent_->moving()->clear();
+    parent_->moving(nullptr);
+    update();
+}
+
+
+void PaintWidget::mouseMoveEvent(QMouseEvent* mouseEvent)
+{
+    if(parent_->moving() == nullptr) {
+        return;
+    }
+    parent_->moving()->moveTo(mouseEvent->position().x(), mouseEvent->position().y());
+    parent_->unstored(true);
+    update();
+}
+
+
+void PaintWidget::mousePressEvent(QMouseEvent* mouseEvent)
+{
+    parent_->moving(nullptr);
+    QPointF f(mouseEvent->position().x(), mouseEvent->position().y());
+    if(mouseEvent->button() != Qt::LeftButton) {
+        return;
+    }
+    foreach(Person*p, *(parent_->people())) {
+        if(p->coordinates().containsPoint(f, Qt::WindingFill)) {
+            parent_->moving(p);
+            p->offset(f.x(), f.y());
+            break;
+        }
+    }
+}
+
+
+
 void PaintWidget::makeScreenshot()
 {
     auto const pm = this->grab();
