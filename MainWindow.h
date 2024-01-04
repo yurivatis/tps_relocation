@@ -27,7 +27,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
     virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
-    virtual bool event(QEvent *event);
+    virtual void closeEvent(QCloseEvent *event);
 //    virtual void paintEvent(QPaintEvent *);
 private:
     void createMenus();
@@ -53,7 +53,6 @@ private slots:
     void exportCsv();
     void toInitState();
     void assignPeopleToRooms();
-    void makeScreenshot();
     void updateMates();
 signals:
     void eAssignColors();

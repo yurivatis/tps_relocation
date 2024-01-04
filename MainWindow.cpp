@@ -122,6 +122,7 @@ MainWindow::~MainWindow()
     delete helpWidget_;
     delete colorFrame_;
     delete memberFrame_;
+    delete paintWidget_;
 }
 
 
@@ -161,7 +162,7 @@ void MainWindow::createMenus()
 
     QAction *screenshot = new QAction(tr("&Take screenshot"), this);
     printMenu->addAction(screenshot);
-    QObject::connect(screenshot, SIGNAL(triggered()), this, SLOT(makeScreenshot()));
+    QObject::connect(screenshot, SIGNAL(triggered()), paintWidget_, SLOT(makeScreenshot()));
     
     QAction *about = new QAction(tr("&About"), this);
     helpMenu->addAction(about);
@@ -389,61 +390,6 @@ void MainWindow::importDatabase()
     }
 }
 
-/*
-void MainWindow::paintEvent(QPaintEvent *)
-{
-    QPainter painter(this);
-    QPen pen;
-    QColor color;
-    QBrush brush;
-    brush.setStyle(Qt::SolidPattern);
-
-    for(int i = 0; i < rooms_.size(); ++i) {
-        int room_nr = rooms_.at(i)->nr();
-        for(int j = 0; j < rooms_.at(i)->people_.size(); j++) {
-            Person *p = rooms_.at(i)->people_.at(j);
-            color = p->color();
-            pen.setWidthF(0.5);
-            pen.setColor(Qt::white);
-            painter.setPen(pen);
-            QPainterPath path;
-            if(p == movingPerson_) {
-                path.addPolygon(p->tmpcoordinates());
-                color.setAlpha(127);
-                p->tmpcoordinates();
-            } else {
-                path.addPolygon(p->coordinates());
-                color.setAlpha(255);
-            }
-            brush.setColor(color);
-            brush.setStyle(Qt::SolidPattern);
-            painter.fillPath(path, brush);
-            painter.drawPolygon(p->coordinates());
-            if(room_nr != 0 && !rooms_.at(i)->dummy() && p) {
-                painter.save();
-                pen.setColor(Qt::black);
-                painter.setPen(pen);
-                painter.translate(p->coordinates().at(0).x(), p->coordinates().at(0).y());
-                painter.rotate(rooms_.at(i)->rotation());
-                if(p->isLead()) {
-                    painter.setFont(QFont("Helvetica", 9, QFont::ExtraBold));
-                }
-                painter.drawText(6, 12, p->displayName());
-                painter.restore();
-            }
-        }
-        pen.setWidthF(2.5);
-        pen.setColor(Qt::black);
-        painter.setPen(pen);
-        if(!rooms_.at(i)->dummy()) {
-            painter.drawPolygon(rooms_.at(i)->coordinates());
-            painter.drawText(rooms_.at(i)->getCenter(), QString::number(rooms_.at(i)->nr()));
-        } else {
-            painter.drawPolyline(rooms_.at(i)->coordinates());
-        }
-    }
-}
-*/
 
 void MainWindow::mousePressEvent(QMouseEvent* mouseEvent)
 {
@@ -517,75 +463,56 @@ void MainWindow::mouseMoveEvent(QMouseEvent* mouseEvent)
 }
 
 
-bool MainWindow::event(QEvent* event)
+void MainWindow::closeEvent(QCloseEvent* event)
 {
     bool accepted = true;
-    if(event->type() == QEvent::ToolTip) {
-        QString tooltip;
-        QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
-        foreach(Person*p, people_) {
-            if(p->coordinates().containsPoint(helpEvent->pos(), Qt::WindingFill)) {
-                tooltip = p->surname() + " " + p->name() + "\r\n";
-                tooltip += "Department: " + p->department() + "\r\n";
-                tooltip += "Team: " + p->team() + "\r\n";
-                if(p->component().size() > 1){
-                    tooltip += "Component: " + p->component() + "\r\n";
-                }
-                tooltip += "Position: " + p->role() + "\r\n";
-                tooltip += "Room: " + QString::number(p->room());
-            }
-        }
-        QToolTip::showText(helpEvent->globalPos(), tooltip);
-    } else if (event->type() == QEvent::Close) {
-        if(unstored_ == true) {
-            QMessageBox messageBox;
-            messageBox.setWindowTitle("Close the application?");
-            messageBox.setIcon(QMessageBox::Warning);
-            messageBox.setInformativeText(tr("You have unstored changes. Close?"));
-            messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            messageBox.setDefaultButton(QMessageBox::No);
-            const int ret = messageBox.exec();
-            switch (ret) {
-                case QMessageBox::Yes:
-                    helpWidget_->close();
-                    colorFrame_->close();
-                    memberFrame_->close();
-                break;
-                case QMessageBox::No:
-                    accepted = false;
-                    event->ignore();
-                break;
-            }
+    if(unstored_ == true) {
+        QMessageBox messageBox;
+        messageBox.setWindowTitle("Close the application?");
+        messageBox.setIcon(QMessageBox::Warning);
+        messageBox.setInformativeText(tr("You have unstored changes. Close?"));
+        messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        messageBox.setDefaultButton(QMessageBox::No);
+        const int ret = messageBox.exec();
+        switch (ret) {
+            case QMessageBox::Yes:
+                helpWidget_->close();
+                colorFrame_->close();
+                memberFrame_->close();
+            break;
+            case QMessageBox::No:
+                accepted = false;
+                event->ignore();
+            break;
         }
     }
     if(accepted) {
-        return QWidget::event(event);
+        event->accept();
     } else {
         event->ignore();
-        return false;
     }
 }
 
 
-void MainWindow::makeScreenshot()
-{
-    menuBar()->hide();
-    auto const pm = this->grab();
-    menuBar()->show();
+// void MainWindow::makeScreenshot()
+// {
+//     menuBar()->hide();
+//     auto const pm = this->grab();
+//     menuBar()->show();
 
-	QString initialPath = "hacon_first_floor";
-	QString sFormat = "png";
-	QString sFullPath = initialPath;
-	sFullPath.append(".");
-	sFullPath.append(sFormat);
+// 	QString initialPath = "hacon_first_floor";
+// 	QString sFormat = "png";
+// 	QString sFullPath = initialPath;
+// 	sFullPath.append(".");
+// 	sFullPath.append(sFormat);
 
-	QString sFileName = QFileDialog::getSaveFileName(this, tr("Save As"),
-						sFullPath,
-						tr("%1 Files (*.%2);;All Files (*)")
-						.arg(sFormat.toUpper())
-						.arg(sFormat));
-    pm.save(sFileName);
-}
+// 	QString sFileName = QFileDialog::getSaveFileName(this, tr("Save As"),
+// 						sFullPath,
+// 						tr("%1 Files (*.%2);;All Files (*)")
+// 						.arg(sFormat.toUpper())
+// 						.arg(sFormat));
+//     pm.save(sFileName);
+// }
 
 
 void MainWindow::toInitState()

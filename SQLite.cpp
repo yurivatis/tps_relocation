@@ -189,9 +189,6 @@ void SqlInterface::people(QList<Person*>&list)
         p->location("Hannover");
         p->role(query.value(5).toString());
         p->room(query.value(6).toInt());
-//         p->setText(QString(p->surname().at(0)) + ". " + p->name());
-//         p->setAutoFillBackground(true);
-//         p->hide();
         list.append(p);
     }
     query.clear();

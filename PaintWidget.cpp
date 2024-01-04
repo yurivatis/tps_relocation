@@ -3,6 +3,8 @@
 #include <QBrush>
 #include <QPainter>
 #include <QPainterPath>
+#include <QToolTip>
+#include <QFileDialog>
 #include <QDebug>
 #include "Person.h"
 #include "PaintWidget.h"
@@ -68,4 +70,52 @@ void PaintWidget::paintEvent(QPaintEvent *)
             painter.drawPolyline(parent_->rooms()->at(i)->coordinates());
         }
     }
+}
+
+
+bool PaintWidget::event(QEvent* event)
+{
+    bool accepted = true;
+    if(event->type() == QEvent::ToolTip) {
+        QString tooltip;
+        QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
+        foreach(Person*p, *(parent_->people())) {
+            if(p->coordinates().containsPoint(helpEvent->pos(), Qt::WindingFill)) {
+                tooltip = p->surname() + " " + p->name() + "\r\n";
+                tooltip += "Department: " + p->department() + "\r\n";
+                tooltip += "Team: " + p->team() + "\r\n";
+                if(p->component().size() > 1){
+                    tooltip += "Component: " + p->component() + "\r\n";
+                }
+                tooltip += "Position: " + p->role() + "\r\n";
+                tooltip += "Room: " + QString::number(p->room());
+            }
+        }
+        QToolTip::showText(helpEvent->globalPos(), tooltip);
+    }
+    if(accepted) {
+        return QWidget::event(event);
+    } else {
+        event->ignore();
+        return false;
+    }
+}
+
+
+void PaintWidget::makeScreenshot()
+{
+    auto const pm = this->grab();
+
+    QString initialPath = "hacon_first_floor";
+    QString sFormat = "png";
+    QString sFullPath = initialPath;
+    sFullPath.append(".");
+    sFullPath.append(sFormat);
+
+    QString sFileName = QFileDialog::getSaveFileName(this, tr("Save As"),
+                                                     sFullPath,
+                                                     tr("%1 Files (*.%2);;All Files (*)")
+                                                         .arg(sFormat.toUpper())
+                                                         .arg(sFormat));
+    pm.save(sFileName);
 }
