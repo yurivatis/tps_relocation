@@ -7,7 +7,6 @@ QT += widgets
 QT += multimedia
 QT += core
 QT += sql
-QT += gui-private
 TARGET = tps_relocation 
 INCLUDEPATH += . inc
 
