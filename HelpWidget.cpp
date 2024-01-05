@@ -23,8 +23,8 @@ HelpWidget::HelpWidget(QWidget *parent): QWidget(parent)
 	tw->addTab(w, tr("About"));
 	QVBoxLayout *vl= new QVBoxLayout(w);
 	QLabel *lbl = new QLabel(w);
- 	lbl->setText(tr("tps_relocation is a small application allowing visualization and movement <br>"
-					" of all Hacon TPS members located on the 1st floor.<br><br>"));
+    lbl->setText(tr("tps_relocation is a small application allowing visualization and <br>"
+                    "room assignment to all Hacon members for the 1st floor.<br><br>"));
 	lbl->setTextFormat(Qt::RichText);
 	lbl->setOpenExternalLinks(true);
 	vl->addWidget(lbl);

@@ -240,38 +240,42 @@ void ColorModel::loadDefault()
     list_.clear();
     ModelValue mv;
     int row = 0;
-    fillColorRow(row++, "TPS", "TPS Tech1", "", "#1A5FB4");
-    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan", "", "#1A5FB4");
-    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan Dev1", "", "#99C1F1");
-    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan Dev2", "", "#62A0EA");
-    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan Dev3", "", "#3584E4");
-    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan QA", "", "#613583");
-    fillColorRow(row++, "TPS", "TPS Tech2", "", "#26A269");
-    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live", "", "#26A269");
-    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live Dev1", "", "#8FF0A4");
-    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live Dev2", "", "#33D17A");
-    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live QA", "", "#9141AC");
-    fillColorRow(row++, "TPS", "TPS Tech2 R&D-TRW", "", "#DC8ADD");
-    fillColorRow(row++, "TPS", "TPS PLM Plan", "", "#865E3C");
-    fillColorRow(row++, "TPS", "TPS PLM Live", "", "#CDAB8F");
-    fillColorRow(row++, "TPS", "TPS Tech1 Production", "", "#F66151");
-    fillColorRow(row++, "TPS", "TPS Tech1 Platform", "", "#48AEB5");
-    fillColorRow(row++, "TPS", "TPS Tech1 CustomerCare", "", "#6CFD0C");
-    fillColorRow(row++, "TPS", "TPS Bid", "", "#A51D2D");
-    fillColorRow(row++, "TPS", "TPS Bid Documentation", "", "#A51D2D");
-    fillColorRow(row++, "TPS", "TPS Tech1 SMiP", "", "#E5A50A");
-    fillColorRow(row++, "TPS", "TPS Tech2 SMiP", "", "#F9F06B");
-    fillColorRow(row++, "TPS", "TPS PLM", "", "#C64600");
-    fillColorRow(row++, "TPS", "TPS PLM Plan", "", "#E66100");
-    fillColorRow(row++, "TPS", "TPS PLM Live", "", "#FFBE6F");
-    fillColorRow(row++, "TPS", "TPS PLM TRW", "", "#F708FB");
-    fillColorRow(row++, "TPS", "TPS PLM Algorithms", "", "#FF7800");
-    fillColorRow(row++, "TPS", "TPS Tech1 PM", "", "#F5C211");
-    fillColorRow(row++, "TPS", "TPS Tech2 PM", "", "#F8E45C");
-    fillColorRow(row++, "TPS", "TPS QM Excellence", "", "#04FCED");
-    fillColorRow(row++, "TPS", "TPS R&D Excellence", "", "#04FCED");
+    fillColorRow(row++, "TPS", "TPS Tech1", "", QColor(0x1A, 0x5F, 0xB4));
+    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan", "", QColor(0x1A, 0x5F, 0xB4));
+    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan Dev1", "", QColor(0x99, 0xC1, 0xF1));
+    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan Dev2", "", QColor(0x62, 0xA0, 0xEA));
+    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan Dev3", "", QColor(0x35, 0x84, 0xE4));
+    fillColorRow(row++, "TPS", "TPS Tech1 R&D-Plan QA", "", QColor(0x61, 0x35, 0x83));
+    fillColorRow(row++, "TPS", "TPS Tech2", "", QColor(0x26, 0xA2, 0x69));
+    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live", "", QColor(0x33, 0xD1, 0x7A));
+    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live Dev1", "", QColor(0x8F, 0xF0, 0xA4));
+    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live Dev2", "", QColor(0x33, 0xD1, 0x7A));
+    fillColorRow(row++, "TPS", "TPS Tech2 R&D-Live QA", "", QColor(0x91, 0x41, 0xAC));
+    fillColorRow(row++, "TPS", "TPS Tech2 R&D-TRW", "", QColor(0xDC, 0x8A, 0xDD));
+    fillColorRow(row++, "TPS", "TPS PLM Plan", "", QColor(0x86, 0x5E, 0x3C));
+    fillColorRow(row++, "TPS", "TPS PLM Live", "", QColor(0xCD, 0xAB, 0x8F));
+    fillColorRow(row++, "TPS", "TPS Tech1 Production", "", QColor(0xF6, 0x61, 0x51));
+    fillColorRow(row++, "TPS", "TPS Tech1 Platform", "", QColor(0x48, 0xAE, 0xB5));
+    fillColorRow(row++, "TPS", "TPS Tech1 CustomerCare", "", QColor(0x6C, 0xFD, 0x0C));
+    fillColorRow(row++, "TPS", "TPS Bid", "", QColor(0xA5, 0x1D, 0x2D));
+    fillColorRow(row++, "TPS", "TPS Bid Documentation", "", QColor(0xA5, 0x1D, 0x2D));
+    fillColorRow(row++, "TPS", "TPS Tech1 SMiP", "", QColor(0xE5, 0xA5, 0x0A));
+    fillColorRow(row++, "TPS", "TPS Tech2 SMiP", "", QColor(0xF9, 0xF0, 0x6B));
+    fillColorRow(row++, "TPS", "TPS PLM", "", QColor(0xC6, 0x46, 0x00));
+    fillColorRow(row++, "TPS", "TPS PLM Plan", "", QColor(0xE6, 0x61, 0x00));
+    fillColorRow(row++, "TPS", "TPS PLM Live", "", QColor(0xFF, 0xBE, 0x6F));
+    fillColorRow(row++, "TPS", "TPS PLM TRW", "",  QColor(0xF7, 0x08, 0xFB));
+    fillColorRow(row++, "TPS", "TPS PLM Algorithms", "", QColor(0xFF, 0x78, 0x00));
+    fillColorRow(row++, "TPS", "TPS Tech1 PM", "", QColor(0xF5, 0xA7, 0x98));
+    fillColorRow(row++, "TPS", "TPS Tech2 PM", "", QColor(0xD2, 0xF8, 0xE0));
+    fillColorRow(row++, "TPS", "TPS QM Excellence", "", QColor(0x04, 0xFC, 0xED));
+    fillColorRow(row++, "TPS", "TPS R&D Excellence", "", QColor(0x04, 0xFC, 0xED));
 }
 
+//#f5a798
+//#d2f8e0
+//fillColorRow(row++, "TPS", "TPS PLM Plan", "", QColor(0xF5, 0xA7, 0x98));
+//fillColorRow(row++, "TPS", "TPS PLM Live", "", QColor(0xD2, 0xF8, 0xE0));
 
 void ColorModel::fillColorRow(int row, QString dep, QString team, QString comp, QColor color)
 {
