@@ -88,7 +88,8 @@ bool PaintWidget::event(QEvent* event)
                     tooltip += "Component: " + p->component() + "\r\n";
                 }
                 tooltip += "Position: " + p->role() + "\r\n";
-                tooltip += "Room: " + QString::number(p->room());
+                tooltip += "Room: " + QString::number(p->room())/* + "\r\n"*/;
+//                tooltip += "Location: " + p->location();
             }
         }
         QToolTip::showText(helpEvent->globalPos(), tooltip);

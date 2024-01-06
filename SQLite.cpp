@@ -138,9 +138,9 @@ QStringList SqlInterface::getColorTable()
     QStringList sl;
     QString val;
     QSqlQuery query;
-    query.prepare(QString("select department, team, component, red, green, blue, alpha "
-                          "from departments inner join colors on departments.id = colors.department_id "
-                          "inner join teams on colors.team_id = teams.id inner join components on colors.component_id = components.id;"));
+    query.prepare(QString("SELECT department, team, component, red, green, blue, alpha "
+                          "FROM departments INNER JOIN colors ON departments.id = colors.department_id "
+                          "INNER JOIN teams ON colors.team_id = teams.id INNER JOIN components ON colors.component_id = components.id;"));
     query.exec();
     while (query.next()) {
         for(int i = 0; i < 7; i++) {
@@ -175,20 +175,22 @@ void SqlInterface::people(QList<Person*>&list)
         db_.open();
     }
     QSqlQuery query;
-    query.prepare(QString("SELECT surname, name, department, team, component, role, room from people inner join departments on departments.id = people.department_id "
-                                                                                " inner join teams on teams.id = people.team_id "
-                                                                                " left join components on components.id = people.component_id "));
+    query.prepare(QString("SELECT surname, name, location, department, team, component, role, room from people "
+                          "INNER JOIN locations ON locations.id = people.location_id "
+                          "INNER JOIN departments ON departments.id = people.department_id "
+                          "INNER JOIN teams on teams.id = people.team_id "
+                          "LEFT JOIN components ON components.id = people.component_id "));
     query.exec();
     while (query.next()) {
         p = new Person();
         p->surname(query.value(0).toString());
         p->name(query.value(1).toString());
-        p->department(query.value(2).toString());
-        p->team(query.value(3).toString());
-        p->component(query.value(4).toString());
-        p->location("Hannover");
-        p->role(query.value(5).toString());
-        p->room(query.value(6).toInt());
+        p->location(query.value(2).toString());
+        p->department(query.value(3).toString());
+        p->team(query.value(4).toString());
+        p->component(query.value(5).toString());
+        p->role(query.value(6).toString());
+        p->room(query.value(7).toInt());
         list.append(p);
     }
     query.clear();
@@ -301,9 +303,8 @@ bool SqlInterface::import(const QString cvs)
 
     customizeColors();
 
-    if(f.open (QIODevice::ReadOnly| QIODevice::Text)){
+    if(f.open (QIODevice::ReadOnly| QIODevice::Text)) {
         QTextStream ts (&f);
-
         //Travel through the csv file
         while(!ts.atEnd()){
             QString req = "INSERT INTO people (surname, name, location_id, department_id, team_id, role, component_id, room) VALUES (";
