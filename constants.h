@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef TPS_RELOC_VERSION
-    #define TPS_RELOC_VERSION "1.15"
+    #define TPS_RELOC_VERSION "1.16"
 #endif
 
 typedef enum class Column {
