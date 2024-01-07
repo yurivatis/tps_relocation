@@ -31,6 +31,8 @@ QVariant MemberModel::headerData(int section, Qt::Orientation orientation, int r
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         if (section == (int)MemberColumns::FULL_NAME) {
             return QString("Name");
+        } else if (section == (int)MemberColumns::LOCATION) {
+            return QString("Location");
         } else if (section == (int)MemberColumns::DEPARTMENT) {
             return QString("Department");
         } else if (section == (int)MemberColumns::TEAM) {
@@ -65,6 +67,8 @@ QVariant MemberModel::data(const QModelIndex &index, int role) const
             } else if(people_ == nullptr || people_->size() <= cur_row) {
                 value = "";
                 break;
+            } else if (cur_col == (int)MemberColumns::LOCATION) {
+                value = QString(people_->at(cur_row)->location());
             } else if (cur_col == (int)MemberColumns::DEPARTMENT) {
                 value = QString(people_->at(cur_row)->department());
             } else if (cur_col == (int)MemberColumns::TEAM) {

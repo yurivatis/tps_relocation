@@ -15,6 +15,7 @@ typedef enum class Column {
 
 typedef enum class MemberColumn {
     FULL_NAME=0,
+    LOCATION,
     DEPARTMENT,
     TEAM,
     COMPONENT,

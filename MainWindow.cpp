@@ -78,6 +78,8 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 
     LineEditDelegate *mdn = new LineEditDelegate(memberFrame_->memberView_);
     memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::FULL_NAME, mdn);
+    LineEditDelegate *mdl = new LineEditDelegate(memberFrame_->memberView_);
+    memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::LOCATION, mdl);
     LineEditDelegate *mdd = new LineEditDelegate(memberFrame_->memberView_);
     memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::DEPARTMENT, mdd);
     LineEditDelegate *mdt = new LineEditDelegate(memberFrame_->memberView_);
