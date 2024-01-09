@@ -31,6 +31,10 @@ public:
     SortFilterProxyModel(QObject *parent = nullptr);
     QList<Person*>* people() {return people_;}
     void people(QList<Person*>* p) {people_ = p;}
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
 private:
     QList<Person*> *people_;
+public slots:
+    void setSearch(const QString &);
 };

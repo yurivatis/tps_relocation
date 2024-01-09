@@ -4,6 +4,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 MemberModel::MemberModel(int rows, int cols, QObject *parent)
     : QStandardItemModel(rows, cols, parent)
@@ -105,4 +106,24 @@ int MemberModel::restore(QList<Person*>*people)
 SortFilterProxyModel::SortFilterProxyModel(QObject *parent) :  QSortFilterProxyModel(parent)
 {
 
+}
+
+
+bool SortFilterProxyModel::filterAcceptsRow(int sourceRow,const QModelIndex &sourceParent) const
+{
+    for(int i = 0; i < sourceModel()->columnCount(); i ++)
+    {
+        QModelIndex index = sourceModel()->index(sourceRow, i, sourceParent);
+        if(sourceModel()->data(index).toString().toLower().trimmed().contains(filterRegularExpression())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+void SortFilterProxyModel::setSearch(const QString &val)
+{
+    QRegularExpression regExp(val);
+    this->setFilterRegularExpression(regExp);
 }

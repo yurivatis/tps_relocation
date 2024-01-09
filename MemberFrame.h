@@ -17,4 +17,5 @@ private:
     QRect pos_;
 signals:
     void oApply();
+    void oSearchChanged(const QString&);
 };
