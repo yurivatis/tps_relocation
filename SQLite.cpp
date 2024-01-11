@@ -47,6 +47,41 @@ bool SqlInterface::customizeColors()
 }
 
 
+bool SqlInterface::customizeRooms()
+{
+    bool ret = true;
+    QSqlQuery query;
+    query.prepare("CREATE TABLE IF NOT EXISTS rooms (room_nr integer, room_capacity integer, "
+                  "PRIMARY KEY(room_nr));");
+    ret = query.exec();
+    RETURN_IF_QUERY_FAILED;
+    return ret;
+}
+
+
+int SqlInterface::room(int nr, int capacity, bool force)
+{
+    int cap = -1;
+    customizeRooms();
+
+    QSqlQuery query;
+    if(force) {
+        query.prepare("INSERT INTO rooms(room_nr, room_capacity) VALUES (:nr, :capacity) "
+                      "ON CONFLICT(room_nr) DO UPDATE SET room_capacity = :capacity WHERE room_nr = :nr");
+    } else {
+        query.prepare("INSERT OR IGNORE INTO rooms(room_nr, room_capacity) VALUES (:nr, :capacity) ");
+    }
+    query.bindValue(":nr", nr);
+    query.bindValue(":capacity", capacity);
+    query.exec();
+    QString str = QString("SELECT room_capacity FROM rooms WHERE room_nr = %1").arg(nr);
+    query.prepare(str);
+    query.exec();
+    cap=query.value(0).toInt();
+    return cap;
+}
+
+
 QColor SqlInterface::readColor(const QString &department, const QString &team, const QString &component, const QColor defColor)
 {
     if(db_.isOpen() == false) {
@@ -302,6 +337,7 @@ bool SqlInterface::import(const QString cvs)
     f.close();
 
     customizeColors();
+    customizeRooms();
 
     if(f.open (QIODevice::ReadOnly| QIODevice::Text)) {
         QTextStream ts (&f);

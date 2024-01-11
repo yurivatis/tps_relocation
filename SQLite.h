@@ -16,6 +16,7 @@ class SqlInterface
 private:
     bool importTable(QString tableName, QString columnName, QStringList &values);
     bool customizeColors();
+    bool customizeRooms();
     /* Here will be the instance stored. */
     static SqlInterface* instance_;
     QString lastError_;
@@ -36,6 +37,7 @@ private:
     bool clearColorTable();
     int colorEntries();
     void people(QList<Person*>&list);
+    int room(int nr, int capacity, bool force = false);
     QStringList getColorTable();
     QStringList departments();
     QStringList teams(const QString department);

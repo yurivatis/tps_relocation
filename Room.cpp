@@ -1,11 +1,15 @@
 #include "Room.h"
 #include <QDebug>
+#include "SQLite.h"
 
-Room::Room(int nr, int capacity, QPolygonF coordinates, RoomNrOrientation ro, int rotation, bool dummy): capacity_(capacity), nr_(nr) {
+Room::Room(int nr, int cap, QPolygonF coordinates, RoomNrOrientation ro, int rotation, bool dummy): capacity_(cap), nr_(nr) {
     coordinates_ = coordinates;
     dummy_ = dummy;
     ro_ = ro;
     rotation_ = rotation;
+    if(nr != 0 && dummy_ == false) {
+        capacity(SqlInterface::getInstance()->room(nr, cap));
+    }
 }
 
 Room::Room(int nr, int capacity, QList<int>list, RoomNrOrientation ro, int rotation, bool dummy): capacity_(capacity), nr_(nr) {
@@ -19,6 +23,9 @@ Room::Room(int nr, int capacity, QList<int>list, RoomNrOrientation ro, int rotat
     dummy_ = dummy;
     ro_ = ro;
     rotation_ = rotation;
+    if(nr != 0 && dummy_ == false) {
+        SqlInterface::getInstance()->room(nr, capacity);
+    }
 }
 
 

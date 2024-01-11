@@ -65,7 +65,7 @@ void PaintWidget::paintEvent(QPaintEvent *)
         painter.setPen(pen);
         if(!parent_->rooms()->at(i)->dummy()) {
             painter.drawPolygon(parent_->rooms()->at(i)->coordinates());
-            painter.drawText(parent_->rooms()->at(i)->getCenter(), QString::number(parent_->rooms()->at(i)->nr()));
+            painter.drawText(parent_->rooms()->at(i)->getCenter(), QString::number(parent_->rooms()->at(i)->nr()) + QString("/") + QString::number(parent_->rooms()->at(i)->capacity()));
         } else {
             painter.drawPolyline(parent_->rooms()->at(i)->coordinates());
         }

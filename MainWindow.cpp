@@ -21,6 +21,7 @@
 #include "MainWindow.h"
 #include "SQLite.h"
 #include "LineEditDelegate.h"
+#include "LineEditRoomDelegate.h"
 #include "ComboboxDelegate.h"
 #include "ColorButtonDelegate.h"
 #include "RemoveButtonDelegate.h"
@@ -95,7 +96,20 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     createMenus();
     memberModel_->restore(&people_);
 
-//    setFixedSize(1500, 1000);
+    roomFrame_ = new RoomFrame;
+    roomModel_ = new RoomModel(rooms_.size(), int(RoomColumns::TOTAL_COLUMNS), &rooms_, this);
+    proxyRoomModel_ = new SortRoomProxyModel(this);
+    proxyRoomModel_->rooms(&rooms_);
+    proxyRoomModel_->setSourceModel(roomModel_);
+    roomFrame_->roomView_->setModel(proxyRoomModel_);
+    roomFrame_->roomView_->sortByColumn((int)RoomColumns::NUMBER, Qt::AscendingOrder);
+
+
+    LineEditRoomDelegate *rdn = new LineEditRoomDelegate(roomFrame_->roomView_);
+    roomFrame_->roomView_->setItemDelegateForColumn((int)RoomColumns::NUMBER, rdn);
+    LineEditRoomDelegate *rdc = new LineEditRoomDelegate(roomFrame_->roomView_);
+    roomFrame_->roomView_->setItemDelegateForColumn((int)RoomColumns::CAPACITY, rdc);
+
     QObject::connect(depd, SIGNAL(oComboText(QString)), teamd, SLOT(getDepartment(QString)));
     QObject::connect(teamd, SIGNAL(oComboText(QString)), compd, SLOT(getTeam(QString)));
     QObject::connect(depd, SIGNAL(oComboChanged(QModelIndex,QString)), colorModel_, SLOT(setComboBox(QModelIndex,QString)));
@@ -111,6 +125,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     QObject::connect(colorModel_, SIGNAL(oUpdated()), this, SLOT(assignPeopleToRooms()));
     QObject::connect(memberFrame_, SIGNAL(oApply()), this, SLOT(updateMates()));
     QObject::connect(memberFrame_, SIGNAL(oSearchChanged(const QString &)), proxyMemberModel_, SLOT(setSearch(const QString &)));
+    QObject::connect(roomFrame_, SIGNAL(oApply()), this, SLOT(updateCapacities()));
 
     QString message = tr("Detailed plan of Hacon's 1st floor");
     statusBar()->showMessage(message);
@@ -132,7 +147,6 @@ MainWindow::~MainWindow()
 void MainWindow::createMenus()
 {
     QMenu *dbMenu = menuBar()->addMenu(tr("&Database"));
-    QMenu *membersMenu = menuBar()->addMenu(tr("&Members"));
     QMenu *customizeMenu = menuBar()->addMenu(tr("&Customize"));
     QMenu *printMenu  = menuBar()->addMenu(tr("&Screenshot"));
     QMenu *helpMenu  = menuBar()->addMenu(tr("&Help"));
@@ -153,9 +167,13 @@ void MainWindow::createMenus()
     dbMenu->addAction(undoChanges);
     QObject::connect(undoChanges, SIGNAL(triggered()), this, SLOT(toInitState()));
     
-    QAction *edit = new QAction(tr("&Edit"), this);
-    membersMenu->addAction(edit);
-    QObject::connect(edit, SIGNAL(triggered()), this, SLOT(showMemberFrame()) );
+    QAction *members = new QAction(tr("&Members"), this);
+    customizeMenu->addAction(members);
+    QObject::connect(members, SIGNAL(triggered()), this, SLOT(showMemberFrame()) );
+
+    QAction *rooms = new QAction(tr("&Rooms"), this);
+    customizeMenu->addAction(rooms);
+    QObject::connect(rooms, SIGNAL(triggered()), this, SLOT(showRoomFrame()) );
 
     QAction * colors = new QAction(tr("&Colors"), this);
     customizeMenu->addAction(colors);
@@ -187,14 +205,14 @@ void MainWindow::addRooms()
     rooms_.append(new Room(160, 3, { 660, 900,  660, 800, 710, 800, 710, 900}));
     rooms_.append(new Room(161, 3, { 710, 900,  710, 800, 760, 800, 760, 900}));
     rooms_.append(new Room(162, 3, { 760, 900,  760, 800, 810, 800, 810, 900}));
-    rooms_.append(new Room163(163, 3, {810, 900,  810, 800, 840, 800, 900, 860, 900, 900}));
+    rooms_.append(new Room163(163, 4, {810, 900,  810, 800, 840, 800, 900, 860, 900, 900}));
     rooms_.append(new Room(  0, 0, { 900, 900,  900, 960, 960, 960}, Orientation::CENTER, -90, true));
     rooms_.append(new Room(176, 4, { 960, 960,  960, 860, 1060, 860, 1060, 960}));
     rooms_.append(new Room(175, 2, {1060, 960, 1060, 900, 1120, 900, 1120, 960}));
     rooms_.append(new Room(173, 2, {1120, 960, 1120, 900, 1180, 900, 1180, 960}));
     rooms_.append(new Room(174, 0, {1070, 900, 1070, 860, 1170, 860, 1170, 900}));
-    rooms_.append(new Room(172, 8, {1180, 960, 1180, 860, 1300, 860, 1300, 960}));
-    rooms_.append(new Room(171, 8, {1300, 960, 1300, 860, 1400, 860, 1400, 960}));
+    rooms_.append(new Room(172, 6, {1180, 960, 1180, 860, 1300, 860, 1300, 960}));
+    rooms_.append(new Room(171, 6, {1300, 960, 1300, 860, 1400, 860, 1400, 960}));
     rooms_.append(new Room(  0, 0, {1350, 860, 1350, 760, 1310, 760}, Orientation::CENTER, -90, true));
     rooms_.append(new Room(  0, 0, {1190, 840, 1190, 760, 1310, 760, 1310, 840}, Orientation::CENTER));
     rooms_.append(new Room(169, 2, {1130, 840, 1130, 760, 1190, 760, 1190, 840}, Orientation::UP));
@@ -416,6 +434,12 @@ void MainWindow::updateMates()
 }
 
 
+void MainWindow::updateCapacities()
+{
+    paintWidget_->update();
+}
+
+
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     bool accepted = true;
@@ -460,30 +484,34 @@ void MainWindow::toInitState()
 
 void MainWindow::showHelpWidget()
 {
-    if(helpWidget_->isVisible()) {
-        helpWidget_->close();
-    }
-    helpWidget_->show();
-    helpWidget_->raise();
+    showFrame(helpWidget_);
 }
 
 
 void MainWindow::showColorFrame()
 {
-    if(colorFrame_->isVisible()) {
-        colorFrame_->close();
-    }
-    colorFrame_->show();
-    colorFrame_->raise();
+    showFrame(colorFrame_);
+
 }
 
 
-void MainWindow:: showMemberFrame()
+void MainWindow::showMemberFrame()
 {
-    if(memberFrame_->isVisible()) {
-        memberFrame_->close();
-    }
-    memberFrame_->show();
-    memberFrame_->raise();
+    showFrame(memberFrame_);
 }
 
+
+void MainWindow::showRoomFrame()
+{
+    showFrame(roomFrame_);
+}
+
+
+void MainWindow::showFrame(QWidget* w)
+{
+    if(w->isVisible()) {
+        w->close();
+    }
+    w->show();
+    w->raise();
+}

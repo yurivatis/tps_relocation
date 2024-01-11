@@ -11,7 +11,7 @@ TARGET = tps_relocation
 INCLUDEPATH += . inc
 
 OBJECTS_DIR=obj/
-CONFIG+=qt release c++17
+CONFIG+=qt debug c++17
 MOC_DIR = moc/
 
 # Input
