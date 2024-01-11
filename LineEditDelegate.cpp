@@ -77,6 +77,7 @@ QWidget *LineEditDelegate::createEditor(QWidget *parent,
                                         const QModelIndex & /*index*/ ) const
 {
     QLineEdit *lineEdit = new QLineEdit(parent);
+    lineEdit->setValidator(new QIntValidator(0, 600));
     lineEdit->setFrame(true);
 
     return lineEdit;

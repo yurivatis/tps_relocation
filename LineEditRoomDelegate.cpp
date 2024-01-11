@@ -2,6 +2,7 @@
 #include "RoomModel.h"
 #include "constants.h"
 #include "TableView.h"
+#include <QIntValidator>
 
 LineEditRoomDelegate::LineEditRoomDelegate(QObject *parent)
      : QStyledItemDelegate(parent)
@@ -41,7 +42,7 @@ void LineEditRoomDelegate::setEditorData(QWidget *editor,
         {
             int capacity = room->capacity();
             lineEdit->setText(val.setNum(capacity));
-            if(capacity > 0) {
+            if(room->serviceRoom() == false) {
                 lineEdit->setEnabled(true);
             } else {
                 lineEdit->setEnabled(false);
@@ -77,6 +78,7 @@ QWidget *LineEditRoomDelegate::createEditor(QWidget *parent,
                                         const QModelIndex & /*index*/ ) const
 {
     QLineEdit *lineEdit = new QLineEdit(parent);
+    lineEdit->setValidator(new QIntValidator(0, 10));
     lineEdit->setFrame(true);
 
     return lineEdit;

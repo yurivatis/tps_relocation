@@ -26,8 +26,10 @@ public:
     int rotation() {return rotation_;}
     void rotation(int r) {rotation_ = r;}
     virtual void redrawMates();
+    bool serviceRoom() {return isService_;}
 private:
     int capacity_;
+    bool isService_;
     int nr_;
     QPolygonF coordinates_;
     bool dummy_;
