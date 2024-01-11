@@ -72,3 +72,13 @@ QVariant RoomModel::data(const QModelIndex &index, int role) const
     }
     return value;
 }
+
+
+bool SortRoomProxyModel::filterAcceptsRow(int sourceRow,const QModelIndex &sourceParent) const
+{
+    QModelIndex index = sourceModel()->index(sourceRow, (int)RoomColumns::NUMBER, sourceParent);
+    if(sourceModel()->data(index).toString() != "0") {
+        return true;
+    }
+    return false;
+}

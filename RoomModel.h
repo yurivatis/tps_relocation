@@ -30,6 +30,8 @@ public:
     SortRoomProxyModel(QObject * = nullptr) {}
     QList<Room*>* rooms() {return rooms_;}
     void rooms(QList<Room*>* r) {rooms_ = r;}
+protected:
+    bool filterAcceptsRow(int sourceRow,const QModelIndex &sourceParent) const;
 private:
     QList<Room*> *rooms_;
 };

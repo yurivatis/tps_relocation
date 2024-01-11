@@ -102,6 +102,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     proxyRoomModel_->rooms(&rooms_);
     proxyRoomModel_->setSourceModel(roomModel_);
     roomFrame_->roomView_->setModel(proxyRoomModel_);
+    roomFrame_->roomView_->setSortingEnabled(true);
     roomFrame_->roomView_->sortByColumn((int)RoomColumns::NUMBER, Qt::AscendingOrder);
 
 
@@ -125,7 +126,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     QObject::connect(colorModel_, SIGNAL(oUpdated()), this, SLOT(assignPeopleToRooms()));
     QObject::connect(memberFrame_, SIGNAL(oApply()), this, SLOT(updateMates()));
     QObject::connect(memberFrame_, SIGNAL(oSearchChanged(const QString &)), proxyMemberModel_, SLOT(setSearch(const QString &)));
-    QObject::connect(roomFrame_, SIGNAL(oApply()), this, SLOT(updateCapacities()));
+    QObject::connect(roomFrame_, SIGNAL(oSave()), this, SLOT(updateCapacities()));
 
     QString message = tr("Detailed plan of Hacon's 1st floor");
     statusBar()->showMessage(message);
@@ -195,10 +196,10 @@ void MainWindow::addRooms()
     rooms_.append(new Room(106, 4, { 130, 900,  130, 800, 210, 800, 210, 900}));
     rooms_.append(new Room(108, 3, { 210, 900,  210, 800, 260, 800, 260, 900}));
     rooms_.append(new Room(109, 3, { 260, 900,  260, 800, 310, 800, 310, 900}));
-    rooms_.append(new Room(110, 3, { 310, 900,  310, 800, 360, 800, 360, 900}));
+    rooms_.append(new Room(110, 2, { 310, 900,  310, 800, 360, 800, 360, 900}));
     rooms_.append(new Room(111, 3, { 360, 900,  360, 800, 410, 800, 410, 900}));
     rooms_.append(new Room(113, 3, { 410, 900,  410, 800, 460, 800, 460, 900}));
-    rooms_.append(new Room(114, 3, { 460, 900,  460, 800, 510, 800, 510, 900}));
+    rooms_.append(new Room(114, 2, { 460, 900,  460, 800, 510, 800, 510, 900}));
     rooms_.append(new Room(115, 3, { 510, 900,  510, 800, 560, 800, 560, 900}));
     rooms_.append(new Room(116, 3, { 560, 900,  560, 800, 610, 800, 610, 900}));
     rooms_.append(new Room(159, 3, { 610, 900,  610, 800, 660, 800, 660, 900}));
@@ -248,10 +249,10 @@ void MainWindow::addRooms()
     rooms_.append(new Room(121, 0, { 355, 550,  444, 520,  462, 595,  345, 595}, Orientation::CENTER, 0));
 
     rooms_.append(new Room(149, 2, { 448, 435,  551, 400,  572, 475,  470, 511}, Orientation::RIGHT, -18));
-    rooms_.append(new Room(148, 2, { 426, 359,  529, 324,  551, 400,  448, 435}, Orientation::RIGHT, -18));
-    rooms_.append(new Room(147, 3, { 415, 321,  518, 286,  529, 324,  426, 359}, Orientation::RIGHT, -18));
-    rooms_.append(new Room(146, 3, { 404, 283,  507, 248,  518, 286,  415, 321}, Orientation::RIGHT, -18));
-    rooms_.append(new Room(145, 3, { 393, 245,  496, 210,  507, 248,  404, 283}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(148, 1, { 426, 359,  529, 324,  551, 400,  448, 435}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(147, 1, { 415, 321,  518, 286,  529, 324,  426, 359}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(146, 2, { 404, 283,  507, 248,  518, 286,  415, 321}, Orientation::RIGHT, -18));
+    rooms_.append(new Room(145, 2, { 393, 245,  496, 210,  507, 248,  404, 283}, Orientation::RIGHT, -18));
     rooms_.append(new Room(144, 3, { 381, 205,  484, 170,  496, 210,  393, 245}, Orientation::RIGHT, -18));
     rooms_.append(new Room(143, 0, { 349,  93,  452,  58,  484, 170,  381, 205}, Orientation::RIGHT, -18));
     
@@ -436,7 +437,11 @@ void MainWindow::updateMates()
 
 void MainWindow::updateCapacities()
 {
+    SqlInterface *sqlInteface = SqlInterface::getInstance();
     paintWidget_->update();
+    foreach(Room *r, rooms_) {
+        sqlInteface->room(r->nr(), r->capacity(), true);
+    }
 }
 
 
@@ -464,6 +469,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
         helpWidget_->close();
         colorFrame_->close();
         memberFrame_->close();
+        roomFrame_->close();
         event->accept();
     } else {
         event->ignore();

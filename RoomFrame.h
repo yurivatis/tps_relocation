@@ -16,5 +16,5 @@ protected:
 private:
     QRect pos_;
 signals:
-    void oApply();
+    void oSave();
 };

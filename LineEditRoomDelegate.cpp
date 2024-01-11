@@ -52,6 +52,26 @@ void LineEditRoomDelegate::setEditorData(QWidget *editor,
 }
 
 
+void LineEditRoomDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
+                                   const QModelIndex &index) const
+{
+    QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
+    SortRoomProxyModel *mm = (SortRoomProxyModel*)model;
+    QString value = lineEdit->text();
+    if(!mm || !mm->rooms() || mm->rooms()->size() <= 0) {
+        return;
+    }
+    int roomNr = model->data(model->index(index.row(), (int)RoomColumns::NUMBER)).toInt();
+    foreach(Room *r, *(mm->rooms())) {
+        if(r->nr() == roomNr) {
+            r->capacity(value.toInt());
+            break;
+        }
+    }
+    model->setData(index, value, Qt::DisplayRole);
+}
+
+
 QWidget *LineEditRoomDelegate::createEditor(QWidget *parent,
                                         const QStyleOptionViewItem &/* option*/,
                                         const QModelIndex & /*index*/ ) const

@@ -77,6 +77,7 @@ int SqlInterface::room(int nr, int capacity, bool force)
     QString str = QString("SELECT room_capacity FROM rooms WHERE room_nr = %1").arg(nr);
     query.prepare(str);
     query.exec();
+    query.first();
     cap=query.value(0).toInt();
     return cap;
 }
@@ -92,7 +93,6 @@ QColor SqlInterface::readColor(const QString &department, const QString &team, c
     int r, g, b, a;
     QSqlQuery query;
     QString q;
-    // read defCompColor;
     q = QString("SELECT red, green, blue, alpha FROM colors WHERE department_id = (SELECT id FROM departments WHERE departments.department = '%1') AND "
                           "team_id = (SELECT id FROM teams WHERE teams.team = '%2') AND "
                           "component_id = (SELECT id FROM components WHERE components.component = '');").arg(department).arg(team);
@@ -107,7 +107,6 @@ QColor SqlInterface::readColor(const QString &department, const QString &team, c
         color = defCompColor;
     }
     query.clear();
-    // read specific component color, if set
     if(component != "") {
         q = QString("SELECT red, green, blue, alpha FROM colors WHERE department_id = (SELECT id FROM departments WHERE departments.department = '%1') AND "
                           "team_id = (SELECT id FROM teams WHERE teams.team = '%2') AND "
@@ -268,23 +267,23 @@ bool SqlInterface::import(const QString cvs)
     //create tables
     QSqlQuery query;
     query.prepare("DROP TABLE IF EXISTS people;");
-    ret = query.exec();
+    query.exec();
     query.prepare("DROP TABLE IF EXISTS components;");
-    ret = query.exec();
+    query.exec();
     query.prepare("DROP TABLE IF EXISTS teams;");
-    ret = query.exec();
+    query.exec();
     query.prepare("DROP TABLE IF EXISTS departments;");
-    ret = query.exec();
+    query.exec();
     query.prepare("DROP TABLE IF EXISTS locations;");
-    ret = query.exec();
+    query.exec();
     query.prepare("CREATE TABLE IF NOT EXISTS locations (id integer, location VARCHAR, PRIMARY KEY(id));");
-    ret = query.exec();
+    query.exec();
     query.prepare("CREATE TABLE IF NOT EXISTS departments (id integer, department VARCHAR, PRIMARY KEY(id));");
-    ret = query.exec();
+    query.exec();
     query.prepare("CREATE TABLE IF NOT EXISTS teams (id integer, team VARCHAR, PRIMARY KEY(id));");
-    ret = query.exec();
+    query.exec();
     query.prepare("CREATE TABLE IF NOT EXISTS components (id integer, component VARCHAR, PRIMARY KEY(id));");
-    ret = query.exec();
+    query.exec();
     query.prepare("CREATE TABLE IF NOT EXISTS people (id integer, surname VARCHAR, name VARCHAR, "
                   "location_id integer, department_id integer, team_id integer, component_id integer, role VARCHAR, room integer, "
                   "FOREIGN KEY (location_id) REFERENCES locations(id), FOREIGN KEY (department_id) REFERENCES departments(id),"

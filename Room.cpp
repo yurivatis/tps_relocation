@@ -10,9 +10,10 @@ Room::Room(int nr, int cap, QPolygonF coordinates, RoomNrOrientation ro, int rot
     if(nr != 0 && dummy_ == false) {
         capacity(SqlInterface::getInstance()->room(nr, cap));
     }
+
 }
 
-Room::Room(int nr, int capacity, QList<int>list, RoomNrOrientation ro, int rotation, bool dummy): capacity_(capacity), nr_(nr) {
+Room::Room(int nr, int cap, QList<int>list, RoomNrOrientation ro, int rotation, bool dummy): capacity_(cap), nr_(nr) {
     if(list.size() % 2 != 0) {
         qDebug() << "could not add odd number of its to room coordinates";
         return;
@@ -24,7 +25,7 @@ Room::Room(int nr, int capacity, QList<int>list, RoomNrOrientation ro, int rotat
     ro_ = ro;
     rotation_ = rotation;
     if(nr != 0 && dummy_ == false) {
-        SqlInterface::getInstance()->room(nr, capacity);
+        capacity(SqlInterface::getInstance()->room(nr, cap));
     }
 }
 
@@ -46,7 +47,7 @@ QPoint Room::getCenter()
             y = coordinates_.at(1).y();
         }
         if(coordinates_.size() == 4) {
-            x = (coordinates_.at(coordinates_.size()-1).x() + coordinates_.at(0).x()) / 2;
+            x = (coordinates_.at(coordinates_.size()-1).x() + coordinates_.at(0).x()) / 2 - 10;
         } else {
             for(int i = 0; i < coordinates_.size(); i++) {
                 x += coordinates_.at(i).x();
@@ -64,7 +65,7 @@ QPoint Room::getCenter()
             y /= coordinates_.size();
         } else if(ro_ == Orientation::RIGHT) {
             if(coordinates_.size() > 2) {
-                x = (coordinates_.at(1).x() + coordinates_.at(2).x()) / 2;
+                x = (coordinates_.at(1).x() + coordinates_.at(2).x()) / 2 + 10;
                 y = (coordinates_.at(1).y() + coordinates_.at(2).y()) / 2;
             }
         } else if(ro_ == Orientation::LEFT) {
@@ -83,7 +84,7 @@ QPoint Room::getCenter()
                 y = (coordinates_.at(0).y() + coordinates_.at(coordinates_.size() - 1).y()) / 2;
             }
         }
-        return QPoint(x + 5, y);
+        return QPoint(x - 5, y);
     }
 }
 
