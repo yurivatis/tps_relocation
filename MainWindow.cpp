@@ -284,7 +284,7 @@ void MainWindow::assignPeopleToRooms()
         p->color(SqlInterface::getInstance()->readColor(p->department(), p->team(), p->component(), Qt::gray)); // set colors
         int curRoom = p->room();
         foreach(Room *r, rooms_) { // assign to rooms
-            if(r->nr() == curRoom && r->dummy() == false && r->capacity() > 0 && r->nr() != 0) {
+            if(r->nr() == curRoom && r->dummy() == false && r->serviceRoom() == false && r->nr() != 0) {
                 r->addPerson(p);
                 p->room(curRoom);
                 redrawMates(r);
@@ -416,13 +416,13 @@ void MainWindow::updateMates()
         if(p->modified() != p->room()) {
             foreach(Room *r, rooms_) {
                 if(r->nr() == p->room()) {
-                    if(r->nr() != 0 && r->dummy() == false && r->capacity() > 0 && r->nr()) {
+                    if(r->nr() != 0 && r->dummy() == false && r->serviceRoom() == false && r->nr()) {
                         r->removePerson(p);
                     }
                     redrawMates(r);
                 }
                 if(r->nr() == p->modified()) {
-                    if(r->nr() != 0 && r->dummy() == false && r->capacity() > 0) {
+                    if(r->nr() != 0 && r->dummy() == false && r->serviceRoom() == false) {
                         r->addPerson(p);
                         redrawMates(r);
                     }

@@ -47,7 +47,7 @@ QPoint Room::getCenter()
         return QPoint(0, 0);
     }
     if(rotation_ == -90) {
-        if(capacity_ == 0 || ro_ == Orientation::CENTER) {
+        if(serviceRoom() || ro_ == Orientation::CENTER) {
             y = (coordinates_.at(0).y() + coordinates_.at(1).y()) / 2 + 5;
         } else if(ro_ == Orientation::DOWN) {
             y = coordinates_.at(0).y() + 15;
@@ -66,7 +66,7 @@ QPoint Room::getCenter()
         }
         return QPoint(x - 8, y);
     } else {
-        if(capacity_ == 0 || ro_ == Orientation::CENTER) {
+        if(serviceRoom() || ro_ == Orientation::CENTER) {
             for(int i = 0; i < coordinates_.size(); i++) {
                 x += coordinates_.at(i).x();
                 y += coordinates_.at(i).y();
