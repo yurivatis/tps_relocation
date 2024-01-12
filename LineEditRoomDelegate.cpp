@@ -75,10 +75,12 @@ void LineEditRoomDelegate::setModelData(QWidget *editor, QAbstractItemModel *mod
 
 QWidget *LineEditRoomDelegate::createEditor(QWidget *parent,
                                         const QStyleOptionViewItem &/* option*/,
-                                        const QModelIndex & /*index*/ ) const
+                                        const QModelIndex & index ) const
 {
     QLineEdit *lineEdit = new QLineEdit(parent);
-    lineEdit->setValidator(new QIntValidator(0, 10));
+    if(index.column() == (int)RoomColumn::CAPACITY) {
+        lineEdit->setValidator(new QIntValidator(0, 10));
+    }
     lineEdit->setFrame(true);
 
     return lineEdit;

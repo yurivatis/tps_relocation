@@ -74,10 +74,12 @@ void LineEditDelegate::setEditorData(QWidget *editor,
 
 QWidget *LineEditDelegate::createEditor(QWidget *parent,
                                         const QStyleOptionViewItem &/* option*/,
-                                        const QModelIndex & /*index*/ ) const
+                                        const QModelIndex & index ) const
 {
     QLineEdit *lineEdit = new QLineEdit(parent);
-    lineEdit->setValidator(new QIntValidator(0, 600));
+    if(index.column() == (int) MemberColumn::ROOM) {
+        lineEdit->setValidator(new QIntValidator(0, 600));
+    }
     lineEdit->setFrame(true);
 
     return lineEdit;
@@ -89,7 +91,6 @@ void LineEditDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 {
     QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
     SortFilterProxyModel *mm = (SortFilterProxyModel*)model;
-//    SortFilterProxyModel *mm = (SortFilterProxyModel *)mv->model();
     QString value = lineEdit->text();
     if(!mm || !mm->people() || mm->people()->size() <= 0) {
         return;
