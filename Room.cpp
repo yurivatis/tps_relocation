@@ -186,6 +186,25 @@ void Room163::redrawMates()
     } else {
         offsetY = (roomPlg.at(2).y() - roomPlg.at(3).y()) / (sz - 1);
     }
+    // sort by length of name due to non-symmetrical form
+    QList <Person*> tmp;
+    for(int i = 0; i < sz; i++) {
+        tmp.append(people_.at(i));
+    }
+    people_.clear();
+    for(int i = 0; i < sz; i++) {
+        int pos = 0;
+        int len = 0;
+        for(int j = 0; j < tmp.size(); j++) {
+            if(tmp.at(j)->displayName().length() > len) {
+                len = tmp.at(j)->displayName().length();
+                pos = j;
+            }
+        }
+        people_.append(tmp.at(pos));
+        tmp.removeAt(pos);
+    }
+
     for(int i = 0; i < sz; i++) {
         QPolygonF personPlg;
         QPoint p0, p1, p2, p3;
@@ -213,6 +232,7 @@ void Room163::redrawMates()
         p3.setX(roomPlg.at(0).x() + (i+1) * stepX);
         p3.setY(roomPlg.at(0).y() + (i+1) * stepY);
         personPlg << p3;
+        // find i.th max by length and assign to the corresponding one
         people_.at(i)->coordinates(personPlg);
     }
 }
