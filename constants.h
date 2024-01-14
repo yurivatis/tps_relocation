@@ -1,8 +1,12 @@
 #pragma once
 
-#ifndef TPS_RELOC_VERSION
-    #define TPS_RELOC_VERSION "1.21"
+#ifndef TPS_RELOC_MAJOR
+    #define TPS_RELOC_MAJOR "1"
 #endif
+#ifndef TPS_RELOC_MINOR
+    #define TPS_RELOC_MINOR "21"
+#endif
+
 
 typedef enum class Column {
     DEPARTMENT=0,
