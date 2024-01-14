@@ -57,7 +57,10 @@ QPoint Room::getCenter()
             y = coordinates_.at(1).y();
         }
         if(coordinates_.size() == 4) {
-            x = (coordinates_.at(coordinates_.size()-1).x() + coordinates_.at(0).x()) / 2 - 10;
+            x = (coordinates_.at(coordinates_.size()-1).x() + coordinates_.at(0).x()) / 2;
+            if(nr() >= 10) {
+                x-= 10;
+            }
         } else {
             for(int i = 0; i < coordinates_.size(); i++) {
                 x += coordinates_.at(i).x();
