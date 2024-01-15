@@ -364,7 +364,11 @@ bool SqlInterface::import(const QString cvs)
                             break;
                         case (int)SQLitePeopleColumns::ROOM: // room
 //                            req.append('\'');
-                            req.append(values.at(j));
+                            if(values.at(j).isEmpty()) {
+                                req.append('0');
+                            } else {
+                                req.append(values.at(j));
+                            }
 //                            req.append('\'');
                             break;
                         case (int)SQLitePeopleColumns::LOCATION: // location

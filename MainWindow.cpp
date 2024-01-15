@@ -373,7 +373,7 @@ void MainWindow::exportCsv()
     } else {
         QTextStream stream( &f );
         foreach(Person* p, people_) {
-            stream << p->surname() << "," << p->name() << "," << p->location() << "," << p->department() << "," << p->team() << "," << p->role() << "," << p->component() << "," << p->room() << Qt::endl;
+            stream << p->surname() << ";" << p->name() << ";" << p->location() << ";" << p->department() << ";" << p->team() << ";" << p->role() << ";" << p->component() << ";" << p->room() << Qt::endl;
         }
         f.close();
     }
