@@ -292,7 +292,7 @@ bool SqlInterface::import(const QString cvs)
     ret = query.exec();
     //get locations
     f.setFileName(cvs);
-    QRegularExpression separator("(;)");
+    QRegularExpression separator(CSV_SEPARATOR);
     if(f.open (QIODevice::ReadOnly| QIODevice::Text)) {
         QSqlQuery que;
         QTextStream ts (&f);
@@ -363,13 +363,11 @@ bool SqlInterface::import(const QString cvs)
                             req.append(",");
                             break;
                         case (int)SQLitePeopleColumns::ROOM: // room
-//                            req.append('\'');
                             if(values.at(j).isEmpty()) {
                                 req.append('0');
                             } else {
                                 req.append(values.at(j));
                             }
-//                            req.append('\'');
                             break;
                         case (int)SQLitePeopleColumns::LOCATION: // location
                             req.append(QString("(select id from locations where locations.location = '%1'),").arg(values.at(j)));

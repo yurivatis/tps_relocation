@@ -7,6 +7,9 @@
     #define TPS_RELOC_MINOR "0"
 #endif
 
+#ifndef CSV_SEPARATOR
+    #define CSV_SEPARATOR ";"
+#endif
 
 typedef enum class Column {
     DEPARTMENT=0,
