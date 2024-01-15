@@ -3,6 +3,7 @@
 #include <QSqlQuery>
 #include <QColor>
 #include <QSqlError>
+#include <QRegularExpression>
 
 #define DB_NAME "data.db"
 
@@ -291,6 +292,7 @@ bool SqlInterface::import(const QString cvs)
     ret = query.exec();
     //get locations
     f.setFileName(cvs);
+    QRegularExpression separator("(;)");
     if(f.open (QIODevice::ReadOnly| QIODevice::Text)) {
         QSqlQuery que;
         QTextStream ts (&f);
@@ -300,7 +302,7 @@ bool SqlInterface::import(const QString cvs)
             QString tmp;
             QStringList line = ts.readLine().split('\n');
             for(int i=0; i<line.length ();++i) {
-                QStringList values = line.at(i).split(',');
+                QStringList values = line.at(i).split(separator);
                 for(int j = 0; j < values.length() - 1; ++j) {
                     tmp = values.at(j);
                     switch (j) {
@@ -349,7 +351,7 @@ bool SqlInterface::import(const QString cvs)
                    append it to the INSERT request*/
 //            QStringList values = line.split(',');
             for(int i = 0; i < line.length(); ++i) {
-                QStringList values = line.at(i).split(',');
+                QStringList values = line.at(i).split(separator);
                 for(int j = 0; j < values.length(); ++j) {
                     switch(j) {
                         case (int)SQLitePeopleColumns::SURNAME: // surname
