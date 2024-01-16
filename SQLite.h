@@ -17,6 +17,7 @@ private:
     bool importTable(QString tableName, QString columnName, QStringList &values);
     bool customizeColors();
     bool customizeRooms();
+    void checkCompatible();
     /* Here will be the instance stored. */
     static SqlInterface* instance_;
     QString lastError_;
@@ -24,6 +25,9 @@ private:
     /* Private constructor to prevent instancing. */
     SqlInterface();
     QString dbName_;
+    int prevMajor_;
+    int prevMinor_;
+    bool compatible_;
 
  public:
     virtual ~SqlInterface();

@@ -1,10 +1,10 @@
 #pragma once
 
 #ifndef TPS_RELOC_MAJOR
-    #define TPS_RELOC_MAJOR "2"
+    #define TPS_RELOC_MAJOR 2
 #endif
 #ifndef TPS_RELOC_MINOR
-    #define TPS_RELOC_MINOR "0"
+    #define TPS_RELOC_MINOR 1
 #endif
 
 #ifndef CSV_SEPARATOR

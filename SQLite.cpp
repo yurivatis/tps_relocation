@@ -18,11 +18,33 @@ SqlInterface* SqlInterface::getInstance()
     return instance_;
 }
 
+
 SqlInterface::SqlInterface()
 {
+    QSqlQuery query;
     dbName_ = DB_NAME;
     db_ = QSqlDatabase::addDatabase("QSQLITE");
     db_.setDatabaseName(dbName_);
+    prevMajor_ = -1;
+    prevMinor_ = -1;
+    query.prepare("CREATE TABLE IF NOT EXISTS version (type TEXT, number integer)");
+    query.exec();
+    query.clear();
+    query.prepare(QString("SELECT number FROM version WHERE type = 'MAJOR'"));
+    query.exec();
+    while(query.next()) {
+        prevMajor_ = query.value(0).toInt();
+        break;
+    }
+    query.clear();
+    query.prepare(QString("SELECT number FROM version WHERE type = 'MINOR'"));
+    query.exec();
+    while(query.next()) {
+        prevMinor_ = query.value(0).toInt();
+        break;
+    }
+    query.clear();
+    checkCompatible();
 }
 
 
@@ -33,10 +55,21 @@ SqlInterface::~SqlInterface()
 }
 
 
+void SqlInterface::checkCompatible()
+{
+    compatible_ = (prevMajor_ == TPS_RELOC_MAJOR);
+}
+
+
 bool SqlInterface::customizeColors()
 {
     bool ret = true;
     QSqlQuery query;
+    if(compatible_ == false) {
+        query.prepare("DROP TABLE IF EXISTS colors;");
+        query.exec();
+        query.clear();
+    }
     query.prepare("CREATE TABLE IF NOT EXISTS colors (id integer, department_id integer, team_id integer, component_id integer,"
                   "red integer, green integer, blue integer, alpha integer, "
                   "FOREIGN KEY (department_id) REFERENCES departments(id), FOREIGN KEY (team_id) REFERENCES teams(id), "
@@ -204,7 +237,6 @@ int SqlInterface::colorEntries()
 
 void SqlInterface::people(QList<Person*>&list)
 {
-    QString tmp;
     Person *p;
     if(db_.isOpen() == false) {
         db_.open();
@@ -240,15 +272,13 @@ bool SqlInterface::exportToDb(QList<Person *> people)
     bool ret;
     QSqlQuery query;
     foreach(Person *p, people) {
-//        if(p->room() != 0) {
-            QString s = QString("UPDATE people SET room = :room WHERE name = '%1' and surname = '%2';").arg(p->name()).arg(p->surname());
-            query.prepare(s);
-            query.bindValue(":room", p->room());
-            ret = query.exec();
-            if(ret == false) {
-                return false;
-            }
-//        }
+        QString s = QString("UPDATE people SET room = :room WHERE name = '%1' and surname = '%2';").arg(p->name(), p->surname());
+        query.prepare(s);
+        query.bindValue(":room", p->room());
+        ret = query.exec();
+        if(ret == false) {
+            return false;
+        }
     }
     return true;
 }
@@ -294,7 +324,6 @@ bool SqlInterface::import(const QString cvs)
     f.setFileName(cvs);
     QRegularExpression separator(CSV_SEPARATOR);
     if(f.open (QIODevice::ReadOnly| QIODevice::Text)) {
-        QSqlQuery que;
         QTextStream ts (&f);
         //add empty component
         components.append("");
@@ -437,7 +466,8 @@ QStringList SqlInterface::teams(const QString department)
     QStringList res;
     QSqlQuery query;
     QString req;
-    req = QString("select distinct team from teams INNER JOIN people ON people.team_id = teams.id INNER JOIN departments ON people.department_id = departments.id WHERE departments.department = '%1' ORDER BY team ASC").arg(department);
+    req = QString("SELECT DISTINCT team FROM teams INNER JOIN people ON people.team_id = teams.id "
+                  "INNER JOIN departments ON people.department_id = departments.id WHERE departments.department = '%1' ORDER BY team ASC").arg(department);
     query.exec(req);
     while (query.next()) {
         QString d = query.value(0).toString();
@@ -455,7 +485,8 @@ QStringList SqlInterface::components(const QString team)
     QStringList res;
     QSqlQuery query;
     QString req;
-    req = QString("select distinct component from components INNER JOIN people ON people.component_id = components.id INNER JOIN teams ON people.team_id = teams.id WHERE teams.team ='%1' ORDER BY component ASC").arg(team);
+    req = QString("SELECT DISTINCT component FROM components INNER JOIN people ON people.component_id = components.id "
+                  "INNER JOIN teams ON people.team_id = teams.id WHERE teams.team ='%1' ORDER BY component ASC").arg(team);
     query.exec(req);
     while (query.next()) {
         QString d = query.value(0).toString();
@@ -473,8 +504,9 @@ QStringList SqlInterface::components(const QString department, const QString tea
     QStringList res;
     QSqlQuery query;
     QString req;
-    req = QString("select distinct component from components INNER JOIN people ON people.component_id = components.id INNER JOIN teams ON people.team_id = teams.id "
-                                                           " INNER JOIN departments ON people.department_id = departments.id WHERE teams.team ='%1' and departments.department='%2' ORDER BY component ASC").arg(team).arg(department);
+    req = QString("SELECT DISTINCT component FROM components INNER JOIN people ON people.component_id = components.id INNER JOIN teams ON people.team_id = teams.id "
+                  "INNER JOIN departments ON people.department_id = departments.id "
+                  "WHERE teams.team ='%1' AND departments.department='%2' ORDER BY component ASC").arg(team).arg(department);
     query.exec(req);
     while (query.next()) {
         QString d = query.value(0).toString();

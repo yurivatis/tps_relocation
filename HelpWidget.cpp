@@ -13,7 +13,9 @@ HelpWidget::HelpWidget(QWidget *parent): QWidget(parent)
 	QFrame *name = new QFrame(this);
 	l->addWidget(name);
 	QHBoxLayout *hl=new QHBoxLayout(name);
-    QString version = QString("<h2> tps_relocation %1.%2</h2>").arg(TPS_RELOC_MAJOR).arg(TPS_RELOC_MINOR);
+    QString major = QString::number(TPS_RELOC_MAJOR);
+    QString minor = QString::number(TPS_RELOC_MINOR);
+    QString version = QString("<h2> tps_relocation %1.%2</h2>").arg(major, minor);
 	version.append(" </h2>");
 	QLabel *nameLabel = new QLabel(version, name);
 	hl->addWidget(nameLabel, Qt::AlignLeft|Qt::AlignBottom);
