@@ -21,12 +21,13 @@ SqlInterface* SqlInterface::getInstance()
 
 SqlInterface::SqlInterface()
 {
-    QSqlQuery query;
     dbName_ = DB_NAME;
     db_ = QSqlDatabase::addDatabase("QSQLITE");
     db_.setDatabaseName(dbName_);
+    db_.open();
     prevMajor_ = -1;
     prevMinor_ = -1;
+    QSqlQuery query;
     query.prepare("CREATE TABLE IF NOT EXISTS version (type TEXT, number integer)");
     query.exec();
     query.clear();
@@ -43,6 +44,22 @@ SqlInterface::SqlInterface()
         prevMinor_ = query.value(0).toInt();
         break;
     }
+    query.clear();
+    if(prevMajor_ != -1) {
+        query.prepare("UPDATE version set number = :major WHERE type = 'MAJOR'");
+    } else {
+        query.prepare("INSERT INTO version (type, number) VALUES ('MAJOR', :major)");
+    }
+    query.bindValue(":major", TPS_RELOC_MAJOR);
+    query.exec();
+    query.clear();
+    if(prevMinor_ != -1) {
+        query.prepare("UPDATE version set number = :minor WHERE type = 'MINOR'");
+    } else {
+        query.prepare("INSERT INTO version (type, number) VALUES ('MINOR', :minor)");
+    }
+    query.bindValue(":minor", TPS_RELOC_MINOR);
+    query.exec();
     query.clear();
     checkCompatible();
 }
@@ -119,9 +136,6 @@ int SqlInterface::room(int nr, int capacity, bool force)
 
 QColor SqlInterface::readColor(const QString &department, const QString &team, const QString &component, const QColor defColor)
 {
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
     QColor color = defColor;
     QColor defCompColor = defColor;
     int r, g, b, a;
@@ -161,9 +175,6 @@ QColor SqlInterface::readColor(const QString &department, const QString &team, c
 
 bool SqlInterface::writeColor(const QString &department, const QString &team, const QString &component, QColor color)
 {
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
     int r,g,b,a;
     QSqlQuery query;
     bool ret = true;
@@ -187,9 +198,6 @@ bool SqlInterface::writeColor(const QString &department, const QString &team, co
 
 bool SqlInterface::clearColorTable()
 {
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
     bool ret;
     QSqlQuery query;
     query.prepare("DELETE FROM colors;");
@@ -200,9 +208,6 @@ bool SqlInterface::clearColorTable()
 
 QStringList SqlInterface::getColorTable()
 {
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
     QStringList sl;
     QString val;
     QSqlQuery query;
@@ -221,9 +226,6 @@ QStringList SqlInterface::getColorTable()
 
 int SqlInterface::colorEntries()
 {
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
     QSqlQuery query;
     query.prepare(QString("select count(*) from colors;"));
     query.exec();
@@ -238,9 +240,6 @@ int SqlInterface::colorEntries()
 void SqlInterface::people(QList<Person*>&list)
 {
     Person *p;
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
     QSqlQuery query;
     query.prepare(QString("SELECT surname, name, location, department, team, component, role, room from people "
                           "INNER JOIN locations ON locations.id = people.location_id "
@@ -266,9 +265,6 @@ void SqlInterface::people(QList<Person*>&list)
 
 bool SqlInterface::exportToDb(QList<Person *> people)
 {
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
     bool ret;
     QSqlQuery query;
     foreach(Person *p, people) {
@@ -289,9 +285,6 @@ bool SqlInterface::import(const QString cvs)
     bool ret = true;
     QFile f(cvs);
     QString req;
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
 
     QStringList locations, teams, components, departments;
 
@@ -442,9 +435,6 @@ bool SqlInterface::importTable(QString tableName, QString columnName, QStringLis
 
 QStringList SqlInterface::departments()
 {
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
     QStringList res;
     QSqlQuery query;
     QString req;
@@ -460,9 +450,6 @@ QStringList SqlInterface::departments()
 
 QStringList SqlInterface::teams(const QString department)
 {
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
     QStringList res;
     QSqlQuery query;
     QString req;
@@ -479,9 +466,6 @@ QStringList SqlInterface::teams(const QString department)
 
 QStringList SqlInterface::components(const QString team)
 {
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
     QStringList res;
     QSqlQuery query;
     QString req;
@@ -498,9 +482,6 @@ QStringList SqlInterface::components(const QString team)
 
 QStringList SqlInterface::components(const QString department, const QString team)
 {
-    if(db_.isOpen() == false) {
-        db_.open();
-    }
     QStringList res;
     QSqlQuery query;
     QString req;
