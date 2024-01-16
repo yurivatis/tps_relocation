@@ -128,8 +128,8 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     QObject::connect(memberFrame_, SIGNAL(oSearchChanged(const QString &)), proxyMemberModel_, SLOT(setSearch(const QString &)));
     QObject::connect(roomFrame_, SIGNAL(oSave()), this, SLOT(updateCapacities()));
 
-    QString message = tr("Detailed plan of Hacon's 1st floor");
-    statusBar()->showMessage(message);
+    QLabel *message = new QLabel(QString(tr("Detailed plan of Hacon's 1st floor")), this);
+    statusBar()->addWidget(message);
     setAttribute( Qt::WA_QuitOnClose, true);
     unstored_ = false;
     movingPerson_ = nullptr;
