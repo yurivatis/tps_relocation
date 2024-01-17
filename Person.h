@@ -39,6 +39,7 @@ public:
     bool isLead();
     int modified() {return modifiedRoom_;}
     void modified(int m) {modifiedRoom_ = m;}
+    void setDisplayFirstNameFull(bool b) {displayNameFirstFull_ = b;}
 private:
     QString name_;
     QString surname_;
@@ -54,4 +55,5 @@ private:
     int modifiedRoom_;
     int x_;
     int y_;
+    bool displayNameFirstFull_;
 };

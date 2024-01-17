@@ -1,4 +1,5 @@
 #include "Person.h"
+
 Person::Person(const QString &n, const QString &s, const QString &l, const QString &d, const QString &t, const QString &r, const QString &c, int rm ) {
     name(n);
     surname(s);
@@ -8,16 +9,23 @@ Person::Person(const QString &n, const QString &s, const QString &l, const QStri
     room(rm);
     location(l);
     component(c);
+    displayNameFirstFull_=false;
 }
 
 
-Person::Person() {
+Person::Person()
+{
+    displayNameFirstFull_=false;
 }
 
 
 QString Person::displayName()
 {
-    return QString(surname().at(0)) + ". " + name().split(' ').at(0);
+    if(displayNameFirstFull_) {
+        return surname().split(' ').at(0) + " " + QString(name().at(0)) + ".";
+    } else {
+        return QString(surname().at(0)) + ". " + name().split(' ').at(0);
+    }
 }
 
 

@@ -149,6 +149,7 @@ void MainWindow::createMenus()
 {
     QMenu *dbMenu = menuBar()->addMenu(tr("&Database"));
     QMenu *customizeMenu = menuBar()->addMenu(tr("&Customize"));
+    QMenu *members = customizeMenu->addMenu(tr("&Members"));
     QMenu *printMenu  = menuBar()->addMenu(tr("&Screenshot"));
     QMenu *helpMenu  = menuBar()->addMenu(tr("&Help"));
 
@@ -168,9 +169,19 @@ void MainWindow::createMenus()
     dbMenu->addAction(undoChanges);
     QObject::connect(undoChanges, SIGNAL(triggered()), this, SLOT(toInitState()));
     
-    QAction *members = new QAction(tr("&Members"), this);
-    customizeMenu->addAction(members);
-    QObject::connect(members, SIGNAL(triggered()), this, SLOT(showMemberFrame()) );
+    QAction *showMembers = new QAction(tr("Show Members"), this);
+    members->addAction(showMembers);
+    QObject::connect(showMembers, SIGNAL(triggered()), this, SLOT(showMemberFrame()));
+    firstNameFull_ = new QAction(tr("Display first Name"));
+    firstNameFull_->setCheckable(true);
+    firstNameFull_->setChecked(false);
+    members->addAction(firstNameFull_);
+    QObject::connect(firstNameFull_, SIGNAL(triggered()), this, SLOT(displayFirstName()));
+    lastNameFull_ = new QAction(tr("Display last Name"));
+    lastNameFull_->setCheckable(true);
+    lastNameFull_->setChecked(true);
+    members->addAction(lastNameFull_);
+    QObject::connect(lastNameFull_, SIGNAL(triggered()), this, SLOT(displayLastName()));
 
     QAction *rooms = new QAction(tr("&Rooms"), this);
     customizeMenu->addAction(rooms);
@@ -292,7 +303,6 @@ void MainWindow::assignPeopleToRooms()
             }
         }
     }
-    update();
 }
 
 
@@ -520,4 +530,26 @@ void MainWindow::showFrame(QWidget* w)
     }
     w->show();
     w->raise();
+}
+
+
+void MainWindow::displayFirstName()
+{
+    firstNameFull_->setChecked(true);
+    lastNameFull_->setChecked(false);
+    foreach(Person *p, people_) {
+        p->setDisplayFirstNameFull(true);
+    }
+    paintWidget_->update();
+}
+
+
+void MainWindow::displayLastName()
+{
+    firstNameFull_->setChecked(false);
+    lastNameFull_->setChecked(true);
+    foreach(Person *p, people_) {
+        p->setDisplayFirstNameFull(false);
+    }
+    paintWidget_->update();
 }

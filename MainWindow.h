@@ -54,6 +54,8 @@ private:
     HelpWidget *helpWidget_;
     PaintWidget *paintWidget_;
     bool unstored_;
+    QAction *firstNameFull_;
+    QAction *lastNameFull_;
 private slots:
     void importDatabase();
     void exportDatabase();
@@ -64,6 +66,8 @@ private slots:
     void showColorFrame();
     void showMemberFrame();
     void showRoomFrame();
+    void displayFirstName();
+    void displayLastName();
 signals:
     void eAssignColors();
 };
