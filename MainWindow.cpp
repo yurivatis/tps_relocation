@@ -411,6 +411,9 @@ void MainWindow::importDatabase()
             assignPeopleToRooms();
             memberModel_->restore(&people_);
             unstored_ = false;
+            if(firstNameFull_->isChecked()) {
+                displayFirstName();
+            }
         } else {
             msgBox.setText(QString("Import from %1 failed").arg(fileName));
             msgBox.setIcon(QMessageBox::Warning);
@@ -507,7 +510,6 @@ void MainWindow::showHelpWidget()
 void MainWindow::showColorFrame()
 {
     showFrame(colorFrame_);
-
 }
 
 
