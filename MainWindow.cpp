@@ -68,6 +68,8 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     RemoveButtonDelegate *remd = new RemoveButtonDelegate(colorFrame_->colorView_);
     colorFrame_->colorView_->setItemDelegateForColumn((int)Column::REMOVE, remd);
 
+    toInitState();
+    createMenus();
 
     memberFrame_ = new MemberFrame;
     memberModel_ = new MemberModel(people_.size(), (int)MemberColumns::TOTAL_COLUMNS, this);
@@ -92,7 +94,6 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     memberFrame_->memberView_->setItemDelegateForColumn((int)MemberColumns::ROOM, mdroom);
     memberFrame_->memberView_->setSortingEnabled(true);
     memberFrame_->memberView_->sortByColumn((int)MemberColumns::FULL_NAME, Qt::AscendingOrder);
-    createMenus();
     memberModel_->restore(&people_);
 
     roomFrame_ = new RoomFrame;
@@ -131,7 +132,6 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     setAttribute( Qt::WA_QuitOnClose, true);
     unstored_ = false;
     movingPerson_ = nullptr;
-    toInitState();
 }
 
 
@@ -197,6 +197,11 @@ void MainWindow::createMenus()
     QObject::connect(about, SIGNAL(triggered()), this, SLOT(showHelpWidget()));
     firstNameFull_->setChecked(!SqlInterface::getInstance()->displayLastName());
     lastNameFull_->setChecked(SqlInterface::getInstance()->displayLastName());
+    if(firstNameFull_->isChecked()) {
+        displayFirstName();
+    } else {
+        displayLastName();
+    }
 }
 
 
@@ -482,7 +487,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
         colorFrame_->close();
         memberFrame_->close();
         roomFrame_->close();
-        SqlInterface::getInstance()->displayLastName(lastNameFull_->isChecked());
+        qDebug() << "last: " << lastNameFull_->isChecked();
         event->accept();
     } else {
         event->ignore();
@@ -498,9 +503,7 @@ void MainWindow::toInitState()
     addPeople();
     assignPeopleToRooms();
     unstored_ = false;
-    if(SqlInterface::getInstance()->displayLastName() == false) {
-        displayFirstName();
-    }
+    return;
 }
 
 
@@ -546,6 +549,7 @@ void MainWindow::displayFirstName()
         p->setDisplayFirstNameFull(true);
     }
     paintWidget_->update();
+    SqlInterface::getInstance()->displayLastName(0);
 }
 
 
@@ -557,4 +561,5 @@ void MainWindow::displayLastName()
         p->setDisplayFirstNameFull(false);
     }
     paintWidget_->update();
+    SqlInterface::getInstance()->displayLastName(1);
 }

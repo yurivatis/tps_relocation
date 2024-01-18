@@ -61,9 +61,10 @@ SqlInterface::SqlInterface()
     query.bindValue(":minor", TPS_RELOC_MINOR);
     query.exec();
     query.clear();
-    query.prepare("CREATE TABLE IF NOT EXISTS settings (name VARCHAR, value integer);");
+    query.prepare("CREATE TABLE IF NOT EXISTS settings (name VARCHAR, value integer, PRIMARY KEY(name));");
     query.exec();
-    query.prepare("INSERT OR REPLACE INTO settings (name, value) VALUES (:name, :value)");
+    query.prepare("INSERT INTO settings (name, value) VALUES ('display_last_name', :value) "
+                  "ON CONFLICT(name) DO NOTHING");
     query.bindValue(":name", "display_last_name");
     query.bindValue(":value", 1);
     query.exec();
