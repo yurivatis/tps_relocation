@@ -61,6 +61,13 @@ SqlInterface::SqlInterface()
     query.bindValue(":minor", TPS_RELOC_MINOR);
     query.exec();
     query.clear();
+    query.prepare("CREATE TABLE IF NOT EXISTS settings (name VARCHAR, value integer);");
+    query.exec();
+    query.prepare("INSERT OR REPLACE INTO settings (name, value) VALUES (:name, :value)");
+    query.bindValue(":name", "display_last_name");
+    query.bindValue(":value", 1);
+    query.exec();
+    query.clear();
     checkCompatible();
 }
 
@@ -312,7 +319,8 @@ bool SqlInterface::import(const QString cvs)
                   "location_id integer, department_id integer, team_id integer, component_id integer, role VARCHAR, room integer, "
                   "FOREIGN KEY (location_id) REFERENCES locations(id), FOREIGN KEY (department_id) REFERENCES departments(id),"
                   "FOREIGN KEY (team_id) REFERENCES teams(id), FOREIGN KEY (component_id) REFERENCES components(id), PRIMARY KEY(id) );");
-    ret = query.exec();
+    query.exec();
+
     //get locations
     f.setFileName(cvs);
     QRegularExpression separator(CSV_SEPARATOR);
@@ -494,4 +502,27 @@ QStringList SqlInterface::components(const QString department, const QString tea
         res.append(d);
     }
     return res;
+}
+
+
+void SqlInterface::displayLastName(bool val)
+{
+    QSqlQuery query;
+    QString req = QString("UPDATE settings SET value=:val WHERE name = 'display_last_name'");
+    query.prepare(req);
+    query.bindValue(":val", val?1:0);
+    query.exec();
+}
+
+
+bool SqlInterface::displayLastName()
+{
+    int val = 1;
+    QSqlQuery query;
+    QString req = QString("SELECT value FROM settings WHERE name = 'display_last_name'");
+    query.prepare(req);
+    query.exec();
+    query.first();
+    val=query.value(0).toInt();
+    return val > 0;
 }

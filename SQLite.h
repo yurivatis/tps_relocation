@@ -28,6 +28,7 @@ private:
     int prevMajor_;
     int prevMinor_;
     bool compatible_;
+    int settingDisplayLastName_;
 
  public:
     virtual ~SqlInterface();
@@ -47,4 +48,6 @@ private:
     QStringList teams(const QString department);
     QStringList components(const QString team);
     QStringList components(const QString department, const QString team);
+    void displayLastName(bool);
+    bool displayLastName();
  };

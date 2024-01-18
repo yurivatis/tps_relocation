@@ -47,7 +47,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     helpWidget_ = new HelpWidget();
     helpWidget_->hide();
     
-    colorModel_ = new ColorModel(SqlInterface::getInstance()->colorEntries() , (int)Column::TOTAL_COLUMNS);
+    colorModel_ = new ColorModel(SqlInterface::getInstance()->colorEntries(), (int)Column::TOTAL_COLUMNS);
     colorModel_->restore();
 
     colorFrame_ = new ColorFrame();
@@ -68,7 +68,6 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     RemoveButtonDelegate *remd = new RemoveButtonDelegate(colorFrame_->colorView_);
     colorFrame_->colorView_->setItemDelegateForColumn((int)Column::REMOVE, remd);
 
-    toInitState();
 
     memberFrame_ = new MemberFrame;
     memberModel_ = new MemberModel(people_.size(), (int)MemberColumns::TOTAL_COLUMNS, this);
@@ -105,7 +104,6 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     roomFrame_->roomView_->setSortingEnabled(true);
     roomFrame_->roomView_->sortByColumn((int)RoomColumns::NUMBER, Qt::AscendingOrder);
 
-
     LineEditRoomDelegate *rdn = new LineEditRoomDelegate(roomFrame_->roomView_);
     roomFrame_->roomView_->setItemDelegateForColumn((int)RoomColumns::NUMBER, rdn);
     LineEditRoomDelegate *rdc = new LineEditRoomDelegate(roomFrame_->roomView_);
@@ -133,6 +131,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     setAttribute( Qt::WA_QuitOnClose, true);
     unstored_ = false;
     movingPerson_ = nullptr;
+    toInitState();
 }
 
 
@@ -174,12 +173,10 @@ void MainWindow::createMenus()
     QObject::connect(showMembers, SIGNAL(triggered()), this, SLOT(showMemberFrame()));
     firstNameFull_ = new QAction(tr("Display first Name"));
     firstNameFull_->setCheckable(true);
-    firstNameFull_->setChecked(false);
     members->addAction(firstNameFull_);
     QObject::connect(firstNameFull_, SIGNAL(triggered()), this, SLOT(displayFirstName()));
     lastNameFull_ = new QAction(tr("Display last Name"));
     lastNameFull_->setCheckable(true);
-    lastNameFull_->setChecked(true);
     members->addAction(lastNameFull_);
     QObject::connect(lastNameFull_, SIGNAL(triggered()), this, SLOT(displayLastName()));
 
@@ -198,6 +195,8 @@ void MainWindow::createMenus()
     QAction *about = new QAction(tr("&About"), this);
     helpMenu->addAction(about);
     QObject::connect(about, SIGNAL(triggered()), this, SLOT(showHelpWidget()));
+    firstNameFull_->setChecked(!SqlInterface::getInstance()->displayLastName());
+    lastNameFull_->setChecked(SqlInterface::getInstance()->displayLastName());
 }
 
 
@@ -483,6 +482,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
         colorFrame_->close();
         memberFrame_->close();
         roomFrame_->close();
+        SqlInterface::getInstance()->displayLastName(lastNameFull_->isChecked());
         event->accept();
     } else {
         event->ignore();
@@ -498,6 +498,9 @@ void MainWindow::toInitState()
     addPeople();
     assignPeopleToRooms();
     unstored_ = false;
+    if(SqlInterface::getInstance()->displayLastName() == false) {
+        displayFirstName();
+    }
 }
 
 
