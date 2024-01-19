@@ -4,12 +4,19 @@
 #include <QButtonGroup>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QLabel>
 
 MemberFrame::MemberFrame(QWidget *parent) : QTabWidget(parent)
 {
     QVBoxLayout *vl = new QVBoxLayout;
-    QLineEdit *searchField = new QLineEdit(this);
-    vl->addWidget(searchField);
+    QFrame *searchFrame = new QFrame(this);
+    QHBoxLayout *hlSearch = new QHBoxLayout;
+    searchFrame->setLayout(hlSearch);
+    QLabel *l = new QLabel(QString(tr("Search:")), this);
+    QLineEdit *searchField = new QLineEdit(searchFrame);
+    hlSearch->addWidget(l);
+    hlSearch->addWidget(searchField);
+    vl->addWidget(searchFrame);
     memberView_ = new TableView(this);
     vl->addWidget(memberView_);
     QFrame *f = new QFrame(this);
