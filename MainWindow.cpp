@@ -487,7 +487,6 @@ void MainWindow::closeEvent(QCloseEvent* event)
         colorFrame_->close();
         memberFrame_->close();
         roomFrame_->close();
-        qDebug() << "last: " << lastNameFull_->isChecked();
         event->accept();
     } else {
         event->ignore();
@@ -547,8 +546,13 @@ void MainWindow::displayFirstName()
     lastNameFull_->setChecked(false);
     foreach(Person *p, people_) {
         p->setDisplayFirstNameFull(true);
+        foreach(Room *r, rooms_) { // assign to rooms
+            if(r->nr() == p->room() && r->dummy() == false && r->serviceRoom() == false && r->nr() != 0) {
+                redrawMates(r);
+                break;
+            }
+        }
     }
-    paintWidget_->update();
     SqlInterface::getInstance()->displayLastName(0);
 }
 
@@ -559,7 +563,12 @@ void MainWindow::displayLastName()
     lastNameFull_->setChecked(true);
     foreach(Person *p, people_) {
         p->setDisplayFirstNameFull(false);
+        foreach(Room *r, rooms_) { // assign to rooms
+            if(r->nr() == p->room() && r->dummy() == false && r->serviceRoom() == false && r->nr() != 0) {
+                redrawMates(r);
+                break;
+            }
+        }
     }
-    paintWidget_->update();
     SqlInterface::getInstance()->displayLastName(1);
 }
