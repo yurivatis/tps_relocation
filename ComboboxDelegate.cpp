@@ -1,5 +1,4 @@
 #include "ComboboxDelegate.h"
-#include "CComboBox.h"
 #include "constants.h"
 #include "SQLite.h"
 #include "TableView.h"
@@ -13,23 +12,22 @@ ComboBoxDelegate::ComboBoxDelegate(QObject *parent)
 
  QWidget *ComboBoxDelegate::createEditor(QWidget *parent,
                                         const QStyleOptionViewItem &/* option */,
-                                        const QModelIndex & index ) const
+                                        const QModelIndex &/* index*/ ) const
 {
-    CComboBox *comboBox = new CComboBox(parent);
-    comboBox->index(index);
+    QComboBox *comboBox = new QComboBox(parent);
     comboBox->setFrame(true);
-
     return comboBox;
 }
 
 
 void ComboBoxDelegate::setEditorData(QWidget *editor,
-                                    const QModelIndex &index) const
+                                    const QModelIndex &index ) const
 {
-    CComboBox *comboBox = static_cast<CComboBox*>(editor);
+    QComboBox *comboBox = static_cast<QComboBox*>(editor);
     SqlInterface *sqlInteface = SqlInterface::getInstance();
     TableView *cv = (TableView *)parent();
-    ColorModel *cm = (ColorModel *)cv->model();
+    ColorModel2 *cm = (ColorModel2 *)cv->model();
+
     switch(index.column()) {
         case (int)Column::DEPARTMENT:
         {
@@ -37,16 +35,27 @@ void ComboBoxDelegate::setEditorData(QWidget *editor,
             for(int i = 0; i < list.size(); i++) {
                 comboBox->addItem(list.at(i));
             }
+
+            // set index to current selection
+            const auto data = cm->data( index, Qt::DisplayRole ).toString();
+            int index = comboBox->findText( data );
+            if( index != -1 )
+                comboBox->setCurrentIndex( index );
             break;
         }
         case (int)Column::TEAM:
         {
             QModelIndex idx = cm->index(index.row(), (int)Column::DEPARTMENT);
             QVariant dep = cm->data(idx, Qt::DisplayRole);
-            QStringList list = sqlInteface->teams(dep.toString());
+            QStringList list = sqlInteface->teams( dep.toString() );
             for(int i = 0; i < list.size(); i++) {
                 comboBox->addItem(list.at(i));
             }
+            // set index to current selection
+            const auto data = cm->data( index, Qt::DisplayRole ).toString();
+            int index = comboBox->findText( data );
+            if( index != -1 )
+                comboBox->setCurrentIndex( index );
             break;
         }
         case (int)Column::COMPONENT:
@@ -62,17 +71,16 @@ void ComboBoxDelegate::setEditorData(QWidget *editor,
             break;
         }
     }
+    comboBox->showPopup();
 }
 
 
 void ComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
-                                   const QModelIndex &) const
+                                   const QModelIndex &index ) const
 {
-    CComboBox *comboBox = static_cast<CComboBox*>(editor);
+    QComboBox *comboBox = static_cast<QComboBox*>(editor);
     QString value = comboBox->currentText();
-    model->setData(comboBox->index(), value, Qt::DisplayRole);
-    emit oComboText(value);
-    emit oComboChanged(comboBox->index(), value);
+    model->setData( index, value, Qt::DisplayRole );
 }
 
 
@@ -81,16 +89,4 @@ void ComboBoxDelegate::updateEditorGeometry(QWidget *editor,
                                             const QModelIndex &/* index */) const
 {
     editor->setGeometry(option.rect);
-}
-
-
-void ComboBoxDelegate::getDepartment(const QString department)
-{
-    department_ = department;
-}
-
-
-void ComboBoxDelegate::getTeam(const QString team)
-{
-    team_ = team;
 }

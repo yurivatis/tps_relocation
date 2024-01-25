@@ -42,7 +42,7 @@ private:
     void showFrame(QWidget *);
     QList<Room*>rooms_;
     QList<Person*>people_;
-    ColorModel *colorModel_;
+    ColorModel2 *colorModel_;
     ColorFrame *colorFrame_;
     MemberModel *memberModel_;
     SortFilterProxyModel *proxyMemberModel_;
