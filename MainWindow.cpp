@@ -23,7 +23,7 @@
 #include "LineEditDelegate.h"
 #include "LineEditRoomDelegate.h"
 #include "ComboboxDelegate.h"
-#include "ColorButtonDelegate.h"
+#include "ColorSelectionDelegate.h"
 #include "RemoveButtonDelegate.h"
 #include "constants.h"
 
@@ -47,11 +47,14 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     helpWidget_ = new HelpWidget();
     helpWidget_->hide();
     
-    colorModel_ = new ColorModel(SqlInterface::getInstance()->colorEntries(), (int)Column::TOTAL_COLUMNS);
+    colorModel_ = new ColorModel(this);
     colorModel_->restore();
 
     colorFrame_ = new ColorFrame();
     colorFrame_->colorView_->setModel(colorModel_);
+
+    // Single click trigger doesn't exists. Editing handled by TableView::cellClicked instead
+    colorFrame_->colorView_->setEditTriggers( QAbstractItemView::NoEditTriggers );
     
     ComboBoxDelegate *depd = new ComboBoxDelegate(colorFrame_->colorView_);
     colorFrame_->colorView_->setItemDelegateForColumn((int)Column::DEPARTMENT, depd);
@@ -61,8 +64,8 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
 
     ComboBoxDelegate *compd = new ComboBoxDelegate(colorFrame_->colorView_);
     colorFrame_->colorView_->setItemDelegateForColumn((int)Column::COMPONENT, compd);
-
-    ColorButtonDelegate *cold = new ColorButtonDelegate(colorFrame_->colorView_);
+    
+    ColorSelectionDelegate *cold = new ColorSelectionDelegate(colorFrame_->colorView_);
     colorFrame_->colorView_->setItemDelegateForColumn((int)Column::COLOR, cold);
 
     RemoveButtonDelegate *remd = new RemoveButtonDelegate(colorFrame_->colorView_);
@@ -110,17 +113,10 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     LineEditRoomDelegate *rdc = new LineEditRoomDelegate(roomFrame_->roomView_);
     roomFrame_->roomView_->setItemDelegateForColumn((int)RoomColumns::CAPACITY, rdc);
 
-    QObject::connect(depd, SIGNAL(oComboText(QString)), teamd, SLOT(getDepartment(QString)));
-    QObject::connect(teamd, SIGNAL(oComboText(QString)), compd, SLOT(getTeam(QString)));
-    QObject::connect(depd, SIGNAL(oComboChanged(QModelIndex,QString)), colorModel_, SLOT(setComboBox(QModelIndex,QString)));
-    QObject::connect(teamd, SIGNAL(oComboChanged(QModelIndex,QString)), colorModel_, SLOT(setComboBox(QModelIndex,QString)));
-    QObject::connect(compd, SIGNAL(oComboChanged(QModelIndex,QString)), colorModel_, SLOT(setComboBox(QModelIndex,QString)));
-    QObject::connect(cold, SIGNAL(oColorChanged(QModelIndex&,QColor)), colorModel_, SLOT(setColor(QModelIndex&,QColor)));
     QObject::connect(colorFrame_, SIGNAL(oLoadDefault()), colorModel_, SLOT(loadDefault()));
     QObject::connect(colorFrame_, SIGNAL(oAddRow()), colorModel_, SLOT(addRow()));
     QObject::connect(colorFrame_, SIGNAL(oRestore()), colorModel_, SLOT(restore()));
     QObject::connect(colorFrame_, SIGNAL(oRemoveAll()), colorModel_, SLOT(removeAll()));
-    QObject::connect(remd, SIGNAL(oRemoveRow(int)), colorModel_, SLOT(removeRow(int)));
     QObject::connect(colorFrame_, SIGNAL(oSave()), colorModel_, SLOT(save()));
     QObject::connect(colorModel_, SIGNAL(oUpdated()), this, SLOT(assignPeopleToRooms()));
     QObject::connect(memberFrame_, SIGNAL(oApply()), this, SLOT(updateMates()));

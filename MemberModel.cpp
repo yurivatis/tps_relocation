@@ -108,6 +108,12 @@ SortFilterProxyModel::SortFilterProxyModel(QObject *parent) :  QSortFilterProxyM
 
 }
 
+QVariant SortFilterProxyModel::data(const QModelIndex &index, int role) const
+{
+    auto mappedIndex = mapToSource( index );
+    return sourceModel()->data( mappedIndex, role );
+}
+
 
 bool SortFilterProxyModel::filterAcceptsRow(int sourceRow,const QModelIndex &sourceParent) const
 {
@@ -127,3 +133,4 @@ void SortFilterProxyModel::setSearch(const QString &val)
     QRegularExpression regExp(val);
     this->setFilterRegularExpression(regExp);
 }
+

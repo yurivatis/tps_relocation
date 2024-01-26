@@ -35,10 +35,27 @@ HelpWidget::HelpWidget(QWidget *parent): QWidget(parent)
 	tw->addTab(w, tr("Authors"));
 	vl= new QVBoxLayout(w);
 	lbl = new QLabel(w);
-	lbl->setText(tr("Yuri Vatis<br><br><a href = mailto:yuri.vatis@hacon.de>yuri.vatis@hacon.de</a>"));
+    lbl->setText(tr("Yuri Vatis<br><a href = mailto:yuri.vatis@hacon.de>yuri.vatis@hacon.de</a>"));
 	lbl->setTextFormat(Qt::RichText);
 	lbl->setOpenExternalLinks(true);
 	vl->addWidget(lbl);
+
+    lbl = new QLabel(w);
+    lbl->setText(tr("<b>Thanks to:</b>"));
+    lbl->setTextFormat(Qt::RichText);
+    vl->addWidget(lbl);
+
+    lbl = new QLabel(w);
+    lbl->setText(tr("Daniel Morbach<br><a href = mailto:daniel.morbach@hacon.de>daniel.morbach@hacon.de</a>"));
+    lbl->setTextFormat(Qt::RichText);
+    lbl->setOpenExternalLinks(true);
+    vl->addWidget(lbl);
+
+    lbl = new QLabel(w);
+    lbl->setText(tr("Philip Wobst<br><a href = mailto:philip.wobst@hacon.de>philip.wobst@hacon.de</a>"));
+    lbl->setTextFormat(Qt::RichText);
+    lbl->setOpenExternalLinks(true);
+    vl->addWidget(lbl);
 
 	QPushButton *closeButton = new QPushButton(tr("Close"), this);
 	l->addWidget(closeButton, 0, Qt::AlignRight);

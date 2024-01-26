@@ -17,5 +17,15 @@ TableView::TableView(QWidget *parent) : QTableView(parent)
     this->setSelectionMode(QAbstractItemView::NoSelection);
     QFont fnt("Helvetica", 11, QFont::Normal );
     this->setFont(fnt);
+
+    connect( this, &TableView::clicked, this, &TableView::cellClicked );
+}
+
+void TableView::cellClicked( const QModelIndex &index )
+{
+    // Call of edit() to trigger the editor of the clicked ItemDelegate
+    if( index.isValid() ) {
+        edit( index );
+    }
 }
 

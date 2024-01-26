@@ -29,6 +29,7 @@ class SortFilterProxyModel : public QSortFilterProxyModel {
     Q_OBJECT
 public:
     SortFilterProxyModel(QObject *parent = nullptr);
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QList<Person*>* people() {return people_;}
     void people(QList<Person*>* p) {people_ = p;}
 protected:
@@ -38,3 +39,4 @@ private:
 public slots:
     void setSearch(const QString &);
 };
+

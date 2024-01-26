@@ -1,20 +1,23 @@
 #pragma once
+
 #include <QString>
-#include <QComboBox>
 #include <QStyledItemDelegate>
+#include <QColorDialog>
+#include <QColor>
 
-
-class ComboBoxDelegate : public QStyledItemDelegate
+class ColorSelectionDelegate : public QStyledItemDelegate
 {
-     Q_OBJECT
+    Q_OBJECT
 public:
-    ComboBoxDelegate(QObject *parent = nullptr);
+    ColorSelectionDelegate(QObject *parent = nullptr);
+
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const override;
-    void setEditorData(QWidget *editor, const QModelIndex &index) const override;
+
+    void setEditorData(QWidget *editor, const QModelIndex &) const override;
     void setModelData(QWidget *editor, QAbstractItemModel *model,
                       const QModelIndex &index) const override;
+
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
                               const QModelIndex &index) const override;
 };
-
