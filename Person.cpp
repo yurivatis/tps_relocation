@@ -22,7 +22,7 @@ Person::Person()
 QString Person::displayName()
 {
     if(displayNameFirstFull_) {
-        return surname().split(' ').at(0) + " " + QString(name().at(0)) + ".";
+        return surname() + " " + QString(name().at(0)) + ".";
     } else {
         return QString(surname().at(0)) + ". " + name().split(' ').at(0);
     }

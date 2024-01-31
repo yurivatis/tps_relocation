@@ -22,6 +22,7 @@ bool RemoveButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
     return QStyledItemDelegate::editorEvent( event, model, option, index );
 }
 
+
 void RemoveButtonDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QPushButton button(index.data().toString());

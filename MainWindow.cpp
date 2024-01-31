@@ -193,11 +193,7 @@ void MainWindow::createMenus()
     QObject::connect(about, SIGNAL(triggered()), this, SLOT(showHelpWidget()));
     firstNameFull_->setChecked(!SqlInterface::getInstance()->displayLastName());
     lastNameFull_->setChecked(SqlInterface::getInstance()->displayLastName());
-    if(firstNameFull_->isChecked()) {
-        displayFirstName();
-    } else {
-        displayLastName();
-    }
+    redrawRooms(firstNameFull_->isChecked());
 }
 
 
