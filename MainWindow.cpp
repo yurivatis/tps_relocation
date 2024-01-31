@@ -538,24 +538,20 @@ void MainWindow::showFrame(QWidget* w)
 
 void MainWindow::displayFirstName()
 {
-    firstNameFull_->setChecked(true);
-    lastNameFull_->setChecked(false);
     redrawRooms(true);
-    SqlInterface::getInstance()->displayLastName(0);
 }
 
 
 void MainWindow::displayLastName()
 {
-    firstNameFull_->setChecked(false);
-    lastNameFull_->setChecked(true);
     redrawRooms(false);
-    SqlInterface::getInstance()->displayLastName(1);
 }
 
 
 void MainWindow::redrawRooms(bool firstNameFull)
 {
+    firstNameFull_->setChecked(firstNameFull);
+    lastNameFull_->setChecked(!firstNameFull);
     foreach(Room *r, rooms_) { // assign to rooms
         if(r->dummy() == false && r->serviceRoom() == false && r->nr() != 0) {
             foreach(Person *p, r->people_) {
@@ -564,4 +560,5 @@ void MainWindow::redrawRooms(bool firstNameFull)
             redrawMates(r);
         }
     }
+    SqlInterface::getInstance()->displayLastName(firstNameFull ? 0:1);
 }
