@@ -38,6 +38,7 @@ private:
     void addPeople();
     void printPeople();
     void printRooms();
+    void redrawRooms(bool firstNameFull);
     void redrawMates(Room *r);
     void showFrame(QWidget *);
     QList<Room*>rooms_;

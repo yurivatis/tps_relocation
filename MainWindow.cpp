@@ -540,15 +540,7 @@ void MainWindow::displayFirstName()
 {
     firstNameFull_->setChecked(true);
     lastNameFull_->setChecked(false);
-    foreach(Person *p, people_) {
-        p->setDisplayFirstNameFull(true);
-        foreach(Room *r, rooms_) { // assign to rooms
-            if(r->nr() == p->room() && r->dummy() == false && r->serviceRoom() == false && r->nr() != 0) {
-                redrawMates(r);
-                break;
-            }
-        }
-    }
+    redrawRooms(true);
     SqlInterface::getInstance()->displayLastName(0);
 }
 
@@ -557,14 +549,19 @@ void MainWindow::displayLastName()
 {
     firstNameFull_->setChecked(false);
     lastNameFull_->setChecked(true);
-    foreach(Person *p, people_) {
-        p->setDisplayFirstNameFull(false);
-        foreach(Room *r, rooms_) { // assign to rooms
-            if(r->nr() == p->room() && r->dummy() == false && r->serviceRoom() == false && r->nr() != 0) {
-                redrawMates(r);
-                break;
+    redrawRooms(false);
+    SqlInterface::getInstance()->displayLastName(1);
+}
+
+
+void MainWindow::redrawRooms(bool firstNameFull)
+{
+    foreach(Room *r, rooms_) { // assign to rooms
+        if(r->dummy() == false && r->serviceRoom() == false && r->nr() != 0) {
+            foreach(Person *p, r->people_) {
+                p->setDisplayFirstNameFull(firstNameFull);
             }
+            redrawMates(r);
         }
     }
-    SqlInterface::getInstance()->displayLastName(1);
 }
