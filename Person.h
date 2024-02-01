@@ -41,6 +41,8 @@ public:
     void modified(int m) {modifiedRoom_ = m;}
     void setDisplayFirstNameFull(bool b) {displayNameFirstFull_ = b;}
 private:
+    QString shortNameToDisplay(QString);
+    QString longNameToDisplay(QString);
     QString name_;
     QString surname_;
     QString role_;

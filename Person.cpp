@@ -1,4 +1,5 @@
 #include "Person.h"
+#include <QRegularExpression>
 
 Person::Person(const QString &n, const QString &s, const QString &l, const QString &d, const QString &t, const QString &r, const QString &c, int rm ) {
     name(n);
@@ -21,11 +22,49 @@ Person::Person()
 
 QString Person::displayName()
 {
+    QString surName, lastName;
     if(displayNameFirstFull_) {
-        return surname() + " " + QString(name().at(0)) + ".";
+        surName = longNameToDisplay(surname());
+        lastName = shortNameToDisplay(name());
     } else {
-        return QString(surname().at(0)) + ". " + name().split(' ').at(0);
+        surName = shortNameToDisplay(surname());
+        lastName = longNameToDisplay(name());
     }
+    return surName + " " + lastName;
+}
+
+
+QString Person::shortNameToDisplay(QString val)
+{
+    QString retName;
+    QStringList nameToDisplay = val.split(QRegularExpression(" "));
+    int words = nameToDisplay.count();
+    for(int i = 0; i < words; i++) {
+        retName += QString(nameToDisplay.at(i).at(0)) + ".";
+    }
+    return retName;
+}
+
+
+QString Person::longNameToDisplay(QString val)
+{
+    int minLetters = 3;
+    QString retName;
+    QStringList nameToDisplay = val.split(QRegularExpression(" "));
+    int words = nameToDisplay.count();
+    if(words == 1) {
+        return val;
+    }
+    retName = nameToDisplay.at(0);
+    if(nameToDisplay.at(0).length() < minLetters) {
+        retName += " " + nameToDisplay.at(1);
+    } else {
+        retName += QString(" ") + nameToDisplay.at(1).at(0) + ".";
+    }
+    for(int i = 2; i < words; i++) {
+        retName += QString(nameToDisplay.at(i).at(0)) + ".";
+    }
+    return retName;
 }
 
 
@@ -52,6 +91,7 @@ void Person::clear()
     tmpCoordinates_ = coordinates_;
     y_ = x_ = 0;
 }
+
 
 bool Person::isLead()
 {
