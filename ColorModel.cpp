@@ -229,9 +229,13 @@ void ColorModel::loadDefault()
     defaultValue.push_back( { "TPS", "TPS Tech1 R&D-Plan Dev3", "", QColor(0x35, 0x84, 0xE4) });
     defaultValue.push_back( { "TPS", "TPS Tech1 R&D-Plan QA", "", QColor(0x61, 0x35, 0x83) } );
     defaultValue.push_back( { "TPS", "TPS Tech2", "", QColor(0x26, 0xA2, 0x69) } );
-    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live", "", QColor(0x33, 0xD1, 0x7A) } );
-    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "", QColor(0x8F, 0xF0, 0xA4) } );
-    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev2", "", QColor(0x33, 0xD1, 0x7A) } );
+    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live", "", QColor(0x26, 0xA2, 0x69) } );
+    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "", QColor(0x26, 0xA2, 0x69) } );
+    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "RTC", QColor(0x33, 0xD1, 0x7A) } );
+    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "D&P", QColor(0x43, 0xA0, 0x47) } );
+    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "IRIS", QColor(0x8F, 0xF0, 0xA4) } );
+    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev2", "", QColor(0x42, 0xBC, 0x20) } );
+    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev2", "IRIS", QColor(0x8F, 0xF0, 0xA4) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live QA", "", QColor(0x91, 0x41, 0xAC) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-TRW", "", QColor(0xDC, 0x8A, 0xDD) } );
     defaultValue.push_back( { "TPS", "TPS PLM Plan", "", QColor(0x86, 0x5E, 0x3C) } );

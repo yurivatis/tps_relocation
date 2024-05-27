@@ -35,9 +35,7 @@ MainWindow::MainWindow(QApplication *, QWidget *parent): QMainWindow(parent)
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     scrollArea->setWidget(paintWidget_);
     paintWidget_->setFixedSize(1500, 1000);
-//    scrollArea->setWidgetResizable(true);
     setCentralWidget(scrollArea);
-//    setCentralWidget(mainWidget);
     QLabel *og1st = new QLabel(this);
     QFont lblF("Arial", 30, QFont::Bold);
     og1st->setFont(lblF);

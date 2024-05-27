@@ -106,6 +106,7 @@ bool Room::addPerson(Person* person)
 {
     foreach(Person *p, people_) {
         if(person->name() == p->name() && person->surname() == p->surname()) {
+            qDebug() << person->surname() << " " << person->name() << " already in Room " << nr_;
             return false;
         }
     }
@@ -123,7 +124,7 @@ bool Room::removePerson(Person* person)
         }
     }
     qDebug() << person->surname() << " " << person->name() << " not found in Room " << nr_;
-    return true;
+    return false;
 }
 
 
@@ -288,4 +289,3 @@ void Room119::redrawMates()
         people_.at(i)->coordinates(personPlg);
     }
 }
-
