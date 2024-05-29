@@ -224,7 +224,7 @@ void Room163::redrawMates()
         p2.setX(roomPlg.at(1).x() + (i+1) * stepX);
         if(i == 0 && sz != 1) {
             p2.setY(roomPlg.at(1).y() + (stepY));
-        } if(i == 0 && sz == 1) {
+        } else if(i == 0 && sz == 1) {
             p2.setY(roomPlg.at(1).y() + (stepY - offsetY));
         } else {
             p2.setY(roomPlg.at(1).y() + (i) * (stepY - offsetY));
