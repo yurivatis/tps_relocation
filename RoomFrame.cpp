@@ -14,7 +14,7 @@ RoomFrame::RoomFrame(QWidget *parent) : QTabWidget(parent)
     vl->addWidget(f);
     QHBoxLayout *hl = new QHBoxLayout;
     hl->addStretch();
-    QPushButton *save = new QPushButton(tr("Save"), f);
+    QPushButton *save = new QPushButton(tr("Apply"), f);
     hl->addWidget(save);
     QObject::connect(save, SIGNAL(clicked()), this, SIGNAL(oSave()));
     QPushButton *close = new QPushButton(tr("Close"), f);

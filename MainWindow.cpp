@@ -197,7 +197,7 @@ void MainWindow::createMenus()
 
 void MainWindow::addRooms()
 {
-    rooms_.append(new Room(105, 4, {  50, 900,   50, 800, 130, 800, 130, 900}));
+    rooms_.append(new Room(105, 5, {  50, 900,   50, 800, 130, 800, 130, 900}));
     rooms_.append(new Room(106, 4, { 130, 900,  130, 800, 210, 800, 210, 900}));
     rooms_.append(new Room(108, 3, { 210, 900,  210, 800, 260, 800, 260, 900}));
     rooms_.append(new Room(109, 3, { 260, 900,  260, 800, 310, 800, 310, 900}));
@@ -207,30 +207,30 @@ void MainWindow::addRooms()
     rooms_.append(new Room(114, 2, { 460, 900,  460, 800, 510, 800, 510, 900}));
     rooms_.append(new Room(115, 3, { 510, 900,  510, 800, 560, 800, 560, 900}));
     rooms_.append(new Room(116, 3, { 560, 900,  560, 800, 610, 800, 610, 900}));
-    rooms_.append(new Room(159, 3, { 610, 900,  610, 800, 660, 800, 660, 900}));
+    rooms_.append(new Room(159, 2, { 610, 900,  610, 800, 660, 800, 660, 900}));
     rooms_.append(new Room(160, 3, { 660, 900,  660, 800, 710, 800, 710, 900}));
     rooms_.append(new Room(161, 3, { 710, 900,  710, 800, 760, 800, 760, 900}));
     rooms_.append(new Room(162, 3, { 760, 900,  760, 800, 810, 800, 810, 900}));
     rooms_.append(new Room163(163, 4, {810, 900,  810, 800, 840, 800, 900, 860, 900, 900}));
     rooms_.append(new Room(  0, 0, { 900, 900,  900, 960, 960, 960}, Orientation::CENTER, -90, true));
-    rooms_.append(new Room(176, 4, { 960, 960,  960, 860, 1060, 860, 1060, 960}));
+    rooms_.append(new Room(176, 6, { 960, 960,  960, 860, 1060, 860, 1060, 960}));
     rooms_.append(new Room(175, 2, {1060, 960, 1060, 900, 1120, 900, 1120, 960}));
     rooms_.append(new Room(173, 2, {1120, 960, 1120, 900, 1180, 900, 1180, 960}));
     rooms_.append(new Room(174, 0, {1070, 900, 1070, 860, 1170, 860, 1170, 900}));
     rooms_.append(new Room(172, 6, {1180, 960, 1180, 860, 1300, 860, 1300, 960}));
-    rooms_.append(new Room(171, 6, {1300, 960, 1300, 860, 1400, 860, 1400, 960}));
+    rooms_.append(new Room(171, 5, {1300, 960, 1300, 860, 1400, 860, 1400, 960}));
     rooms_.append(new Room(  0, 0, {1350, 860, 1350, 760, 1310, 760}, Orientation::CENTER, -90, true));
     rooms_.append(new Room(  0, 0, {1190, 840, 1190, 760, 1310, 760, 1310, 840}, Orientation::CENTER));
     rooms_.append(new Room(169, 2, {1130, 840, 1130, 760, 1190, 760, 1190, 840}, Orientation::UP));
     rooms_.append(new Room(168, 3, {1060, 840, 1060, 760, 1130, 760, 1130, 840}, Orientation::UP));
-    rooms_.append(new Room(166, 4, { 980, 840,  980, 760, 1060, 760, 1060, 840}, Orientation::UP));
+    rooms_.append(new Room(166, 3, { 980, 840,  980, 760, 1060, 760, 1060, 840}, Orientation::UP));
     rooms_.append(new Room(  0, 0, { 930, 840,  930, 700,  980, 700,  980, 840}, Orientation::CENTER, -90));
     rooms_.append(new Room(164, 0, { 860, 770,  860, 700,  930, 700,  930, 840}, Orientation::CENTER));
     rooms_.append(new Room(158, 4, { 880, 700,  880, 610,  980, 610,  980, 700}, Orientation::UP));
     rooms_.append(new Room(157, 2, { 810, 680,  810, 610,  880, 610,  880, 680}, Orientation::UP));
     rooms_.append(new Room(156, 2, { 740, 680,  740, 610,  810, 610,  810, 680}, Orientation::UP));
-    rooms_.append(new Room(155, 4, { 670, 680,  670, 610,  740, 610,  740, 680}, Orientation::UP));
-    rooms_.append(new Room(154, 4, { 610, 740,  610, 610,  670, 610,  670, 740}, Orientation::UP));
+    rooms_.append(new Room(155, 3, { 670, 680,  670, 610,  740, 610,  740, 680}, Orientation::UP));
+    rooms_.append(new Room(154, 5, { 610, 740,  610, 610,  670, 610,  670, 740}, Orientation::UP));
     rooms_.append(new Room(153, 0, { 610, 780,  610, 740,  670, 740,  670, 780}, Orientation::CENTER));
     rooms_.append(new Room(165, 0, { 695, 780,  695, 700,  835, 700,  835, 780}, Orientation::CENTER));
     rooms_.append(new Room(117, 0, { 505, 780,  505, 710,  610, 710,  610, 780}, Orientation::CENTER));
@@ -260,7 +260,7 @@ void MainWindow::addRooms()
     rooms_.append(new Room(145, 2, { 393, 245,  496, 210,  507, 248,  404, 283}, Orientation::RIGHT, -18));
     rooms_.append(new Room(144, 3, { 381, 205,  484, 170,  496, 210,  393, 245}, Orientation::RIGHT, -18));
     rooms_.append(new Room(143, 0, { 349,  93,  452,  58,  484, 170,  381, 205}, Orientation::RIGHT, -18));
-    
+
     rooms_.append(new Room(  0, 0, { 181, 590,  181, 486}, Orientation::CENTER, -90, true));
     rooms_.append(new Room(131, 2, { 170, 448,  273, 413,  284, 451,  181, 486}, Orientation::LEFT, -18));
     rooms_.append(new Room(132, 2, { 159, 410,  262, 375,  273, 413,  170, 448}, Orientation::LEFT, -18));
@@ -271,7 +271,7 @@ void MainWindow::addRooms()
     rooms_.append(new Room(137, 3, { 104, 220,  207, 185,  218, 223,  115, 258}, Orientation::LEFT, -19));
     rooms_.append(new Room(138, 4, {  88, 163,  191, 128,  207, 185,  104, 220}, Orientation::LEFT, -18));
     rooms_.append(new Room(139, 4, {  72, 106,  175,  71,  191, 128,   88, 163}, Orientation::LEFT, -18));
-    
+
     rooms_.append(new Room(151, 0, {  270, 302,  368, 268,  408, 406,  308, 438}, Orientation::CENTER, -18));
     rooms_.append(new Room(140, 0, {  202,  61,  301,  28,  333, 136,  232, 168}, Orientation::CENTER, -18));
 }
