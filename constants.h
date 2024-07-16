@@ -4,7 +4,7 @@
     #define TPS_RELOC_MAJOR 2
 #endif
 #ifndef TPS_RELOC_MINOR
-    #define TPS_RELOC_MINOR 7
+    #define TPS_RELOC_MINOR 8
 #endif
 
 #ifndef CSV_SEPARATOR
