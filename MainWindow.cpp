@@ -419,21 +419,24 @@ void MainWindow::importDatabase()
 
 void MainWindow::updateMates()
 {
+    Room *rFrom = nullptr, *rTo = nullptr;
     foreach(Person *p, people_) {
         if(p->modified() != p->room()) {
             foreach(Room *r, rooms_) {
                 if(r->nr() == p->room()) {
-                    if(r->nr() != 0 && r->dummy() == false && r->serviceRoom() == false && r->nr()) {
-                        r->removePerson(p);
-                    }
-                    redrawMates(r);
+                    rFrom = r;
                 }
                 if(r->nr() == p->modified()) {
-                    if(r->nr() != 0 && r->dummy() == false && r->serviceRoom() == false) {
-                        r->addPerson(p);
-                        redrawMates(r);
-                    }
+                    rTo = r;
                 }
+            }
+            if(rFrom != nullptr && rFrom->nr() != 0 && rFrom->dummy() == false && rFrom->serviceRoom() == false ) {
+                rFrom->removePerson(p);
+                redrawMates(rFrom);
+            }
+            if(rTo != nullptr && rTo->nr() != 0 && rTo->dummy() == false && rTo->serviceRoom() == false ) {
+                rTo->addPerson(p);
+                redrawMates(rTo);
             }
             p->room(p->modified());
         }
