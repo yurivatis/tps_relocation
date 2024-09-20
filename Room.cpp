@@ -117,9 +117,12 @@ bool Room::addPerson(Person* person)
 
 bool Room::removePerson(Person* person)
 {
+    QPolygonF personPlg(0);
+
     foreach(Person *p, people_) {
         if(person->name() == p->name() && person->surname() == p->surname()) {
             people_.removeOne(person);
+            person->coordinates(personPlg);
             return true;
         }
     }

@@ -227,7 +227,7 @@ void MainWindow::addRooms()
     rooms_.append(new Room(  0, 0, { 930, 840,  930, 700,  980, 700,  980, 840}, Orientation::CENTER, -90));
     rooms_.append(new Room(164, 0, { 860, 770,  860, 700,  930, 700,  930, 840}, Orientation::CENTER));
     rooms_.append(new Room(158, 4, { 880, 700,  880, 610,  980, 610,  980, 700}, Orientation::UP));
-    rooms_.append(new Room(157, 4, { 810, 680,  810, 610,  880, 610,  880, 680}, Orientation::UP));
+    rooms_.append(new Room(157, 3, { 810, 680,  810, 610,  880, 610,  880, 680}, Orientation::UP));
     rooms_.append(new Room(156, 2, { 740, 680,  740, 610,  810, 610,  810, 680}, Orientation::UP));
     rooms_.append(new Room(155, 3, { 670, 680,  670, 610,  740, 610,  740, 680}, Orientation::UP));
     rooms_.append(new Room(154, 5, { 610, 740,  610, 610,  670, 610,  670, 740}, Orientation::UP));
