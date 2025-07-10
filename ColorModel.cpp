@@ -233,9 +233,9 @@ void ColorModel::loadDefault()
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "", QColor(0x26, 0xA2, 0x69) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "RTC", QColor(0x33, 0xD1, 0x7A) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "D&P", QColor(0x43, 0xA0, 0x47) } );
-    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "IRIS", QColor(0x8F, 0xF0, 0xA4) } );
+    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "RISE", QColor(0x8F, 0xF0, 0xA4) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev2", "", QColor(0x42, 0xBC, 0x20) } );
-    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev2", "IRIS", QColor(0x8F, 0xF0, 0xA4) } );
+    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev2", "RISE", QColor(0x8F, 0xF0, 0xA4) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live QA", "", QColor(0x91, 0x41, 0xAC) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-TRW", "", QColor(0xDC, 0x8A, 0xDD) } );
     defaultValue.push_back( { "TPS", "TPS PLM Plan", "", QColor(0x86, 0x5E, 0x3C) } );
@@ -252,11 +252,13 @@ void ColorModel::loadDefault()
     defaultValue.push_back( { "TPS", "TPS PLM Plan", "", QColor(0xE6, 0x61, 0x00) } );
     defaultValue.push_back( { "TPS", "TPS PLM Live", "", QColor(0xFF, 0xBE, 0x6F) } );
     defaultValue.push_back( { "TPS", "TPS PLM TRW", "",  QColor(0xF7, 0x08, 0xFB) } );
-    defaultValue.push_back( { "TPS", "TPS PLM Algorithms", "", QColor(0xFF, 0x78, 0x00) } );
     defaultValue.push_back( { "TPS", "TPS Tech1 PM", "", QColor(0xF5, 0xA7, 0x98) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 PM", "", QColor(0xD2, 0xF8, 0xE0) });
-    defaultValue.push_back( { "TPS", "TPS QM Excellence", "", QColor(0x04, 0xFC, 0xED) } );
-    defaultValue.push_back( { "TPS", "TPS R&D Excellence", "", QColor(0x04, 0xFC, 0xED) } );
+    defaultValue.push_back( { "TPS", "TPS Excellence", "", QColor(0x04, 0xFC, 0xED) } );
+    defaultValue.push_back( { "HACON Management", "Managing Directors", "", QColor(0xFF, 0x00, 0x00) } );
+    defaultValue.push_back( { "HACON Functions", "Management Assistance", "", QColor(0xFF, 0x00, 0x7F) } );
+    defaultValue.push_back( { "HACON Management", "TPS Sales Logistics", "", QColor(0xAA, 0xAA, 0x7F) } );
+    defaultValue.push_back( { "HACON Management", "TPS Techn.Advisor", "", QColor(0xAA, 0xAA, 0x7F) } );
     beginInsertRows( QModelIndex(), 0, defaultValue.size() - 1 );
     data_ = defaultValue;
     endInsertRows();
