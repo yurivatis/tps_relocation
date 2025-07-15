@@ -557,5 +557,5 @@ void MainWindow::redrawRooms(bool firstNameFull)
             redrawMates(r);
         }
     }
-    SqlInterface::getInstance()->displayLastName(firstNameFull ? 0:1);
+    SqlInterface::getInstance()->displayLastName(firstNameFull ? false : true);
 }

@@ -236,7 +236,7 @@ void ColorModel::loadDefault()
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "RISE", QColor(0x8F, 0xF0, 0xA4) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev2", "", QColor(0x42, 0xBC, 0x20) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev2", "RISE", QColor(0x8F, 0xF0, 0xA4) } );
-    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live QA", "", QColor(0x91, 0x41, 0xAC) } );
+    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live QA", "", QColor(0xC9, 0xDA, 0xB0) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-TRW", "", QColor(0xDC, 0x8A, 0xDD) } );
     defaultValue.push_back( { "TPS", "TPS PLM Plan", "", QColor(0x86, 0x5E, 0x3C) } );
     defaultValue.push_back( { "TPS", "TPS PLM Live", "", QColor(0xCD, 0xAB, 0x8F) } );
