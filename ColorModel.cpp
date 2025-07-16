@@ -227,7 +227,7 @@ void ColorModel::loadDefault()
     defaultValue.push_back( { "TPS", "TPS Tech1 R&D-Plan Dev1", "", QColor(0x99, 0xC1, 0xF1) } );
     defaultValue.push_back( { "TPS", "TPS Tech1 R&D-Plan Dev2", "", QColor(0x62, 0xA0, 0xEA) } );
     defaultValue.push_back( { "TPS", "TPS Tech1 R&D-Plan Dev3", "", QColor(0x35, 0x84, 0xE4) });
-    defaultValue.push_back( { "TPS", "TPS Tech1 R&D-Plan QA", "", QColor(0x61, 0x35, 0x83) } );
+    defaultValue.push_back( { "TPS", "TPS Tech1 R&D-Plan QA", "", QColor(0x83, 0x49, 0xFF) } );
     defaultValue.push_back( { "TPS", "TPS Tech2", "", QColor(0x26, 0xA2, 0x69) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live", "", QColor(0x26, 0xA2, 0x69) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "", QColor(0x26, 0xA2, 0x69) } );
@@ -236,7 +236,7 @@ void ColorModel::loadDefault()
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev1", "RISE", QColor(0x8F, 0xF0, 0xA4) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev2", "", QColor(0x42, 0xBC, 0x20) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live Dev2", "RISE", QColor(0x8F, 0xF0, 0xA4) } );
-    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live QA", "", QColor(0xC9, 0xDA, 0xB0) } );
+    defaultValue.push_back( { "TPS", "TPS Tech2 R&D-Live QA", "", QColor(0x48, 0xAE, 0xB5) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 R&D-TRW", "", QColor(0xDC, 0x8A, 0xDD) } );
     defaultValue.push_back( { "TPS", "TPS PLM Plan", "", QColor(0x86, 0x5E, 0x3C) } );
     defaultValue.push_back( { "TPS", "TPS PLM Live", "", QColor(0xCD, 0xAB, 0x8F) } );
@@ -245,7 +245,7 @@ void ColorModel::loadDefault()
     defaultValue.push_back( { "TPS", "TPS Tech1 CustomerCare", "", QColor(0x6C, 0xFD, 0x0C) } );
     defaultValue.push_back( { "TPS", "TPS Bid", "", QColor(0x54, 0x74, 0x74) } );
     defaultValue.push_back( { "TPS", "TPS Sales Logistics", "", QColor(0x54, 0x74, 0x74) } );
-    defaultValue.push_back( { "TPS", "TPS Bid Documentation", "", QColor(0x48, 0xAE, 0xB5) } );
+    defaultValue.push_back( { "TPS", "TPS Bid Documentation", "", QColor(0xC9, 0xDA, 0xB0) } );
     defaultValue.push_back( { "TPS", "TPS Tech1 SMiP", "", QColor(0xE5, 0xA5, 0x0A) } );
     defaultValue.push_back( { "TPS", "TPS Tech2 SMiP", "", QColor(0xF9, 0xF0, 0x6B) } );
     defaultValue.push_back( { "TPS", "TPS PLM", "", QColor(0xC6, 0x46, 0x00) } );
