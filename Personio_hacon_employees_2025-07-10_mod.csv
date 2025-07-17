@@ -1,3 +1,4 @@
+Vorname (bürgerlich);Nachname (bürgerlich);Standort;Abteilung;Team;Position;;0
 Franziska;Dolak;CH - Wallisellen;HAFAS;HAF CPO PA Clients;;;0
 Abbas;Mohammed Murrey;DE - Berlin;TPS;TPS Tech1 R&D-Plan Dev3;C++ Entwickler;;0
 Ashkan;Tamizkar;DE - Berlin;HAFAS;HAF CCO CA Sapphire;Projektleiter;;0
@@ -246,7 +247,7 @@ Kristin;Koch;DE - Hannover;HAFAS;CEO MaaS Bid Management;Bid Managerin;;0
 Kshitij;Kulshreshtha;DE - Hannover;HAFAS;HAF CTO PA Engine Tarif;C++ Developer;;0
 Lana;Sommer;DE - Hannover;HACON Functions;Marketing;Marketing & Communication Manager;;0
 Lars;Bohn;DE - Hannover;HACON Functions;IT Administration;IT System & Network Administrator;;0
-Lars;Deiterding;DE - Hannover;HACON Management;TPS Sales Logistics;Prokurist;;131
+Lars;Deiterding;DE - Hannover;HACON Management;TPS Sales Logistics;Prokurist;;0
 Lars;Hamann;DE - Hannover;HAFAS;HAF CTO PA Engine;Java Entwickler;;0
 Laura;Stelzer;DE - Hannover;HACON Functions;HR;Head of Human Resources;;0
 Laurents;Schwartz;DE - Hannover;TPS;TPS Tech1 Platform, Deployment and Hosting;Team Lead;;136
@@ -282,7 +283,7 @@ Marco;Bierle;DE - Hannover;HACON Business Administration;Facility Management;Hau
 Marco;Pinter;DE - Hannover;HAFAS;HAF CPO PA Salesplatform;Product Manager;;0
 Mareike;Geers;DE - Hannover;TPS;TPS PLM TRW;Requirement Engineer;;149
 Mareike;Röncke;DE - Hannover;HAFAS;HAF CTO PA Engine;Product Manager;;0
-Maren;Meitsch;DE - Hannover;HACON Functions;Management Assistance;Assistenz der Geschäftsführung;;147
+Maren;Meitsch;DE - Hannover;HACON Functions;Management Assistance;Assistenz der Geschäftsführung;;0
 Marie;Dahmen;DE - Hannover;HAFAS;HAF CCO CA Emerald;Projektleiterin;;0
 Mariia;Karakulina;DE - Hannover;HAFAS;HAF CTO PA Operator Business Suite;Softwareentwicklerin;;0
 Mario;Höcker;DE - Hannover;TPS;TPS PLM Plan;Requirement Engineer;;144
@@ -393,12 +394,12 @@ Robert;Weidlich;DE - Hannover;TPS;TPS PLM;TPS Expert;;138
 Robin;Giese;DE - Hannover;HAFAS;HAF CTO PA Engine;Datenmanager;;0
 Robin;Zimmeck;DE - Hannover;TPS;TPS Tech1 R&D-Plan Dev3;fachlich-techn. Entwicklungskoordinator;Infra;175
 Roland;Wagner;DE - Hannover;TPS;TPS Tech1 R&D-Plan Dev2;C++ Developer;Trains;163
-Rolf;Gooßmann;DE - Hannover;HACON Management;TPS Techn.Advisor;Prokurist;;131
+Rolf;Gooßmann;DE - Hannover;HACON Management;TPS Techn.Advisor;Prokurist;;0
 Rolf Herbert;Pitters;DE - Hannover;HAFAS;HAF CCO CA Ruby;Technischer Projektleiter;;0
 Romain;Aureche;DE - Hannover;TPS;TPS Bid Documentation;Technischer Übersetzer;;154
 Rosemarie;Schilling;DE - Hannover;TPS;TPS Tech1 PM;Software-Trainerin;;132
 Saba;Jannat;DE - Hannover;TPS;TPS Tech2 R&D-Live QA;Requirement Engineer;;104
-Saiprasad;Sutar;DE - Hannover;TPS;TPS Tech2 SMiP;System Engineer;;160
+Saiprasad;Sutar;DE - Hannover;TPS;TPS Tech2 SMiP;System Engineer;;104
 Samira;Rausch;DE - Hannover;HACON Functions;P&O;P&O People Admin / Personalsachbearbeiterin;;0
 Sandra;Kempf;DE - Hannover;TPS;TPS PLM Live;Team Lead Product Lifecycle Manager;;137
 Santiago;Brito Azpiri Juarez;DE - Hannover;HAFAS;HAF CCO Service Management;Customer Service Agent;;0
